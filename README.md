@@ -1,6 +1,6 @@
 # dynalgo.github.io
 
- `dynalgo` is a tiny library designed to produce animated SVG images that can illustrate graph algorithms.
+ `dynalgo` is a tiny RUST library designed to produce animated SVG images that can illustrate graph algorithms.
 
  The crate offers a basic graph structure representation (nodes, links and adjacency list).
  The interesting point is that each modification of the structure of the graph results in an animation in SVG with SMIL language.
@@ -121,19 +121,19 @@
 ```
 
 # Other examples showing part of the API:
-[Graph::node_add](https://dynalgo.github.io/dynalgo/example-node_add.html)
-[Graph::node_add_fixed](https://dynalgo.github.io/dynalgo/example-node_add_fixed.html)
-[Graph::node_delete](https://dynalgo.github.io/dynalgo/example-node_delete.html)
-[Graph::link_add](https://dynalgo.github.io/dynalgo/example-link_add.html)
-[Graph::link_delete](https://dynalgo.github.io/dynalgo/example-link_delete.html)
-[Graph::nodes_exchange](https://dynalgo.github.io/dynalgo/example-nodes_exchange.html)
-[Graph::svg_node_selected](https://dynalgo.github.io/dynalgo/example-svg_node_selected.html)
-[Graph::svg_node_color](https://dynalgo.github.io/dynalgo/example-svg_node_color.html)
-[Graph::svg_node_move](https://dynalgo.github.io/dynalgo/example-svg_node_move.html)
-[Graph::svg_link_selected](https://dynalgo.github.io/dynalgo/example-svg_link_selected.html)
-[Graph::dyna_from](https://dynalgo.github.io/dynalgo/example-dyna_from.html)
-[Graph::dyna_to](https://dynalgo.github.io/dynalgo/example-dyna_to.html)
-[Graph::svg_automatic_animation](https://dynalgo.github.io/dynalgo/example-svg_automatic_animation.html)
-[Graph::svg_animate](https://dynalgo.github.io/dynalgo/example-svg_animate.html)
-[Graph::svg_automatic_layout](https://dynalgo.github.io/dynalgo/example-svg_automatic_layout.html)
-[Graph::svg_layout](https://dynalgo.github.io/dynalgo/example-svg_layout.html)
+[Graph::node_add](https://dynalgo.github.io/dynalgo/example-node_add.html)  
+[Graph::node_add_fixed](https://dynalgo.github.io/dynalgo/example-node_add_fixed.html)  
+[Graph::node_delete](https://dynalgo.github.io/dynalgo/example-node_delete.html)  
+[Graph::link_add](https://dynalgo.github.io/dynalgo/example-link_add.html)  
+[Graph::link_delete](https://dynalgo.github.io/dynalgo/example-link_delete.html)  
+[Graph::nodes_exchange](https://dynalgo.github.io/dynalgo/example-nodes_exchange.html)  
+[Graph::svg_node_selected](https://dynalgo.github.io/dynalgo/example-svg_node_selected.html)  
+[Graph::svg_node_color](https://dynalgo.github.io/dynalgo/example-svg_node_color.html)  
+[Graph::svg_node_move](https://dynalgo.github.io/dynalgo/example-svg_node_move.html)  
+[Graph::svg_link_selected](https://dynalgo.github.io/dynalgo/example-svg_link_selected.html)  
+[Graph::dyna_from](https://dynalgo.github.io/dynalgo/example-dyna_from.html)  
+[Graph::dyna_to](https://dynalgo.github.io/dynalgo/example-dyna_to.html)  
+[Graph::svg_automatic_animation](https://dynalgo.github.io/dynalgo/example-svg_automatic_animation.html)  
+[Graph::svg_animate](https://dynalgo.github.io/dynalgo/example-svg_animate.html)  
+[Graph::svg_automatic_layout](https://dynalgo.github.io/dynalgo/example-svg_automatic_layout.html)  
+[Graph::svg_layout](https://dynalgo.github.io/dynalgo/example-svg_layout.html)  
