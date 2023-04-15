@@ -6,7 +6,7 @@ version = "1.0.0"
 edition = "2021"
 license = "GPLv3"
 repository = "https://github.com/dynalgo/dynalgo.github.io"
-keywords = ["structure", "graph", "SVG", "SMIL", "animation", "algorithm"]
+keywords = ["graph", "SVG", "SMIL", "animation", "algorithm"]
 
 
 [dependencies]
