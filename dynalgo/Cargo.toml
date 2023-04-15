@@ -1,0 +1,9 @@
+[package]
+name = "dynalgo"
+description = "A tiny library designed to produce animated SVG images that can illustrate graph algorithms in action."
+version = "1.0.0"
+edition = "2021"
+license = "GPLv3"
+
+
+[dependencies]
