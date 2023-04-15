@@ -11,6 +11,8 @@
 # Example n°1 :
 ## (add nodes and links, and then play with their graphical representation as SVG elements. Finally, display the resulting animation as an animated SVG in a HTML page)
 
+[Example n°1](./dynalgo/example-1.html)
+
 ```
  use dynalgo::graph::Graph;
  use std::fs::File;
@@ -53,6 +55,8 @@
 
 # Example n°2 :
 ## (build a graph from a formatted String, and then just display the layouted graph as an animated SVG in a HTML page)
+
+[Example n°2](./dynalgo/example-2.html)
 
 ```
  use dynalgo::graph::Graph;
