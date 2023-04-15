@@ -1,0 +1,3 @@
+(function() {var implementors = {
+"dynalgo":[["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.65.0/core/marker/trait.Send.html\" title=\"trait core::marker::Send\">Send</a> for <a class=\"struct\" href=\"dynalgo/graph/struct.Graph.html\" title=\"struct dynalgo::graph::Graph\">Graph</a>",1,["dynalgo::graph::Graph"]]]
+};if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

@@ -1,0 +1,105 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="dynalgo"><meta name="keywords" content="rust, rustlang, rust-lang, dynalgo"><title>dynalgo - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" href="../normalize.css"><link rel="stylesheet" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" href="../ayu.css" disabled><link rel="stylesheet" href="../dark.css" disabled><link rel="stylesheet" href="../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../storage.js"></script><script defer src="../crates.js"></script><script defer src="../main.js"></script><noscript><link rel="stylesheet" href="../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../favicon.svg"></head><body class="rustdoc mod crate"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../dynalgo/index.html"><div class="logo-container"><img class="rust-logo" src="../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../dynalgo/index.html"><div class="logo-container"><img class="rust-logo" src="../rust-logo.svg" alt="logo"></div></a><h2 class="location"><a href="#">Crate dynalgo</a></h2><div class="sidebar-elems"><div class="block"><ul><li class="version">Version 1.0.0</li><li><a id="all-types" href="all.html">All Items</a></li></ul></div><section><div class="block"><ul><li><a href="#modules">Modules</a></li></ul></div></section></div></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../dynalgo/index.html"><img class="rust-logo" src="../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="main-heading"><h1 class="fqn"><span class="in-band">Crate <a class="mod" href="#">dynalgo</a><button id="copy-path" onclick="copy_path(this)" title="Copy item path to clipboard"><img src="../clipboard.svg" width="19" height="18" alt="Copy item path"></button></span></h1><span class="out-of-band"><a class="srclink" href="../src/dynalgo/lib.rs.html#1-240">source</a> · <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class="inner">&#x2212;</span>]</a></span></div><details class="rustdoc-toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><h2 id="dynalgo"><a href="#dynalgo">dynalgo</a></h2>
+<p><code>dynalgo</code> is a tiny library designed to produce animated SVG images that can illustrate graph algorithms in action.</p>
+<p>The crate offers a basic graph structure representation (nodes, links and adjacency list).
+The interesting point is that each modification of the structure of the graph results in an animation in SVG with SMIL language.
+Additionally, custom animations can be made by playing with the properties of graphical representations of nodes and links.
+No graph algorithm is included, except one for the automatic layout of nodes according to imaginary spring forces applied to nodes.</p>
+<h2 id="example-n1-"><a href="#example-n1-">Example n°1 :</a></h2><h3 id="add-nodes-and-links-and-then-play-with-their-graphical-representation-as-svg-elements-finally-display-the-resulting-animation-as-an-animated-svg-in-a-html-page"><a href="#add-nodes-and-links-and-then-play-with-their-graphical-representation-as-svg-elements-finally-display-the-resulting-animation-as-an-animated-svg-in-a-html-page">(add nodes and links, and then play with their graphical representation as SVG elements. Finally, display the resulting animation as an animated SVG in a HTML page)</a></h3>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>dynalgo::graph::Graph;
+<span class="kw">use </span>std::fs::File;
+<span class="kw">use </span>std::io::Write;
+
+<span class="kw">let </span><span class="kw-2">mut </span>graph = Graph::new();
+
+graph.svg_automatic_layout(<span class="bool-val">false</span>);
+graph.svg_automatic_animation(<span class="bool-val">false</span>);
+
+graph.node_add(<span class="string">&#39;A&#39;</span>, <span class="prelude-val">None</span>);
+graph.node_add(<span class="string">&#39;B&#39;</span>, <span class="prelude-val">None</span>);
+graph.node_add(<span class="string">&#39;C&#39;</span>, <span class="prelude-val">None</span>);
+graph.link_add(<span class="string">&#39;α&#39;</span>, <span class="string">&#39;A&#39;</span>, <span class="string">&#39;B&#39;</span>, <span class="bool-val">true</span>, <span class="prelude-val">Some</span>(<span class="number">10</span>));
+graph.link_add(<span class="string">&#39;β&#39;</span>, <span class="string">&#39;B&#39;</span>, <span class="string">&#39;C&#39;</span>, <span class="bool-val">true</span>, <span class="prelude-val">Some</span>(<span class="number">20</span>));
+graph.link_add(<span class="string">&#39;γ&#39;</span>, <span class="string">&#39;C&#39;</span>, <span class="string">&#39;A&#39;</span>, <span class="bool-val">true</span>, <span class="prelude-val">Some</span>(<span class="number">30</span>));
+
+graph.svg_automatic_animation(<span class="bool-val">true</span>);
+graph.svg_layout();
+graph.svg_automatic_layout(<span class="bool-val">true</span>);
+
+graph.nodes_exchange(<span class="string">&#39;A&#39;</span>, <span class="string">&#39;B&#39;</span>);
+
+graph.svg_node_color(<span class="string">&#39;A&#39;</span>, <span class="number">0</span>,<span class="number">128</span>,<span class="number">0</span>);
+graph.svg_node_color(<span class="string">&#39;C&#39; </span>,<span class="number">128</span>,<span class="number">0</span>,<span class="number">0</span>);
+
+graph.link_delete(<span class="string">&#39;γ&#39;</span>);
+graph.node_delete(<span class="string">&#39;B&#39;</span>);
+graph.node_add(<span class="string">&#39;D&#39;</span>, <span class="prelude-val">None</span>);
+graph.link_add(<span class="string">&#39;δ&#39;</span>, <span class="string">&#39;C&#39;</span>, <span class="string">&#39;D&#39;</span>, <span class="bool-val">false</span>, <span class="prelude-val">Some</span>(<span class="number">40</span>));
+graph.link_add(<span class="string">&#39;ε&#39;</span>, <span class="string">&#39;D&#39;</span>, <span class="string">&#39;A&#39;</span>, <span class="bool-val">false</span>, <span class="prelude-val">Some</span>(<span class="number">50</span>));
+
+graph.svg_node_selected(<span class="string">&#39;D&#39;</span>,<span class="bool-val">true</span>);
+graph.svg_link_selected(<span class="string">&#39;δ&#39;</span>,<span class="bool-val">true</span>);
+graph.svg_link_selected(<span class="string">&#39;ε&#39;</span>,<span class="bool-val">true</span>);
+
+<span class="kw">let </span>html = graph.svg_render_animation_html(<span class="string">&quot;This is the example n°1&quot;</span>);
+<span class="macro">write!</span>(File::create(<span class="string">&quot;example-1.html&quot;</span>).unwrap(), <span class="string">&quot;{}&quot;</span>, html);</code></pre></div>
+<h2 id="example-n2-"><a href="#example-n2-">Example n°2 :</a></h2><h3 id="build-a-graph-from-a-formatted-string-and-then-just-display-the-layouted-graph-as-an-animated-svg-in-a-html-page"><a href="#build-a-graph-from-a-formatted-string-and-then-just-display-the-layouted-graph-as-an-animated-svg-in-a-html-page">(build a graph from a formatted String, and then just display the layouted graph as an animated SVG in a HTML page)</a></h3>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>dynalgo::graph::Graph;
+<span class="kw">use </span>std::fs::File;
+<span class="kw">use </span>std::io::Write;
+
+<span class="kw">let </span><span class="kw-2">mut </span>graph = Graph::new();
+
+<span class="kw">let </span>dyna = String::from(
+       <span class="string">&quot;N A _ _ 1
+        N B _ _ 2
+        N C _ _ 3
+        N D _ _ 4
+        N E _ _ 5
+        N F _ _ 6
+        N G _ _ 7
+        N H _ _ 8
+        N I _ _ 9
+        N J _ _ _
+        N K _ _ 11
+        N L _ _ 12
+        N M _ _ _
+        N N _ _ 14
+        N O _ _ 15
+        N P _ _ 16
+        N Q _ _ 17
+        N R _ _ 18
+        N S _ _ 19
+        N T _ _ 21
+        N U _ _ 22
+        L a B G true 1
+        L b F C true 2
+        L c B C true 3
+        L d C G true 4
+        L e G F false 5
+        L f F B true 6
+        L g F E true 7
+        L h F J true 8
+        L i E I true 9
+        L j I J false _
+        L k K J true 11
+        L l A J true 12
+        L m I A true 13
+        L n K G true 14
+        L o K D false 15
+        L p K H true 16
+        L q K L true 17
+        L r L M true 18
+        L s L S true 19
+        L t L O false _
+        L u N O true 21
+        L v N P true 22
+        L w P Q true 23
+        L x P R true 24
+        L y P T false 25
+        L z T U true 26&quot;
+</span>);
+graph.dyna_from(dyna);
+
+<span class="kw">let </span>html = graph.svg_render_animation_html(<span class="string">&quot;This is the example n°2&quot;</span>);
+<span class="macro">write!</span>(File::create(<span class="string">&quot;example-2.html&quot;</span>).unwrap(), <span class="string">&quot;{}&quot;</span>, html);</code></pre></div>
+</div></details><h2 id="modules" class="small-section-header"><a href="#modules">Modules</a></h2><div class="item-table"><div class="item-row"><div class="item-left module-item"><a class="mod" href="graph/index.html" title="dynalgo::graph mod">graph</a></div></div></div></section></div></main><div id="rustdoc-vars" data-root-path="../" data-current-crate="dynalgo" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.65.0 (897e37553 2022-11-02)" ></div></body></html>
