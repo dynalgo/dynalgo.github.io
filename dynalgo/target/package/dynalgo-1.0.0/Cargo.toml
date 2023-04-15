@@ -22,7 +22,7 @@ keywords = [
     "animation",
     "algorithm",
 ]
-license = "GPLv3"
+license = "GPL-3.0"
 repository = "https://github.com/dynalgo/dynalgo.github.io"
 
 [dependencies]
