@@ -1114,49 +1114,49 @@ impl Graph {
     /// Changes the value of the color_tag_created parameter (affects only SVG rendering).
     /// This parameter affects the stroke color of a node or a link when just created.
     /// Default rgb  value is (0, 0, 255)
-    pub fn svg_param_color_tag_created(&mut self, (red, green, blue): (u8, u8, u8)) {
+    pub fn svg_param_color_tag_created(&mut self, red: u8, green: u8, blue: u8) {
         self.renderer.p_color_tag_created = Color::new(red, green, blue);
     }
 
     /// Changes the value of the color_tag_selected parameter (affects only SVG rendering).
     /// This parameter affects the stroke color of a node or a link when selected.
     /// Default rgb  value is (191, 255, 0)
-    pub fn svg_param_color_tag_selected(&mut self, (red, green, blue): (u8, u8, u8)) {
+    pub fn svg_param_color_tag_selected(&mut self, red: u8, green: u8, blue: u8) {
         self.renderer.p_color_tag_selected = Color::new(red, green, blue);
     }
 
     /// Changes the value of the color_tag_deleted parameter (affects only SVG rendering).
     /// This parameter affects the color of a node or a link when deleted.
     /// Default rgb  value is (255, 0, 0)
-    pub fn svg_param_color_tag_deleted(&mut self, (red, green, blue): (u8, u8, u8)) {
+    pub fn svg_param_color_tag_deleted(&mut self, red: u8, green: u8, blue: u8) {
         self.renderer.p_color_tag_deleted = Color::new(red, green, blue);
     }
 
     /// Changes the value of the color_node_fill parameter (affects only SVG rendering).
     /// This parameter affects the default fill color of a node.
     /// Default rgb  value is (255, 255, 255)
-    pub fn svg_param_color_node_fill(&mut self, (red, green, blue): (u8, u8, u8)) {
+    pub fn svg_param_color_node_fill(&mut self, red: u8, green: u8, blue: u8) {
         self.renderer.p_color_node_fill = Color::new(red, green, blue);
     }
 
     /// Changes the value of the color_node_stroke parameter (affects only SVG rendering).
     /// This parameter affects the default stroke color of a node.
     /// Default rgb  value is (128, 139, 150)
-    pub fn svg_param_color_node_stroke(&mut self, (red, green, blue): (u8, u8, u8)) {
+    pub fn svg_param_color_node_stroke(&mut self, red: u8, green: u8, blue: u8) {
         self.renderer.p_color_node_stroke = Color::new(red, green, blue);
     }
 
     /// Changes the value of the color_link_stroke parameter (affects only SVG rendering).
     /// This parameter affects the stroke color of a link.
     /// Default rgb  value is (128, 139, 150)
-    pub fn svg_param_color_link_stroke(&mut self, (red, green, blue): (u8, u8, u8)) {
+    pub fn svg_param_color_link_stroke(&mut self, red: u8, green: u8, blue: u8) {
         self.renderer.p_color_link_stroke = Color::new(red, green, blue);
     }
 
     /// Changes the value of the color_text parameter (affects only SVG rendering).
     /// This parameter affects the font color.
     /// Default rgb  value is (0, 0, 0)
-    pub fn svg_param_color_text(&mut self, (red, green, blue): (u8, u8, u8)) {
+    pub fn svg_param_color_text(&mut self, red: u8, green: u8, blue: u8) {
         self.renderer.p_color_text = Color::new(red, green, blue);
     }
 

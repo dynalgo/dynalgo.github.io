@@ -59,8 +59,8 @@ impl Svg {
 
         if self.p_display_node_label {
             let (dx, dy) = match self.p_display_node_value {
-                false => (-5, 5),
-                true => (-5, -2),
+                false => (-6, 6),
+                true => (-6, -2),
             };
             svg.push_str(&format!(
                 "  <text id=\"co{}\" x=\"{}\" y=\"{}\" dx=\"{}\" dy=\"{}\" ",

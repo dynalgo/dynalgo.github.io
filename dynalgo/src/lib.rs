@@ -2,10 +2,10 @@
 //!
 //! `dynalgo` is a tiny RUST library designed to produce animated SVG images that can illustrate graph algorithms in action.
 //!
-//! The crate offers a basic graph structure representation (nodes, links and adjacency list).
+//! The crate offers a basic `graph` structure representation (nodes, links and adjacency list).
 //! The interesting point is that each modification of the structure of the graph results in an animation in SVG with SMIL language.
 //! Additionally, custom animations can be made by playing with the properties of graphical representations of nodes and links.
-//! No graph algorithm is included, except one for the automatic layout of nodes according to imaginary spring forces applied to nodes.
+//! Graph's nodes are automatically layouted according to imaginary spring forces applied to nodes. `Algo` module will provide basic algorithms to apply to graph.
 //!
 //!
 //! # Example n°1 :
@@ -52,15 +52,15 @@
 //! ```
 //!
 //! # Example n°2 :
-//! ## (build a graph from a formatted String, and then just display the layouted graph as an animated SVG in a HTML page)
+//! ## (build a graph from a formatted String, and then DFS algorithm traverses it. Finally the traversed graph is layouted as an animated SVG in a HTML page)
 //!
 //! ```
 //! use dynalgo::graph::Graph;
+//! use dynalgo::algo::travers::Dfs;
 //! use std::fs::File;
 //! use std::io::Write;
 //!
 //! let mut graph = Graph::new();
-//!
 //! let dyna = String::from(
 //!        "N A _ _ 1
 //!         N B _ _ 2
@@ -112,10 +112,27 @@
 //! );
 //! graph.dyna_from(dyna);
 //!
+//! let dfs = Dfs::new();
+//! dfs.run(&mut graph, None);
 //! let html = graph.svg_render_animation_html("This is the example n°2");
-//! write!(File::create("example-2.html").unwrap(), "{}", html);
+//! write!(File::create("example-2.html").unwrap(), "{}", html).unwrap();   
+//! ```
+//!
+//! # Example n°3 :
+//! ## (for fun, build a graph that represents a maze, and then use DFS algorithm to traverse it to reach arrival. Finally the maze is layouted as an animated SVG in a HTML page)
+//!
+//! ```
+//! use dynalgo::algo::fun::Maze;
+//! use std::fs::File;
+//! use std::io::Write;
+//!
+//! let maze = Maze::new();
+//! let graph = maze.run(9);
+//! let html = graph.svg_render_animation_html("This is the example n°3");
+//! write!(File::create("example-3.html").unwrap(), "{}", html).unwrap();  
 //! ```
 
+pub mod algo;
 pub mod graph;
 
 #[cfg(test)]

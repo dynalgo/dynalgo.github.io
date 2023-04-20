@@ -201,7 +201,7 @@ impl Renderer {
         fixed_center_y = fixed_center_y / self.nodes.len() as i32;
 
         let radius =
-            ((2 * self.svg.p_radius_node * self.nodes.len() as u32 * 5) as f64 / (2. * PI)) as f64;
+            ((2 * self.svg.p_radius_node * self.nodes.len() as u32 * 4) as f64 / (2. * PI)) as f64;
         let angle = 2. * PI / self.nodes.len() as f64;
 
         for (i, name) in nodes_names.iter().enumerate() {
@@ -228,7 +228,7 @@ impl Renderer {
         let max_x = fixed_center_x + (density * radius) as i32;
         let max_y = fixed_center_y + (density * radius) as i32;
 
-        for _i in 1..(100. * density) as u32 {
+        for _i in 1..(200. * density) as u32 {
             for node in &all_nodes {
                 if self.node_center_fixed(*node) {
                     continue;
@@ -238,8 +238,10 @@ impl Renderer {
                 let mut sum_forces_y = 0;
 
                 for other in &all_nodes {
+                    //let mut virtual_point = false;
                     let c_other = if *node == *other {
                         //if adjacencies.get(node).unwrap().is_empty() {
+                        //    virtual_point = true;
                         //    Point::new(fixed_center_x, fixed_center_y)
                         //} else {
                         continue;
@@ -257,6 +259,7 @@ impl Renderer {
                     }
                     let (spring_length, k) = if adjacencies.get(node).unwrap().get(other).is_some()
                         || adjacencies.get(other).unwrap().get(node).is_some()
+                      //  || virtual_point
                     {
                         (
                             (self.svg.p_radius_node * (10. * density) as u32) as i32,

@@ -1,0 +1,598 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <meta http-equiv="cache-control" content="no-cache, must-revalidate">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Dynalgo - traversal BFS example</title>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        #svg_dynalgo {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            height: 100vh;
+    }
+    </style>
+    <script>
+        function pause(svg) {
+            if (svg.animationsPaused()) {
+                svg.unpauseAnimations();
+            } else {
+                svg.pauseAnimations();
+            }
+        }
+    </script>
+  </head>
+  <body>
+<svg id="svg_dynalgo" onclick="pause(this)" viewBox="-40 -40 80 80" preserveAspectRatio="xMidYMid meet">
+<path id="z47" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libz47" opacity="0">
+  <text id="mz47" x="0" y="0" dx="-5" dy="-5"  fill="rgb(0,0,0)">26</text>
+</g>
+<path id="y46" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="liby46" opacity="0">
+  <text id="my46" x="0" y="0" dx="-5" dy="-5"  fill="rgb(0,0,0)">25</text>
+</g>
+<text id="biy46" fill="rgb(0,0,0)" opacity="0">
+<textpath startOffset="20" xlink:href="#y46">⇒</textpath>
+</text>
+<path id="x45" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libx45" opacity="0">
+  <text id="mx45" x="0" y="0" dx="-5" dy="-5"  fill="rgb(0,0,0)">24</text>
+</g>
+<path id="w44" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libw44" opacity="0">
+  <text id="mw44" x="0" y="0" dx="-5" dy="-5"  fill="rgb(0,0,0)">23</text>
+</g>
+<path id="v43" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libv43" opacity="0">
+  <text id="mv43" x="0" y="0" dx="-5" dy="-5"  fill="rgb(0,0,0)">22</text>
+</g>
+<path id="u42" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libu42" opacity="0">
+  <text id="mu42" x="0" y="0" dx="-5" dy="-5"  fill="rgb(0,0,0)">21</text>
+</g>
+<path id="t41" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libt41" opacity="0">
+</g>
+<text id="bit41" fill="rgb(0,0,0)" opacity="0">
+<textpath startOffset="20" xlink:href="#t41">⇒</textpath>
+</text>
+<path id="s40" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libs40" opacity="0">
+  <text id="ms40" x="0" y="0" dx="-5" dy="-5"  fill="rgb(0,0,0)">19</text>
+</g>
+<path id="r39" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libr39" opacity="0">
+  <text id="mr39" x="0" y="0" dx="-5" dy="-5"  fill="rgb(0,0,0)">18</text>
+</g>
+<path id="q38" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libq38" opacity="0">
+  <text id="mq38" x="0" y="0" dx="-5" dy="-5"  fill="rgb(0,0,0)">17</text>
+</g>
+<path id="p37" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libp37" opacity="0">
+  <text id="mp37" x="0" y="0" dx="-5" dy="-5"  fill="rgb(0,0,0)">16</text>
+</g>
+<path id="o36" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libo36" opacity="0">
+  <text id="mo36" x="0" y="0" dx="-5" dy="-5"  fill="rgb(0,0,0)">15</text>
+</g>
+<text id="bio36" fill="rgb(0,0,0)" opacity="0">
+<textpath startOffset="20" xlink:href="#o36">⇒</textpath>
+</text>
+<path id="n35" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libn35" opacity="0">
+  <text id="mn35" x="0" y="0" dx="-5" dy="-5"  fill="rgb(0,0,0)">14</text>
+</g>
+<path id="m34" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libm34" opacity="0">
+  <text id="mm34" x="0" y="0" dx="-5" dy="-5"  fill="rgb(0,0,0)">13</text>
+</g>
+<path id="l33" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libl33" opacity="0">
+  <text id="ml33" x="0" y="0" dx="-5" dy="-5"  fill="rgb(0,0,0)">12</text>
+</g>
+<path id="k32" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libk32" opacity="0">
+  <text id="mk32" x="0" y="0" dx="-5" dy="-5"  fill="rgb(0,0,0)">11</text>
+</g>
+<path id="j31" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libj31" opacity="0">
+</g>
+<text id="bij31" fill="rgb(0,0,0)" opacity="0">
+<textpath startOffset="20" xlink:href="#j31">⇒</textpath>
+</text>
+<path id="i30" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libi30" opacity="0">
+  <text id="mi30" x="0" y="0" dx="-5" dy="-5"  fill="rgb(0,0,0)">9</text>
+</g>
+<path id="h29" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libh29" opacity="0">
+  <text id="mh29" x="0" y="0" dx="-5" dy="-5"  fill="rgb(0,0,0)">8</text>
+</g>
+<path id="g28" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libg28" opacity="0">
+  <text id="mg28" x="0" y="0" dx="-5" dy="-5"  fill="rgb(0,0,0)">7</text>
+</g>
+<path id="f27" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libf27" opacity="0">
+  <text id="mf27" x="0" y="0" dx="-5" dy="-5"  fill="rgb(0,0,0)">6</text>
+</g>
+<path id="e26" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libe26" opacity="0">
+  <text id="me26" x="0" y="0" dx="-5" dy="-5"  fill="rgb(0,0,0)">5</text>
+</g>
+<text id="bie26" fill="rgb(0,0,0)" opacity="0">
+<textpath startOffset="20" xlink:href="#e26">⇒</textpath>
+</text>
+<path id="d25" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libd25" opacity="0">
+  <text id="md25" x="0" y="0" dx="-5" dy="-5"  fill="rgb(0,0,0)">4</text>
+</g>
+<path id="c24" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libc24" opacity="0">
+  <text id="mc24" x="0" y="0" dx="-5" dy="-5"  fill="rgb(0,0,0)">3</text>
+</g>
+<path id="b23" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libb23" opacity="0">
+  <text id="mb23" x="0" y="0" dx="-5" dy="-5"  fill="rgb(0,0,0)">2</text>
+</g>
+<path id="a22" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="liba22" opacity="0">
+  <text id="ma22" x="0" y="0" dx="-5" dy="-5"  fill="rgb(0,0,0)">1</text>
+</g>
+<g id="A1" opacity="0">
+  <circle id="cA1" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coA1" x="0" y="0" dx="-6" dy="6" fill="rgb(0,0,0)">A</text>
+</g>
+<g id="B2" opacity="0">
+  <circle id="cB2" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coB2" x="0" y="0" dx="-6" dy="6" fill="rgb(0,0,0)">B</text>
+</g>
+<g id="C3" opacity="0">
+  <circle id="cC3" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coC3" x="0" y="0" dx="-6" dy="6" fill="rgb(0,0,0)">C</text>
+</g>
+<g id="D4" opacity="0">
+  <circle id="cD4" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coD4" x="0" y="0" dx="-6" dy="6" fill="rgb(0,0,0)">D</text>
+</g>
+<g id="E5" opacity="0">
+  <circle id="cE5" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coE5" x="0" y="0" dx="-6" dy="6" fill="rgb(0,0,0)">E</text>
+</g>
+<g id="F6" opacity="0">
+  <circle id="cF6" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coF6" x="0" y="0" dx="-6" dy="6" fill="rgb(0,0,0)">F</text>
+</g>
+<g id="G7" opacity="0">
+  <circle id="cG7" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coG7" x="0" y="0" dx="-6" dy="6" fill="rgb(0,0,0)">G</text>
+</g>
+<g id="H8" opacity="0">
+  <circle id="cH8" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coH8" x="0" y="0" dx="-6" dy="6" fill="rgb(0,0,0)">H</text>
+</g>
+<g id="I9" opacity="0">
+  <circle id="cI9" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coI9" x="0" y="0" dx="-6" dy="6" fill="rgb(0,0,0)">I</text>
+</g>
+<g id="J10" opacity="0">
+  <circle id="cJ10" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coJ10" x="0" y="0" dx="-6" dy="6" fill="rgb(0,0,0)">J</text>
+</g>
+<g id="K11" opacity="0">
+  <circle id="cK11" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coK11" x="0" y="0" dx="-6" dy="6" fill="rgb(0,0,0)">K</text>
+</g>
+<g id="L12" opacity="0">
+  <circle id="cL12" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coL12" x="0" y="0" dx="-6" dy="6" fill="rgb(0,0,0)">L</text>
+</g>
+<g id="M13" opacity="0">
+  <circle id="cM13" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coM13" x="0" y="0" dx="-6" dy="6" fill="rgb(0,0,0)">M</text>
+</g>
+<g id="N14" opacity="0">
+  <circle id="cN14" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coN14" x="0" y="0" dx="-6" dy="6" fill="rgb(0,0,0)">N</text>
+</g>
+<g id="O15" opacity="0">
+  <circle id="cO15" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coO15" x="0" y="0" dx="-6" dy="6" fill="rgb(0,0,0)">O</text>
+</g>
+<g id="P16" opacity="0">
+  <circle id="cP16" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coP16" x="0" y="0" dx="-6" dy="6" fill="rgb(0,0,0)">P</text>
+</g>
+<g id="Q17" opacity="0">
+  <circle id="cQ17" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coQ17" x="0" y="0" dx="-6" dy="6" fill="rgb(0,0,0)">Q</text>
+</g>
+<g id="R18" opacity="0">
+  <circle id="cR18" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coR18" x="0" y="0" dx="-6" dy="6" fill="rgb(0,0,0)">R</text>
+</g>
+<g id="S19" opacity="0">
+  <circle id="cS19" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coS19" x="0" y="0" dx="-6" dy="6" fill="rgb(0,0,0)">S</text>
+</g>
+<g id="T20" opacity="0">
+  <circle id="cT20" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coT20" x="0" y="0" dx="-6" dy="6" fill="rgb(0,0,0)">T</text>
+</g>
+<g id="U21" opacity="0">
+  <circle id="cU21" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coU21" x="0" y="0" dx="-6" dy="6" fill="rgb(0,0,0)">U</text>
+</g>
+<animate xlink:href="#i30" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#libi30" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#bii30" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#h29" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#libh29" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#bih29" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#l33" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#libl33" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#bil33" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#j31" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#libj31" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#bij31" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#n35" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#libn35" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#bin35" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#s40" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#libs40" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#bis40" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#t41" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#libt41" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#bit41" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#f27" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#libf27" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#bif27" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#c24" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#libc24" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#bic24" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#w44" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#libw44" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#biw44" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#b23" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#libb23" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#bib23" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#q38" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#libq38" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#biq38" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#y46" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#liby46" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#biy46" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#o36" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#libo36" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#bio36" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#g28" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#libg28" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#big28" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#v43" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#libv43" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#biv43" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#x45" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#libx45" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#bix45" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#k32" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#libk32" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#bik32" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#z47" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#libz47" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#biz47" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#p37" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#libp37" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#bip37" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#a22" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#liba22" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#bia22" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#e26" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#libe26" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#bie26" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#m34" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#libm34" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#bim34" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#r39" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#libr39" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#bir39" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#u42" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#libu42" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#biu42" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#d25" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#libd25" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#bid25" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#J10" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#F6" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#K11" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#N14" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#T20" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#I9" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#B2" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#D4" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#G7" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#Q17" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#R18" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#A1" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#L12" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#P16" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#O15" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#C3" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#H8" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#M13" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#S19" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#U21" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate xlink:href="#E5" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate attributeName="viewBox" from="-40 -40 80 80" to="-694 -672 950 938" begin="1000ms" dur="1000ms" fill="freeze" />
+<animate xlink:href="#i30" begin="1000ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M11 -611 L165 -481 Z" />
+<animateMotion xlink:href="#libi30" begin="1000ms" dur="1000ms" fill="freeze" path="m 0 0 l 88 -546" />
+<animate xlink:href="#i30" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animate xlink:href="#h29" begin="1000ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-167 -552 L15 -392 Z" />
+<animateMotion xlink:href="#libh29" begin="1000ms" dur="1000ms" fill="freeze" path="m 0 0 l -76 -472" />
+<animate xlink:href="#h29" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animate xlink:href="#l33" begin="1000ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M216 -301 L15 -392 Z" />
+<animateMotion xlink:href="#libl33" begin="1000ms" dur="1000ms" fill="freeze" path="m 0 0 l 115 -346" />
+<animate xlink:href="#l33" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animate xlink:href="#j31" begin="1000ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M165 -481 L15 -392 Z" />
+<animateMotion xlink:href="#libj31" begin="1000ms" dur="1000ms" fill="freeze" path="m 0 0 l 90 -436" />
+<animate xlink:href="#j31" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animate xlink:href="#n35" begin="1000ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-48 -187 L-252 -397 Z" />
+<animateMotion xlink:href="#libn35" begin="1000ms" dur="1000ms" fill="freeze" path="m 0 0 l -150 -292" />
+<animate xlink:href="#n35" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animate xlink:href="#s40" begin="1000ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-37 51 L156 74 Z" />
+<animateMotion xlink:href="#libs40" begin="1000ms" dur="1000ms" fill="freeze" path="m 0 0 l 59 62" />
+<animate xlink:href="#s40" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animate xlink:href="#t41" begin="1000ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-37 51 L-228 167 Z" />
+<animateMotion xlink:href="#libt41" begin="1000ms" dur="1000ms" fill="freeze" path="m 0 0 l -132 109" />
+<animate xlink:href="#t41" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animate xlink:href="#f27" begin="1000ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-167 -552 L-410 -517 Z" />
+<animateMotion xlink:href="#libf27" begin="1000ms" dur="1000ms" fill="freeze" path="m 0 0 l -288 -534" />
+<animate xlink:href="#f27" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animate xlink:href="#c24" begin="1000ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-410 -517 L-317 -632 Z" />
+<animateMotion xlink:href="#libc24" begin="1000ms" dur="1000ms" fill="freeze" path="m 0 0 l -363 -574" />
+<animate xlink:href="#c24" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animate xlink:href="#w44" begin="1000ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-526 -165 L-560 -386 Z" />
+<animateMotion xlink:href="#libw44" begin="1000ms" dur="1000ms" fill="freeze" path="m 0 0 l -543 -275" />
+<animate xlink:href="#w44" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animate xlink:href="#b23" begin="1000ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-167 -552 L-317 -632 Z" />
+<animateMotion xlink:href="#libb23" begin="1000ms" dur="1000ms" fill="freeze" path="m 0 0 l -242 -592" />
+<animate xlink:href="#b23" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animate xlink:href="#q38" begin="1000ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-48 -187 L-37 51 Z" />
+<animateMotion xlink:href="#libq38" begin="1000ms" dur="1000ms" fill="freeze" path="m 0 0 l -42 -68" />
+<animate xlink:href="#q38" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animate xlink:href="#y46" begin="1000ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-526 -165 L-583 12 Z" />
+<animateMotion xlink:href="#liby46" begin="1000ms" dur="1000ms" fill="freeze" path="m 0 0 l -554 -76" />
+<animate xlink:href="#y46" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animate xlink:href="#o36" begin="1000ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-48 -187 L172 -113 Z" />
+<animateMotion xlink:href="#libo36" begin="1000ms" dur="1000ms" fill="freeze" path="m 0 0 l 62 -150" />
+<animate xlink:href="#o36" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animate xlink:href="#g28" begin="1000ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-167 -552 L11 -611 Z" />
+<animateMotion xlink:href="#libg28" begin="1000ms" dur="1000ms" fill="freeze" path="m 0 0 l -78 -581" />
+<animate xlink:href="#g28" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animate xlink:href="#v43" begin="1000ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-394 24 L-526 -165 Z" />
+<animateMotion xlink:href="#libv43" begin="1000ms" dur="1000ms" fill="freeze" path="m 0 0 l -460 -70" />
+<animate xlink:href="#v43" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animate xlink:href="#x45" begin="1000ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-526 -165 L-654 -282 Z" />
+<animateMotion xlink:href="#libx45" begin="1000ms" dur="1000ms" fill="freeze" path="m 0 0 l -590 -223" />
+<animate xlink:href="#x45" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animate xlink:href="#k32" begin="1000ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-48 -187 L15 -392 Z" />
+<animateMotion xlink:href="#libk32" begin="1000ms" dur="1000ms" fill="freeze" path="m 0 0 l -16 -289" />
+<animate xlink:href="#k32" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animate xlink:href="#z47" begin="1000ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-583 12 L-463 173 Z" />
+<animateMotion xlink:href="#libz47" begin="1000ms" dur="1000ms" fill="freeze" path="m 0 0 l -523 92" />
+<animate xlink:href="#z47" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animate xlink:href="#p37" begin="1000ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-48 -187 L-232 -119 Z" />
+<animateMotion xlink:href="#libp37" begin="1000ms" dur="1000ms" fill="freeze" path="m 0 0 l -140 -153" />
+<animate xlink:href="#p37" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animate xlink:href="#a22" begin="1000ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-410 -517 L-252 -397 Z" />
+<animateMotion xlink:href="#liba22" begin="1000ms" dur="1000ms" fill="freeze" path="m 0 0 l -331 -457" />
+<animate xlink:href="#a22" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animate xlink:href="#e26" begin="1000ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-252 -397 L-167 -552 Z" />
+<animateMotion xlink:href="#libe26" begin="1000ms" dur="1000ms" fill="freeze" path="m 0 0 l -209 -474" />
+<animate xlink:href="#e26" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animate xlink:href="#m34" begin="1000ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M165 -481 L216 -301 Z" />
+<animateMotion xlink:href="#libm34" begin="1000ms" dur="1000ms" fill="freeze" path="m 0 0 l 190 -391" />
+<animate xlink:href="#m34" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animate xlink:href="#r39" begin="1000ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-37 51 L-45 226 Z" />
+<animateMotion xlink:href="#libr39" begin="1000ms" dur="1000ms" fill="freeze" path="m 0 0 l -41 138" />
+<animate xlink:href="#r39" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animate xlink:href="#u42" begin="1000ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-394 24 L-228 167 Z" />
+<animateMotion xlink:href="#libu42" begin="1000ms" dur="1000ms" fill="freeze" path="m 0 0 l -311 95" />
+<animate xlink:href="#u42" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animate xlink:href="#d25" begin="1000ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-317 -632 L-252 -397 Z" />
+<animateMotion xlink:href="#libd25" begin="1000ms" dur="1000ms" fill="freeze" path="m 0 0 l -284 -514" />
+<animate xlink:href="#d25" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animateMotion xlink:href="#J10" begin="1000ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l 15 -392" />
+<animate xlink:href="#cJ10" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animateMotion xlink:href="#F6" begin="1000ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l -167 -552" />
+<animate xlink:href="#cF6" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animateMotion xlink:href="#K11" begin="1000ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l -48 -187" />
+<animate xlink:href="#cK11" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animateMotion xlink:href="#N14" begin="1000ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l -394 24" />
+<animate xlink:href="#cN14" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animateMotion xlink:href="#T20" begin="1000ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l -583 12" />
+<animate xlink:href="#cT20" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animateMotion xlink:href="#I9" begin="1000ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l 165 -481" />
+<animate xlink:href="#cI9" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animateMotion xlink:href="#B2" begin="1000ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l -410 -517" />
+<animate xlink:href="#cB2" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animateMotion xlink:href="#D4" begin="1000ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l 172 -113" />
+<animate xlink:href="#cD4" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animateMotion xlink:href="#G7" begin="1000ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l -252 -397" />
+<animate xlink:href="#cG7" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animateMotion xlink:href="#Q17" begin="1000ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l -560 -386" />
+<animate xlink:href="#cQ17" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animateMotion xlink:href="#R18" begin="1000ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l -654 -282" />
+<animate xlink:href="#cR18" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animateMotion xlink:href="#A1" begin="1000ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l 216 -301" />
+<animate xlink:href="#cA1" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animateMotion xlink:href="#L12" begin="1000ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l -37 51" />
+<animate xlink:href="#cL12" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animateMotion xlink:href="#P16" begin="1000ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l -526 -165" />
+<animate xlink:href="#cP16" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animateMotion xlink:href="#O15" begin="1000ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l -228 167" />
+<animate xlink:href="#cO15" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animateMotion xlink:href="#C3" begin="1000ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l -317 -632" />
+<animate xlink:href="#cC3" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animateMotion xlink:href="#H8" begin="1000ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l -232 -119" />
+<animate xlink:href="#cH8" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animateMotion xlink:href="#M13" begin="1000ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l -45 226" />
+<animate xlink:href="#cM13" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animateMotion xlink:href="#S19" begin="1000ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l 156 74" />
+<animate xlink:href="#cS19" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animateMotion xlink:href="#U21" begin="1000ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l -463 173" />
+<animate xlink:href="#cU21" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animateMotion xlink:href="#E5" begin="1000ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l 11 -611" />
+<animate xlink:href="#cE5" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1000ms" begin="1000ms" fill="freeze"/>
+<animate xlink:href="#cS19" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="2000ms" fill="freeze"/>
+<animate xlink:href="#cS19" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="2500ms" fill="freeze"/>
+<animate xlink:href="#cS19" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="2500ms" fill="freeze"/>
+<animate xlink:href="#s40" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="3000ms" fill="freeze"/>
+<animate xlink:href="#s40" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="3000ms" fill="freeze"/>
+<animate xlink:href="#cL12" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="3500ms" fill="freeze"/>
+<animate xlink:href="#cL12" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="3500ms" fill="freeze"/>
+<animate xlink:href="#cL12" attributeName="fill" from="rgb(255,255,255)" to="rgb(191,255,0)" dur="500ms" begin="4000ms" fill="freeze"/>
+<animate xlink:href="#q38" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="4500ms" fill="freeze"/>
+<animate xlink:href="#q38" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="4500ms" fill="freeze"/>
+<animate xlink:href="#cK11" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="5000ms" fill="freeze"/>
+<animate xlink:href="#cK11" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="5000ms" fill="freeze"/>
+<animate xlink:href="#cK11" attributeName="fill" from="rgb(255,255,255)" to="rgb(191,255,0)" dur="500ms" begin="5500ms" fill="freeze"/>
+<animate xlink:href="#t41" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="6000ms" fill="freeze"/>
+<animate xlink:href="#t41" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="6000ms" fill="freeze"/>
+<animate xlink:href="#cO15" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="6500ms" fill="freeze"/>
+<animate xlink:href="#cO15" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="6500ms" fill="freeze"/>
+<animate xlink:href="#cO15" attributeName="fill" from="rgb(255,255,255)" to="rgb(191,255,0)" dur="500ms" begin="7000ms" fill="freeze"/>
+<animate xlink:href="#r39" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="8000ms" fill="freeze"/>
+<animate xlink:href="#r39" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="8000ms" fill="freeze"/>
+<animate xlink:href="#cM13" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="8500ms" fill="freeze"/>
+<animate xlink:href="#cM13" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="8500ms" fill="freeze"/>
+<animate xlink:href="#cM13" attributeName="fill" from="rgb(255,255,255)" to="rgb(191,255,0)" dur="500ms" begin="9000ms" fill="freeze"/>
+<animate xlink:href="#p37" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="10000ms" fill="freeze"/>
+<animate xlink:href="#p37" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="10000ms" fill="freeze"/>
+<animate xlink:href="#cH8" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="10500ms" fill="freeze"/>
+<animate xlink:href="#cH8" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="10500ms" fill="freeze"/>
+<animate xlink:href="#cH8" attributeName="fill" from="rgb(255,255,255)" to="rgb(191,255,0)" dur="500ms" begin="11000ms" fill="freeze"/>
+<animate xlink:href="#k32" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="11500ms" fill="freeze"/>
+<animate xlink:href="#k32" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="11500ms" fill="freeze"/>
+<animate xlink:href="#cJ10" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="12000ms" fill="freeze"/>
+<animate xlink:href="#cJ10" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="12000ms" fill="freeze"/>
+<animate xlink:href="#cJ10" attributeName="fill" from="rgb(255,255,255)" to="rgb(191,255,0)" dur="500ms" begin="12500ms" fill="freeze"/>
+<animate xlink:href="#o36" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="13000ms" fill="freeze"/>
+<animate xlink:href="#o36" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="13000ms" fill="freeze"/>
+<animate xlink:href="#cD4" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="13500ms" fill="freeze"/>
+<animate xlink:href="#cD4" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="13500ms" fill="freeze"/>
+<animate xlink:href="#cD4" attributeName="fill" from="rgb(255,255,255)" to="rgb(191,255,0)" dur="500ms" begin="14000ms" fill="freeze"/>
+<animate xlink:href="#n35" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="14500ms" fill="freeze"/>
+<animate xlink:href="#n35" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="14500ms" fill="freeze"/>
+<animate xlink:href="#cG7" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="15000ms" fill="freeze"/>
+<animate xlink:href="#cG7" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="15000ms" fill="freeze"/>
+<animate xlink:href="#cG7" attributeName="fill" from="rgb(255,255,255)" to="rgb(191,255,0)" dur="500ms" begin="15500ms" fill="freeze"/>
+<animate xlink:href="#u42" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="16000ms" fill="freeze"/>
+<animate xlink:href="#u42" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="16000ms" fill="freeze"/>
+<animate xlink:href="#cN14" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="16500ms" fill="freeze"/>
+<animate xlink:href="#cN14" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="16500ms" fill="freeze"/>
+<animate xlink:href="#cN14" attributeName="fill" from="rgb(255,255,255)" to="rgb(191,255,0)" dur="500ms" begin="17000ms" fill="freeze"/>
+<animate xlink:href="#l33" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="18500ms" fill="freeze"/>
+<animate xlink:href="#l33" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="18500ms" fill="freeze"/>
+<animate xlink:href="#cA1" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="19000ms" fill="freeze"/>
+<animate xlink:href="#cA1" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="19000ms" fill="freeze"/>
+<animate xlink:href="#cA1" attributeName="fill" from="rgb(255,255,255)" to="rgb(191,255,0)" dur="500ms" begin="19500ms" fill="freeze"/>
+<animate xlink:href="#h29" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="20500ms" fill="freeze"/>
+<animate xlink:href="#h29" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="20500ms" fill="freeze"/>
+<animate xlink:href="#cF6" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="21000ms" fill="freeze"/>
+<animate xlink:href="#cF6" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="21000ms" fill="freeze"/>
+<animate xlink:href="#cF6" attributeName="fill" from="rgb(255,255,255)" to="rgb(191,255,0)" dur="500ms" begin="21500ms" fill="freeze"/>
+<animate xlink:href="#e26" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="22000ms" fill="freeze"/>
+<animate xlink:href="#e26" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,0,0)" dur="500ms" begin="22000ms" fill="freeze"/>
+<animate xlink:href="#a22" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="22500ms" fill="freeze"/>
+<animate xlink:href="#a22" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="22500ms" fill="freeze"/>
+<animate xlink:href="#cB2" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="23000ms" fill="freeze"/>
+<animate xlink:href="#cB2" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="23000ms" fill="freeze"/>
+<animate xlink:href="#cB2" attributeName="fill" from="rgb(255,255,255)" to="rgb(191,255,0)" dur="500ms" begin="23500ms" fill="freeze"/>
+<animate xlink:href="#d25" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="24000ms" fill="freeze"/>
+<animate xlink:href="#d25" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="24000ms" fill="freeze"/>
+<animate xlink:href="#cC3" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="24500ms" fill="freeze"/>
+<animate xlink:href="#cC3" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="24500ms" fill="freeze"/>
+<animate xlink:href="#cC3" attributeName="fill" from="rgb(255,255,255)" to="rgb(191,255,0)" dur="500ms" begin="25000ms" fill="freeze"/>
+<animate xlink:href="#v43" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="26000ms" fill="freeze"/>
+<animate xlink:href="#v43" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="26000ms" fill="freeze"/>
+<animate xlink:href="#cP16" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="26500ms" fill="freeze"/>
+<animate xlink:href="#cP16" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="26500ms" fill="freeze"/>
+<animate xlink:href="#cP16" attributeName="fill" from="rgb(255,255,255)" to="rgb(191,255,0)" dur="500ms" begin="27000ms" fill="freeze"/>
+<animate xlink:href="#m34" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="28500ms" fill="freeze"/>
+<animate xlink:href="#m34" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="28500ms" fill="freeze"/>
+<animate xlink:href="#cI9" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="29000ms" fill="freeze"/>
+<animate xlink:href="#cI9" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="29000ms" fill="freeze"/>
+<animate xlink:href="#cI9" attributeName="fill" from="rgb(255,255,255)" to="rgb(191,255,0)" dur="500ms" begin="29500ms" fill="freeze"/>
+<animate xlink:href="#g28" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="30000ms" fill="freeze"/>
+<animate xlink:href="#g28" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="30000ms" fill="freeze"/>
+<animate xlink:href="#cE5" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="30500ms" fill="freeze"/>
+<animate xlink:href="#cE5" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="30500ms" fill="freeze"/>
+<animate xlink:href="#cE5" attributeName="fill" from="rgb(255,255,255)" to="rgb(191,255,0)" dur="500ms" begin="31000ms" fill="freeze"/>
+<animate xlink:href="#f27" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="31500ms" fill="freeze"/>
+<animate xlink:href="#f27" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,0,0)" dur="500ms" begin="31500ms" fill="freeze"/>
+<animate xlink:href="#b23" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="32000ms" fill="freeze"/>
+<animate xlink:href="#b23" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,0,0)" dur="500ms" begin="32000ms" fill="freeze"/>
+<animate xlink:href="#c24" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="33000ms" fill="freeze"/>
+<animate xlink:href="#c24" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,0,0)" dur="500ms" begin="33000ms" fill="freeze"/>
+<animate xlink:href="#x45" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="36000ms" fill="freeze"/>
+<animate xlink:href="#x45" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="36000ms" fill="freeze"/>
+<animate xlink:href="#cR18" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="36500ms" fill="freeze"/>
+<animate xlink:href="#cR18" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="36500ms" fill="freeze"/>
+<animate xlink:href="#cR18" attributeName="fill" from="rgb(255,255,255)" to="rgb(191,255,0)" dur="500ms" begin="37000ms" fill="freeze"/>
+<animate xlink:href="#y46" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="37500ms" fill="freeze"/>
+<animate xlink:href="#y46" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="37500ms" fill="freeze"/>
+<animate xlink:href="#cT20" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="38000ms" fill="freeze"/>
+<animate xlink:href="#cT20" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="38000ms" fill="freeze"/>
+<animate xlink:href="#cT20" attributeName="fill" from="rgb(255,255,255)" to="rgb(191,255,0)" dur="500ms" begin="38500ms" fill="freeze"/>
+<animate xlink:href="#w44" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="39500ms" fill="freeze"/>
+<animate xlink:href="#w44" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="39500ms" fill="freeze"/>
+<animate xlink:href="#cQ17" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="40000ms" fill="freeze"/>
+<animate xlink:href="#cQ17" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="40000ms" fill="freeze"/>
+<animate xlink:href="#cQ17" attributeName="fill" from="rgb(255,255,255)" to="rgb(191,255,0)" dur="500ms" begin="40500ms" fill="freeze"/>
+<animate xlink:href="#j31" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="41000ms" fill="freeze"/>
+<animate xlink:href="#j31" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,0,0)" dur="500ms" begin="41000ms" fill="freeze"/>
+<animate xlink:href="#i30" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="42000ms" fill="freeze"/>
+<animate xlink:href="#i30" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,0,0)" dur="500ms" begin="42000ms" fill="freeze"/>
+<animate xlink:href="#z47" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="44000ms" fill="freeze"/>
+<animate xlink:href="#z47" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="44000ms" fill="freeze"/>
+<animate xlink:href="#cU21" attributeName="stroke-width" from="2" to="4" dur="500ms" begin="44500ms" fill="freeze"/>
+<animate xlink:href="#cU21" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="500ms" begin="44500ms" fill="freeze"/>
+<animate xlink:href="#cU21" attributeName="fill" from="rgb(255,255,255)" to="rgb(191,255,0)" dur="500ms" begin="45000ms" fill="freeze"/>
+</svg>
+  </body>
+</html>
