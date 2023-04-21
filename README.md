@@ -1,6 +1,6 @@
 # dynalgo.github.io
 
- `dynalgo` is a tiny RUST library designed to produce animated SVG images that can illustrate graph algorithms.
+ `dynalgo` is a tiny RUST library designed to produce animated SVG images that can illustrate graph algorithms. [See on crates.io](https://crates.io/crates/dynalgo)
 
  The crate offers a basic graph structure representation (nodes, links and adjacency list).
  The interesting point is that each modification of the structure of the graph results in an animation in SVG with SMIL language.
