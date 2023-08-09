@@ -1,12 +1,12 @@
-N Y 155 56 25
-N B -268 -138 _
-N C -268 123 _
+N B -148 -271 _
+N C 115 -271 _
+N Z -148 234 26
+N X -148 -2 24
 N A -500 -500 _
-N X 0 -138 24
-N Z 236 -138 26
+N Y 46 153 25
+L c C B true 30
+L l B X true 30
+L a A B true 10
 L y Y Z true 25
 L x X Y true 24
-L a A B true 10
-L l B X true 30
 L z Z X true 26
-L c C B true 30

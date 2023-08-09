@@ -1,6 +1,7 @@
+use crate::algo::utils::Names;
+use crate::algo::utils::Random;
 use crate::graph::Graph;
 use std::collections::HashMap;
-use std::time::{SystemTime, UNIX_EPOCH};
 
 pub struct Maze {}
 
@@ -25,16 +26,9 @@ impl Maze {
     /// ```
 
     pub fn run(&self, dimension: u8) -> Graph {
-        let chars = vec![
-            '🙋', '😁', '😂', '😃', '😄', '😅', '😆', '😇', '😈', '😉', '😊', '😋', '😌', '😍',
-            '😎', '😏', '⛑', '😑', '😒', '😓', '😔', '😕', '😖', '😗', '😘', '😙', '😚', '😛',
-            '😜', '😝', '😞', '😟', '😠', '😡', '😢', '😣', '😤', '😥', '😦', '😧', '😨', '😩',
-            '😪', '😫', '😬', '😭', '😮', '😯', '😰', '😱', '😲', '😳', '😴', '😵', '😶', '😷',
-            '😸', '😹', '😺', '😻', '😼', '😽', '😾', '😿', '🙀', '🙁', '🙂', '🙃', '🙄', '😐',
-            '🙆', '🙇', '🙈', '🙉', '🙊', '😀', '🙌', '🙍', '🙎', '🙏', '🙅',
-        ];
+        let chars = Names::emoticon(79).unwrap();
 
-        let dimension_max = (chars.len() as f64).sqrt().round() as usize;
+        let dimension_max = (chars.len() as f64).sqrt().floor() as usize;
         let dimension = if dimension as usize > dimension_max {
             dimension_max
         } else if (dimension as usize) < 4 {
@@ -45,10 +39,10 @@ impl Maze {
         let radius: usize = 15;
 
         let mut graph = Graph::new();
-        //graph.svg_param_display_node_label(false);
         graph.svg_param_display_link_value(false);
         graph.svg_param_radius_node(radius as u32);
         graph.svg_automatic_animation(false);
+        graph.svg_automatic_layout(false);
         graph.svg_param_color_tag_created(128, 139, 150);
 
         let mut walls = Vec::new();
@@ -78,7 +72,7 @@ impl Maze {
 
         let mut link_idx = 0;
         while walls.len() > 0 {
-            let idx_random = self.poor_random(walls.len() as u32);
+            let idx_random = Random::poor_random(walls.len() as u32);
             let (node1, node2) = walls[idx_random as usize];
 
             let set1 = nodes.get(&node1).unwrap().clone();
@@ -96,7 +90,7 @@ impl Maze {
             }
             walls.remove(idx_random as usize);
         }
-
+        graph.svg_layout();
         graph.svg_animate(1);
         graph.svg_param_duration_select(300);
         graph.svg_param_duration_color(500);
@@ -114,6 +108,7 @@ impl Maze {
 
         graph
     }
+
     fn dfs_search(
         &self,
         graph: &mut Graph,
@@ -146,13 +141,5 @@ impl Maze {
             graph.svg_node_color(node_from, 255, 0, 0).unwrap();
         }
         found
-    }
-
-    fn poor_random(&self, max: u32) -> u32 {
-        let nanos = SystemTime::now()
-            .duration_since(UNIX_EPOCH)
-            .unwrap()
-            .subsec_nanos();
-        nanos % max
     }
 }

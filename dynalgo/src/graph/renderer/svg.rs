@@ -181,7 +181,7 @@ impl Svg {
                 0
             ));
             svg.push_str(&format!(
-                "<textpath startOffset=\"{}\" xlink:href=\"#{}\">⇒</textpath>\n",
+                "<textpath startOffset=\"{}\" href=\"#{}\">⇒</textpath>\n",
                 self.p_radius_node,
                 link.id()
             ));
@@ -201,7 +201,7 @@ impl Svg {
         let mut svg = String::new();
 
         svg.push_str(&format!(
-            "\n<svg id=\"svg_dynalgo\" onclick=\"pause(this)\" viewBox=\"{} {} {} {}\" preserveAspectRatio=\"xMidYMid meet\">\n",
+            "\n<svg class=\"svg_dynalgo\" onclick=\"pause(this)\" viewBox=\"{} {} {} {}\" preserveAspectRatio=\"xMidYMid meet\">\n",
             x_min_init - 2 * self.p_radius_node as i32,
             y_min_init - 2 * self.p_radius_node as i32,
             x_max_init - x_min_init + 4 * self.p_radius_node as i32,
@@ -274,7 +274,7 @@ impl Svg {
             let dy_next = current.center().y() - previous.center().y();
 
             svg.push_str(&format!(
-                "<animateMotion xlink:href=\"#{}\" begin=\"{}ms\" dur=\"{}ms\"
+                "<animateMotion href=\"#{}\" begin=\"{}ms\" dur=\"{}ms\"
                     fill=\"freeze\" path=\"m {} {} l {} {}\" />\n",
                 current.id(),
                 start_time,
@@ -292,7 +292,7 @@ impl Svg {
                 false => (1, 0),
             };
             svg.push_str(&format!(
-                "<animate xlink:href=\"#{}\" attributeName=\"opacity\" ",
+                "<animate href=\"#{}\" attributeName=\"opacity\" ",
                 current.id()
             ));
             svg.push_str(&format!(
@@ -309,7 +309,7 @@ impl Svg {
             let color_curr = previous.stroke_color_tagged();
             let color_next = current.stroke_color_tagged();
             svg.push_str(&format!(
-                "<animate xlink:href=\"#c{}\" attributeName=\"stroke\" ",
+                "<animate href=\"#c{}\" attributeName=\"stroke\" ",
                 current.id()
             ));
             svg.push_str(&format!(
@@ -331,7 +331,7 @@ impl Svg {
             let color_curr = previous.stroke_color_tagged();
             let color_next = current.stroke_color_tagged();
             svg.push_str(&format!(
-                "<animate xlink:href=\"#c{}\" attributeName=\"stroke\" ",
+                "<animate href=\"#c{}\" attributeName=\"stroke\" ",
                 current.id()
             ));
             svg.push_str(&format!(
@@ -355,7 +355,7 @@ impl Svg {
                 false => (2 * current.stroke_width, current.stroke_width),
             };
             svg.push_str(&format!(
-                "<animate xlink:href=\"#c{}\" attributeName=\"stroke-width\" ",
+                "<animate href=\"#c{}\" attributeName=\"stroke-width\" ",
                 current.id()
             ));
             svg.push_str(&format!("from=\"{}\" to=\"{}\" ", width_curr, width_next));
@@ -367,7 +367,7 @@ impl Svg {
             let color_curr = previous.stroke_color_tagged();
             let color_next = current.stroke_color_tagged();
             svg.push_str(&format!(
-                "<animate xlink:href=\"#c{}\" attributeName=\"stroke\" ",
+                "<animate href=\"#c{}\" attributeName=\"stroke\" ",
                 current.id()
             ));
             svg.push_str(&format!(
@@ -389,7 +389,7 @@ impl Svg {
             let color_curr = previous.fill_color;
             let color_next = current.fill_color;
             svg.push_str(&format!(
-                "<animate xlink:href=\"#c{}\" attributeName=\"fill\" ",
+                "<animate href=\"#c{}\" attributeName=\"fill\" ",
                 current.id(),
             ));
             svg.push_str(&format!(
@@ -425,7 +425,7 @@ impl Svg {
             || previous.to_center().x() != current.to_center().x()
             || previous.to_center().y() != current.to_center().y()
         {
-            svg.push_str(&format!("<animate xlink:href=\"#{}\" ", current.id()));
+            svg.push_str(&format!("<animate href=\"#{}\" ", current.id()));
             svg.push_str(&format!(
                 "begin=\"{}ms\" fill=\"freeze\" attributeName=\"d\" dur=\"{}ms\" ",
                 start_time, duration
@@ -455,7 +455,7 @@ impl Svg {
             let dy_next = midle_next_y - midle_curr_y;
 
             svg.push_str(&format!(
-                "<animateMotion xlink:href=\"#lib{}\" begin=\"{}ms\" dur=\"{}ms\" ",
+                "<animateMotion href=\"#lib{}\" begin=\"{}ms\" dur=\"{}ms\" ",
                 current.id(),
                 start_time,
                 duration
@@ -473,7 +473,7 @@ impl Svg {
             };
 
             svg.push_str(&format!(
-                "<animate xlink:href=\"#{}\" attributeName=\"opacity\" from=\"{}\" to=\"{}\" ",
+                "<animate href=\"#{}\" attributeName=\"opacity\" from=\"{}\" to=\"{}\" ",
                 current.id(),
                 opacity_curr,
                 opacity_next
@@ -484,7 +484,7 @@ impl Svg {
             ));
 
             svg.push_str(&format!(
-                "<animate xlink:href=\"#lib{}\" attributeName=\"opacity\" from=\"{}\" to=\"{}\" ",
+                "<animate href=\"#lib{}\" attributeName=\"opacity\" from=\"{}\" to=\"{}\" ",
                 current.id(),
                 opacity_curr,
                 opacity_next
@@ -495,7 +495,7 @@ impl Svg {
             ));
 
             svg.push_str(&format!(
-                "<animate xlink:href=\"#bi{}\" attributeName=\"opacity\" from=\"{}\" to=\"{}\" ",
+                "<animate href=\"#bi{}\" attributeName=\"opacity\" from=\"{}\" to=\"{}\" ",
                 current.id(),
                 opacity_curr,
                 opacity_next
@@ -510,7 +510,7 @@ impl Svg {
             let color_curr = previous.stroke_color_tagged();
             let color_next = current.stroke_color_tagged();
             svg.push_str(&format!(
-                "<animate xlink:href=\"#{}\" attributeName=\"stroke\" ",
+                "<animate href=\"#{}\" attributeName=\"stroke\" ",
                 current.id()
             ));
             svg.push_str(&format!(
@@ -532,7 +532,7 @@ impl Svg {
             let color_curr = previous.stroke_color_tagged();
             let color_next = current.stroke_color_tagged();
             svg.push_str(&format!(
-                "<animate xlink:href=\"#{}\" attributeName=\"stroke\" ",
+                "<animate href=\"#{}\" attributeName=\"stroke\" ",
                 current.id()
             ));
             svg.push_str(&format!(
@@ -557,7 +557,7 @@ impl Svg {
             };
 
             svg.push_str(&format!(
-                "<animate xlink:href=\"#{}\" attributeName=\"stroke-width\" ",
+                "<animate href=\"#{}\" attributeName=\"stroke-width\" ",
                 current.id()
             ));
             svg.push_str(&format!("from=\"{}\" to=\"{}\" ", width_curr, width_next));
@@ -569,7 +569,7 @@ impl Svg {
             let color_curr = previous.stroke_color_tagged();
             let color_next = current.stroke_color_tagged();
             svg.push_str(&format!(
-                "<animate xlink:href=\"#{}\" attributeName=\"stroke\" ",
+                "<animate href=\"#{}\" attributeName=\"stroke\" ",
                 current.id()
             ));
             svg.push_str(&format!(

@@ -1,0 +1,259 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <meta http-equiv="cache-control" content="no-cache, must-revalidate">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Dynalgo - svg_render_animation_html example</title>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        .grid {
+            display:  grid;
+            grid-template-columns: repeat(2 , 1fr);
+        }
+        .svg_dynalgo {
+            position: relative;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            height: 100vh;
+         }
+    </style>
+    <script>
+        function pause(svg) {
+            if (svg.animationsPaused()) {
+                svg.unpauseAnimations();
+            } else {
+                svg.pauseAnimations();
+            }
+        }
+    </script>
+  </head>
+  <body>
+    <div class="grid"><div style="grid-column: span 1; grid-row: span 1; border: 1px solid #000000;" >
+<svg class="svg_dynalgo" onclick="pause(this)" viewBox="-40 -40 80 80" preserveAspectRatio="xMidYMid meet">
+<path id="γ6" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M-111 89 L111 -89 Z" />
+<g id="libγ6" opacity="0">
+  <text id="mγ6" x="0" y="0" dx="-5" dy="-5"  fill="rgb(0,0,0)">30</text>
+</g>
+<path id="β5" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M-61 -6 L61 121 Z" />
+<g id="libβ5" opacity="0">
+  <text id="mβ5" x="0" y="57" dx="-5" dy="-5"  fill="rgb(0,0,0)">20</text>
+</g>
+<path id="α4" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M-91 -91 L-91 91 Z" />
+<g id="libα4" opacity="0">
+  <text id="mα4" x="-91" y="0" dx="-5" dy="-5"  fill="rgb(0,0,0)">10</text>
+</g>
+<g id="A1" opacity="0">
+  <circle id="cA1" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coA1" x="0" y="0" dx="-6" dy="6" fill="rgb(0,0,0)">A</text>
+</g>
+<animate href="#A1" attributeName="opacity" from="0" to="1" dur="500ms" begin="0ms" fill="freeze"/>
+<animate attributeName="viewBox" from="-40 -40 80 80" to="-40 -30 80 80" begin="500ms" dur="500ms" fill="freeze" />
+<animateMotion href="#A1" begin="500ms" dur="500ms"
+                    fill="freeze" path="m 0 0 l 0 10" />
+<animate href="#cA1" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="500ms" begin="500ms" fill="freeze"/>
+<g id="B2" opacity="0">
+  <circle id="cB2" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coB2" x="0" y="0" dx="-6" dy="6" fill="rgb(0,0,0)">B</text>
+</g>
+<animate attributeName="viewBox" from="-40 -30 80 80" to="-40 -40 80 90" begin="1000ms" dur="500ms" fill="freeze" />
+<animate href="#B2" attributeName="opacity" from="0" to="1" dur="500ms" begin="1000ms" fill="freeze"/>
+<animate attributeName="viewBox" from="-40 -40 80 90" to="-40 -106 80 212" begin="1500ms" dur="500ms" fill="freeze" />
+<animateMotion href="#A1" begin="1500ms" dur="500ms"
+                    fill="freeze" path="m 0 10 l 0 -76" />
+<animateMotion href="#B2" begin="1500ms" dur="500ms"
+                    fill="freeze" path="m 0 0 l 0 66" />
+<animate href="#cB2" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="500ms" begin="1500ms" fill="freeze"/>
+<g id="C3" opacity="0">
+  <circle id="cC3" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coC3" x="0" y="0" dx="-6" dy="6" fill="rgb(0,0,0)">C</text>
+</g>
+<animate href="#C3" attributeName="opacity" from="0" to="1" dur="500ms" begin="2000ms" fill="freeze"/>
+<animate attributeName="viewBox" from="-40 -106 80 212" to="-131 -131 262 262" begin="2500ms" dur="500ms" fill="freeze" />
+<animateMotion href="#A1" begin="2500ms" dur="500ms"
+                    fill="freeze" path="m 0 -66 l -91 -25" />
+<animateMotion href="#B2" begin="2500ms" dur="500ms"
+                    fill="freeze" path="m 0 66 l -91 25" />
+<animateMotion href="#C3" begin="2500ms" dur="500ms"
+                    fill="freeze" path="m 0 0 l 91 91" />
+<animate href="#cC3" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="500ms" begin="2500ms" fill="freeze"/>
+<animate href="#α4" attributeName="opacity" from="0" to="1" dur="500ms" begin="3000ms" fill="freeze"/>
+<animate href="#libα4" attributeName="opacity" from="0" to="1" dur="500ms" begin="3000ms" fill="freeze"/>
+<animate href="#biα4" attributeName="opacity" from="0" to="1" dur="500ms" begin="3000ms" fill="freeze"/>
+<animate attributeName="viewBox" from="-131 -131 262 262" to="-101 -161 202 322" begin="3500ms" dur="500ms" fill="freeze" />
+<animate href="#α4" begin="3500ms" fill="freeze" attributeName="d" dur="500ms" values="M-91 -91 L-91 91 Z;M61 -121 L-61 -6 Z" />
+<animateMotion href="#libα4" begin="3500ms" dur="500ms" fill="freeze" path="m 0 0 l 91 -63" />
+<animate href="#α4" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="500ms" begin="3500ms" fill="freeze"/>
+<animateMotion href="#A1" begin="3500ms" dur="500ms"
+                    fill="freeze" path="m -91 -91 l 152 -30" />
+<animateMotion href="#B2" begin="3500ms" dur="500ms"
+                    fill="freeze" path="m -91 91 l 30 -97" />
+<animateMotion href="#C3" begin="3500ms" dur="500ms"
+                    fill="freeze" path="m 91 91 l -30 30" />
+<animate href="#β5" attributeName="opacity" from="0" to="1" dur="500ms" begin="4000ms" fill="freeze"/>
+<animate href="#libβ5" attributeName="opacity" from="0" to="1" dur="500ms" begin="4000ms" fill="freeze"/>
+<animate href="#biβ5" attributeName="opacity" from="0" to="1" dur="500ms" begin="4000ms" fill="freeze"/>
+<animate attributeName="viewBox" from="-101 -161 202 322" to="-151 -129 302 258" begin="4500ms" dur="500ms" fill="freeze" />
+<animate href="#β5" begin="4500ms" fill="freeze" attributeName="d" dur="500ms" values="M-61 -6 L61 121 Z;M111 89 L-111 89 Z" />
+<animateMotion href="#libβ5" begin="4500ms" dur="500ms" fill="freeze" path="m 0 0 l 0 32" />
+<animate href="#β5" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="500ms" begin="4500ms" fill="freeze"/>
+<animate href="#α4" begin="4500ms" fill="freeze" attributeName="d" dur="500ms" values="M61 -121 L-61 -6 Z;M111 -89 L111 89 Z" />
+<animateMotion href="#libα4" begin="4500ms" dur="500ms" fill="freeze" path="m 91 -63 l 111 63" />
+<animateMotion href="#A1" begin="4500ms" dur="500ms"
+                    fill="freeze" path="m 61 -121 l 50 32" />
+<animateMotion href="#B2" begin="4500ms" dur="500ms"
+                    fill="freeze" path="m -61 -6 l 172 95" />
+<animateMotion href="#C3" begin="4500ms" dur="500ms"
+                    fill="freeze" path="m 61 121 l -172 -32" />
+<animate href="#γ6" attributeName="opacity" from="0" to="1" dur="500ms" begin="5000ms" fill="freeze"/>
+<animate href="#libγ6" attributeName="opacity" from="0" to="1" dur="500ms" begin="5000ms" fill="freeze"/>
+<animate href="#biγ6" attributeName="opacity" from="0" to="1" dur="500ms" begin="5000ms" fill="freeze"/>
+<animate attributeName="viewBox" from="-151 -129 302 258" to="-145 -150 313 310" begin="5500ms" dur="500ms" fill="freeze" />
+<animate href="#β5" begin="5500ms" fill="freeze" attributeName="d" dur="500ms" values="M111 89 L-111 89 Z;M128 120 L63 -110 Z" />
+<animateMotion href="#libβ5" begin="5500ms" dur="500ms" fill="freeze" path="m 0 32 l 95 -84" />
+<animate href="#α4" begin="5500ms" fill="freeze" attributeName="d" dur="500ms" values="M111 -89 L111 89 Z;M-105 64 L128 120 Z" />
+<animateMotion href="#libα4" begin="5500ms" dur="500ms" fill="freeze" path="m 202 0 l -100 92" />
+<animate href="#γ6" begin="5500ms" fill="freeze" attributeName="d" dur="500ms" values="M-111 89 L111 -89 Z;M63 -110 L-105 64 Z" />
+<animateMotion href="#libγ6" begin="5500ms" dur="500ms" fill="freeze" path="m 0 0 l -21 -23" />
+<animate href="#γ6" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="500ms" begin="5500ms" fill="freeze"/>
+<animateMotion href="#A1" begin="5500ms" dur="500ms"
+                    fill="freeze" path="m 111 -89 l -216 153" />
+<animateMotion href="#B2" begin="5500ms" dur="500ms"
+                    fill="freeze" path="m 111 89 l 17 31" />
+<animateMotion href="#C3" begin="5500ms" dur="500ms"
+                    fill="freeze" path="m -111 89 l 174 -199" />
+</svg>
+			    </div>
+			    <div style="grid-column: span 1; grid-row: span 1; border: 1px solid #000000;" >
+<svg class="svg_dynalgo" onclick="pause(this)" viewBox="-40 -40 80 80" preserveAspectRatio="xMidYMid meet">
+<path id="γ13" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M-122 122 L-122 -122 Z" />
+<g id="libγ13" opacity="0">
+  <text id="mγ13" x="-122" y="0" dx="-5" dy="-5"  fill="rgb(0,0,0)">30</text>
+</g>
+<text id="biγ13" fill="rgb(0,0,0)" opacity="0">
+<textpath startOffset="20" href="#γ13">⇒</textpath>
+</text>
+<path id="β12" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M-122 122 L122 122 Z" />
+<g id="libβ12" opacity="0">
+  <text id="mβ12" x="0" y="122" dx="-5" dy="-5"  fill="rgb(0,0,0)">20</text>
+</g>
+<text id="biβ12" fill="rgb(0,0,0)" opacity="0">
+<textpath startOffset="20" href="#β12">⇒</textpath>
+</text>
+<path id="α11" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M-100 -144 L-100 144 Z" />
+<g id="libα11" opacity="0">
+  <text id="mα11" x="-100" y="0" dx="-5" dy="-5"  fill="rgb(0,0,0)">10</text>
+</g>
+<text id="biα11" fill="rgb(0,0,0)" opacity="0">
+<textpath startOffset="20" href="#α11">⇒</textpath>
+</text>
+<g id="A7" opacity="0">
+  <circle id="cA7" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coA7" x="0" y="0" dx="-6" dy="6" fill="rgb(0,0,0)">A</text>
+</g>
+<animate href="#A7" attributeName="opacity" from="0" to="1" dur="500ms" begin="0ms" fill="freeze"/>
+<animate attributeName="viewBox" from="-40 -40 80 80" to="-40 -30 80 80" begin="500ms" dur="500ms" fill="freeze" />
+<animateMotion href="#A7" begin="500ms" dur="500ms"
+                    fill="freeze" path="m 0 0 l 0 10" />
+<animate href="#cA7" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="500ms" begin="500ms" fill="freeze"/>
+<g id="B8" opacity="0">
+  <circle id="cB8" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coB8" x="0" y="0" dx="-6" dy="6" fill="rgb(0,0,0)">B</text>
+</g>
+<animate attributeName="viewBox" from="-40 -30 80 80" to="-40 -40 80 90" begin="1000ms" dur="500ms" fill="freeze" />
+<animate href="#B8" attributeName="opacity" from="0" to="1" dur="500ms" begin="1000ms" fill="freeze"/>
+<animate attributeName="viewBox" from="-40 -40 80 90" to="-40 -106 80 212" begin="1500ms" dur="500ms" fill="freeze" />
+<animateMotion href="#A7" begin="1500ms" dur="500ms"
+                    fill="freeze" path="m 0 10 l 0 -76" />
+<animateMotion href="#B8" begin="1500ms" dur="500ms"
+                    fill="freeze" path="m 0 0 l 0 66" />
+<animate href="#cB8" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="500ms" begin="1500ms" fill="freeze"/>
+<g id="C9" opacity="0">
+  <circle id="cC9" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coC9" x="0" y="0" dx="-6" dy="6" fill="rgb(0,0,0)">C</text>
+</g>
+<animate href="#C9" attributeName="opacity" from="0" to="1" dur="500ms" begin="2000ms" fill="freeze"/>
+<animate attributeName="viewBox" from="-40 -106 80 212" to="-131 -131 262 262" begin="2500ms" dur="500ms" fill="freeze" />
+<animateMotion href="#C9" begin="2500ms" dur="500ms"
+                    fill="freeze" path="m 0 0 l 91 91" />
+<animate href="#cC9" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="500ms" begin="2500ms" fill="freeze"/>
+<animateMotion href="#A7" begin="2500ms" dur="500ms"
+                    fill="freeze" path="m 0 -66 l -91 -25" />
+<animateMotion href="#B8" begin="2500ms" dur="500ms"
+                    fill="freeze" path="m 0 66 l -91 25" />
+<g id="D10" opacity="0">
+  <circle id="cD10" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coD10" x="0" y="0" dx="-6" dy="6" fill="rgb(0,0,0)">D</text>
+</g>
+<animate href="#D10" attributeName="opacity" from="0" to="1" dur="500ms" begin="3000ms" fill="freeze"/>
+<animate attributeName="viewBox" from="-131 -131 262 262" to="-140 -184 280 368" begin="3500ms" dur="500ms" fill="freeze" />
+<animateMotion href="#C9" begin="3500ms" dur="500ms"
+                    fill="freeze" path="m 91 91 l 9 53" />
+<animateMotion href="#A7" begin="3500ms" dur="500ms"
+                    fill="freeze" path="m -91 -91 l -9 -53" />
+<animateMotion href="#B8" begin="3500ms" dur="500ms"
+                    fill="freeze" path="m -91 91 l -9 53" />
+<animateMotion href="#D10" begin="3500ms" dur="500ms"
+                    fill="freeze" path="m 0 0 l 100 -144" />
+<animate href="#cD10" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="500ms" begin="3500ms" fill="freeze"/>
+<animate href="#α11" attributeName="opacity" from="0" to="1" dur="500ms" begin="4000ms" fill="freeze"/>
+<animate href="#libα11" attributeName="opacity" from="0" to="1" dur="500ms" begin="4000ms" fill="freeze"/>
+<animate href="#biα11" attributeName="opacity" from="0" to="1" dur="500ms" begin="4000ms" fill="freeze"/>
+<animate attributeName="viewBox" from="-140 -184 280 368" to="-162 -162 324 324" begin="4500ms" dur="500ms" fill="freeze" />
+<animate href="#α11" begin="4500ms" fill="freeze" attributeName="d" dur="500ms" values="M-100 -144 L-100 144 Z;M-122 -122 L-122 122 Z" />
+<animateMotion href="#libα11" begin="4500ms" dur="500ms" fill="freeze" path="m 0 0 l -22 0" />
+<animate href="#α11" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="500ms" begin="4500ms" fill="freeze"/>
+<animateMotion href="#C9" begin="4500ms" dur="500ms"
+                    fill="freeze" path="m 100 144 l 22 -22" />
+<animateMotion href="#A7" begin="4500ms" dur="500ms"
+                    fill="freeze" path="m -100 -144 l -22 22" />
+<animateMotion href="#B8" begin="4500ms" dur="500ms"
+                    fill="freeze" path="m -100 144 l -22 -22" />
+<animateMotion href="#D10" begin="4500ms" dur="500ms"
+                    fill="freeze" path="m 100 -144 l 22 22" />
+<animate href="#β12" attributeName="opacity" from="0" to="1" dur="500ms" begin="5000ms" fill="freeze"/>
+<animate href="#libβ12" attributeName="opacity" from="0" to="1" dur="500ms" begin="5000ms" fill="freeze"/>
+<animate href="#biβ12" attributeName="opacity" from="0" to="1" dur="500ms" begin="5000ms" fill="freeze"/>
+<animate href="#α11" begin="5500ms" fill="freeze" attributeName="d" dur="500ms" values="M-122 -122 L-122 122 Z;M-122 -122 L65 122 Z" />
+<animateMotion href="#libα11" begin="5500ms" dur="500ms" fill="freeze" path="m -22 0 l 94 0" />
+<animate href="#β12" begin="5500ms" fill="freeze" attributeName="d" dur="500ms" values="M-122 122 L122 122 Z;M65 122 L-122 122 Z" />
+<animateMotion href="#libβ12" begin="5500ms" dur="500ms" fill="freeze" path="m 0 0 l -28 0" />
+<animate href="#β12" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="500ms" begin="5500ms" fill="freeze"/>
+<animateMotion href="#C9" begin="5500ms" dur="500ms"
+                    fill="freeze" path="m 122 122 l -244 0" />
+<animateMotion href="#B8" begin="5500ms" dur="500ms"
+                    fill="freeze" path="m -122 122 l 187 0" />
+<animate href="#γ13" attributeName="opacity" from="0" to="1" dur="500ms" begin="6000ms" fill="freeze"/>
+<animate href="#libγ13" attributeName="opacity" from="0" to="1" dur="500ms" begin="6000ms" fill="freeze"/>
+<animate href="#biγ13" attributeName="opacity" from="0" to="1" dur="500ms" begin="6000ms" fill="freeze"/>
+<animate attributeName="viewBox" from="-162 -162 324 324" to="-148 -162 296 324" begin="6500ms" dur="500ms" fill="freeze" />
+<animate href="#α11" begin="6500ms" fill="freeze" attributeName="d" dur="500ms" values="M-122 -122 L65 122 Z;M-108 122 L98 122 Z" />
+<animateMotion href="#libα11" begin="6500ms" dur="500ms" fill="freeze" path="m 72 0 l 23 122" />
+<animate href="#γ13" begin="6500ms" fill="freeze" attributeName="d" dur="500ms" values="M-122 122 L-122 -122 Z;M-108 -74 L-108 122 Z" />
+<animateMotion href="#libγ13" begin="6500ms" dur="500ms" fill="freeze" path="m 0 0 l 14 24" />
+<animate href="#γ13" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="500ms" begin="6500ms" fill="freeze"/>
+<animate href="#β12" begin="6500ms" fill="freeze" attributeName="d" dur="500ms" values="M65 122 L-122 122 Z;M98 122 L-108 -74 Z" />
+<animateMotion href="#libβ12" begin="6500ms" dur="500ms" fill="freeze" path="m -28 0 l 23 -98" />
+<animateMotion href="#C9" begin="6500ms" dur="500ms"
+                    fill="freeze" path="m -122 122 l 14 -196" />
+<animateMotion href="#A7" begin="6500ms" dur="500ms"
+                    fill="freeze" path="m -122 -122 l 14 244" />
+<animateMotion href="#B8" begin="6500ms" dur="500ms"
+                    fill="freeze" path="m 65 122 l 33 0" />
+<animateMotion href="#D10" begin="6500ms" dur="500ms"
+                    fill="freeze" path="m 122 -122 l -14 0" />
+</svg>
+			    </div>
+			    
+    </div>
+  </body>
+</html>

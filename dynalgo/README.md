@@ -3,7 +3,7 @@
  `dynalgo` is a tiny RUST library designed to produce animated SVG images that can illustrate graph algorithms.
 
  The crate offers a basic graph structure representation (nodes, links and adjacency list).
- The interesting point is that each modification of the structure of the graph results in an animation in SVG with SMIL language.
+ The interesting point is that each modification of the structure of the graph results in an animation in SVG with SMIL language embeded within an HTML page. Several animations can be embeded together in the same HTML page.
  Additionally, custom animations can be made by playing with the properties of graphical representations of nodes and links.
  Graph's nodes are automatically layouted according to imaginary spring forces applied to nodes. `Algo` module will provide basic algorithms to apply to graph.
 
@@ -139,6 +139,48 @@
  write!(File::create("example-fun-maze.html").unwrap(), "{}", html).unwrap();
 ```
 
+# Example n°4 :
+## (algorithm that performs the union of 2 graphs)
+
+[See example n°4](https://dynalgo.github.io/dynalgo/example-sets-union.html)
+
+```
+use dynalgo::graph::Graph;
+use std::fs::File;
+use std::io::Write;
+use dynalgo::algo::sets::Sets;
+
+let mut graph1 = Graph::new();
+graph1.svg_automatic_animation(false);
+graph1.svg_automatic_layout(false);
+graph1.svg_param_duration_move(1);
+graph1.node_add('A', None).unwrap();
+graph1.node_add('B', None).unwrap();
+graph1.link_add('α', 'A', 'B', false, None);
+graph1.svg_layout();
+graph1.svg_animate(1);
+
+let mut graph2 = Graph::new();
+graph2.svg_automatic_animation(false);
+graph2.svg_automatic_layout(false);
+graph2.svg_param_duration_move(1);
+graph2.node_add('A', None).unwrap();
+graph2.node_add('B', None).unwrap();
+graph2.node_add('C', None).unwrap();
+graph2.link_add('α', 'B', 'C', false, None);
+graph2.link_add('β', 'B', 'A', false, None);
+graph2.svg_layout();
+graph2.svg_animate(1);
+
+let graph_union = Sets::union(&graph1, &graph2).unwrap();
+
+let html_file_content = Graph::svg_render_animations_html(
+    "sets-union example",
+    vec![&graph1, &graph2, &graph_union],
+);
+write!(File::create("example-sets-union.html").unwrap(), "{}", html_file_content);
+```
+
 # Other examples showing part of the API:
 [Graph::node_add](https://dynalgo.github.io/dynalgo/example-node_add.html)  
 [Graph::node_add_fixed](https://dynalgo.github.io/dynalgo/example-node_add_fixed.html)  
@@ -159,5 +201,8 @@
 
 # Other examples showing animations of algorithms:
 [algo::travers::Dfs](https://dynalgo.github.io/dynalgo/example-Travers-DFS.html)  
-[algo::travers::Bfs](https://dynalgo.github.io/dynalgo/example-Travers-BFS.html)  
 [algo::fun::Maze](https://dynalgo.github.io/dynalgo/example-fun-maze.html)  
+[algo::compare::Compare](https://dynalgo.github.io/dynalgo/example-compare-isomorphic.html)  
+[algo::sequence::Sequence](https://dynalgo.github.io/dynalgo/example-sequence-complete.html)  
+[algo::sets::Sets](https://dynalgo.github.io/dynalgo/example-sets-complementary.html)  
+[algo::sets::Sets](https://dynalgo.github.io/dynalgo/example-sets-union.html)  

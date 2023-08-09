@@ -1,3 +1,5 @@
+//! Basic `graph` structure representation (nodes, links and adjacency list).
+
 mod link;
 mod node;
 mod renderer;
@@ -146,9 +148,9 @@ impl Graph {
 
         if self.svg_automatic_animation {
             self.svg_animate(self.renderer.p_duration_add);
-            if self.svg_automatic_layout {
-                self.svg_layout_nodes(vec![name])?;
-            }
+        }
+        if self.svg_automatic_layout {
+            self.svg_layout_nodes(vec![name])?;
         }
 
         Ok(())
@@ -351,6 +353,126 @@ impl Graph {
         Ok(links)
     }
 
+    /// Returns the graph order
+    ///
+    /// # Example:
+    ///
+    /// ```
+    /// use dynalgo::graph::Graph;
+    /// let mut graph = Graph::new();
+    /// graph.node_add('A', None).unwrap();
+    /// graph.node_add('B', None).unwrap();
+    /// let order =graph.graph_order();
+    /// assert_eq!(order, 2);
+    /// ```
+    pub fn graph_order(&self) -> usize {
+        self.nodes_list().len()
+    }
+
+    /// Returns the graph size
+    ///
+    /// # Example:
+    ///
+    /// ```
+    /// use dynalgo::graph::Graph;
+    /// let mut graph = Graph::new();
+    /// graph.node_add('A', None).unwrap();
+    /// graph.node_add('B', None).unwrap();
+    /// graph.link_add('α', 'A', 'B', true, None).unwrap();
+    /// let size = graph.graph_size();
+    /// assert_eq!(size, 1);
+    /// ```
+    pub fn graph_size(&self) -> usize {
+        let sum: usize = self.graph_sequence().iter().sum();
+        assert!(sum % 2 == 0);
+        sum / 2
+    }
+
+    /// Indicates whether the graph is directed or not
+    ///
+    /// # Example:
+    ///
+    /// ```
+    /// use dynalgo::graph::Graph;
+    /// let mut graph = Graph::new();
+    /// graph.node_add('A', None).unwrap();
+    /// graph.node_add('B', None).unwrap();
+    /// graph.link_add('α', 'A', 'B', false, None).unwrap();
+    /// let is_directed = graph.graph_directed();
+    /// assert!(is_directed);
+    /// ```
+    pub fn graph_directed(&self) -> bool {
+        let adjacencies = self.adjacency_list();
+        for (node_from, adjacent) in &adjacencies {
+            for (node_to, _) in adjacent {
+                match adjacencies.get(&node_to).unwrap().get(&node_from) {
+                    None => return true,
+                    _ => {}
+                }
+            }
+        }
+        false
+    }
+
+    /// Returns the nodes degrees
+    ///
+    /// # Example:
+    ///
+    /// ```
+    /// use dynalgo::graph::Graph;
+    /// let mut graph = Graph::new();
+    /// graph.node_add('A', None).unwrap();
+    /// graph.node_add('B', None).unwrap();
+    /// let degrees = graph.nodes_degrees();
+    /// ```
+    pub fn nodes_degrees(&self) -> HashMap<char, usize> {
+        let mut degrees = HashMap::new();
+        let adjacencies = self.adjacency_list();
+
+        for (node_from, adjacent) in &adjacencies {
+            degrees.insert(*node_from, adjacent.len());
+        }
+
+        for (node_from, adjacent) in &adjacencies {
+            for (node_to, _) in adjacent {
+                match adjacencies.get(&node_to).unwrap().get(&node_from) {
+                    None => {
+                        let degree = degrees.get_mut(&node_to).unwrap();
+                        *degree += 1;
+                    }
+                    _ => {}
+                }
+            }
+        }
+
+        degrees
+    }
+
+    /// Returns the sequence (degrees in decreasing order)
+    ///
+    /// # Example:
+    ///
+    /// ```
+    /// use dynalgo::graph::Graph;
+    /// let mut graph = Graph::new();
+    /// graph.node_add('A', None).unwrap();
+    /// graph.node_add('B', None).unwrap();
+    /// graph.node_add('C', None).unwrap();
+    /// graph.link_add('α', 'A', 'B', true, None).unwrap();
+    /// graph.link_add('β', 'B', 'C', true, None).unwrap();
+    /// let sequence = graph.graph_sequence();
+    /// assert_eq!(sequence, vec![2,1,1]);
+    /// ```
+    pub fn graph_sequence(&self) -> Vec<usize> {
+        let degrees = self.nodes_degrees();
+        let mut sequence = Vec::new();
+        for (_, degree) in degrees {
+            sequence.push(degree);
+        }
+        sequence.sort_by(|a, b| b.cmp(a));
+        sequence
+    }
+
     /// Returns an adjacency list.
     ///
     /// # Example:
@@ -544,7 +666,7 @@ impl Graph {
         self.svg_animate(self.renderer.p_duration_add);
         self.svg_automatic_animation(automatic_animation);
 
-        if self.svg_automatic_animation && self.svg_automatic_layout {
+        if self.svg_automatic_layout {
             self.svg_layout();
         }
 
@@ -660,9 +782,9 @@ impl Graph {
         Ok(())
     }
 
-    /// Activates or desactivates the `svg_automatic_animation` option (affects only SVG rendering).
+    /// Activates or deactivates the `svg_automatic_animation` option (affects only SVG rendering).
     /// When this option is activated, each change in the structure of the graph, and each change in the property of the representation of the node or of the link causes a graphic animation (the animations occur one after the other).
-    /// If this option is desactivated, then all the pending animations occur during the same period (i.e. not one after the other) when you manually call the `svg_animate` function.
+    /// If this option is deactivated, then all the pending animations occur during the same period (i.e. not one after the other) when you manually call the `svg_animate` function.
     ///
     /// # Example:
     ///
@@ -715,7 +837,7 @@ impl Graph {
     /// graph.svg_node_move('B', 150, 0);
     /// graph.svg_node_move('B', 150, 50);
     /// graph.svg_node_move('B', 100, 50);
-    /// graph.svg_animate(1000);
+    /// graph.svg_animate(750);
     /// graph.svg_automatic_animation(true);
     /// graph.nodes_exchange('A', 'B');
     /// graph.svg_automatic_animation(false);
@@ -724,7 +846,7 @@ impl Graph {
     /// graph.nodes_exchange('A', 'B');
     /// graph.nodes_exchange('A', 'B');
     /// graph.svg_node_color('C', 0, 0, 255);
-    /// graph.svg_animate(1000);
+    /// graph.svg_animate(750);
     ///
     /// let html = graph.svg_render_animation_html("svg_animate example");
     /// write!(File::create("example-svg_animate.html").unwrap(), "{}", html);
@@ -737,9 +859,8 @@ impl Graph {
         self.renderer.animate(duration_ms);
     }
 
-    /// Activates or desactivates the `svg_automatic_layout` option (affects only SVG rendering).
-    /// Activating this option is revelant only if the `svg_automatic_animation` option is activated.
-    /// When this option is activated, the nodes are layouted as they are created. When this option is desactivated, you must explicitly call the svg_layout or svg_layout_nodes function to layout the created nodes.
+    /// Activates or deactivates the `svg_automatic_layout` option (affects only SVG rendering).
+    /// When this option is activated, the nodes are layouted as they are created. When this option is deactivated, you must explicitly call the svg_layout or svg_layout_nodes function to layout the created nodes.
     ///
     /// # Example:
     ///
@@ -763,7 +884,7 @@ impl Graph {
     }
 
     /// Layouts the listed nodes (affects only SVG rendering).
-    /// Calling this function is revelant only if the option `svg_automatic_layout` is desactivated.
+    /// Calling this function is revelant only if the option `svg_automatic_layout` is deactivated.
     ///
     /// # Example:
     ///
@@ -799,7 +920,7 @@ impl Graph {
     }
 
     /// Layouts all the nodes (affects only SVG rendering).
-    /// Calling this function is revelant only if the `svg_automatic_layout` option is desactivated.
+    /// Calling this function is revelant only if the `svg_automatic_layout` option is deactivated.
     ///
     /// # Example:
     ///
@@ -854,6 +975,44 @@ impl Graph {
     /// ```
     pub fn svg_render_animation_html(&self, title: &str) -> String {
         Html::render(title, self.svg_render_animation())
+    }
+
+    /// For several graphs, exports the animations in SVG format into a single HTML page.
+    /// The HTML page contains a little javascript so that each animation can be paused and resumed by clickig on the image.
+    ///
+    /// # Example:
+    ///
+    /// ```
+    /// use dynalgo::graph::Graph;
+    /// use std::fs::File;
+    /// use std::io::Write;
+    ///
+    /// let mut graph_1 = Graph::new();
+    /// graph_1.node_add('A', None);
+    /// graph_1.node_add('B', None);
+    /// graph_1.node_add('C', None);
+    /// graph_1.link_add('α', 'A', 'B', true, Some(10));
+    /// graph_1.link_add('β', 'B', 'C', true, Some(20));
+    /// graph_1.link_add('γ', 'C', 'A', true, Some(30));
+    /// let mut graph_2 = Graph::new();
+    /// graph_2.node_add('A', None);
+    /// graph_2.node_add('B', None);
+    /// graph_2.node_add('C', None);
+    /// graph_2.node_add('D', None);
+    /// graph_2.link_add('α', 'A', 'B', false, Some(10));
+    /// graph_2.link_add('β', 'B', 'C', false, Some(20));
+    /// graph_2.link_add('γ', 'C', 'A', false, Some(30));
+    ///
+    /// let html_file_content = Graph::svg_render_animations_html("svg_render_animation_html example",vec![&graph_1, &graph_2]);       
+    /// let mut html_file = File::create("example-svg_render_animations_html.html").unwrap();
+    /// write!(html_file, "{}", html_file_content);
+    /// ```
+    pub fn svg_render_animations_html(title: &str, graphs: Vec<&Graph>) -> String {
+        let mut svgs = Vec::new();
+        for graph in graphs {
+            svgs.push(graph.svg_render_animation());
+        }
+        Html::render_flexbox(title, svgs)
     }
 
     /// Returns the current x,y coords of the node in the SVG graphic context.
@@ -1078,35 +1237,35 @@ impl Graph {
 
     /// Changes the value of the duration_add parameter (affects only SVG rendering).
     /// This parameter affects the duration of the animation when a node or a link is added.
-    /// Default value is 1000 ms
+    /// Default value is 500 ms
     pub fn svg_param_duration_add(&mut self, duration_ms: u32) {
         self.renderer.p_duration_add = duration_ms;
     }
 
     /// Changes the value of the duration_delete parameter (affects only SVG rendering).
     /// This parameter affects the duration of the animation when a node or a link is deleted.
-    /// Default value is 1000 ms
+    /// Default value is 500 ms
     pub fn svg_param_duration_delete(&mut self, duration_ms: u32) {
         self.renderer.p_duration_delete = duration_ms;
     }
 
     /// Changes the value of the duration_move parameter (affects only SVG rendering).
     /// This parameter affects the duration of the animation when a node is moved.
-    /// Default value is 1000 ms
+    /// Default value is 500 ms
     pub fn svg_param_duration_move(&mut self, duration_ms: u32) {
         self.renderer.p_duration_move = duration_ms;
     }
 
     /// Changes the value of the duration_select parameter (affects only SVG rendering).
     /// This parameter affects the duration of the animation when a node or a link is selected or deselected.
-    /// Default value is 1000 ms
+    /// Default value is 500 ms
     pub fn svg_param_duration_select(&mut self, duration_ms: u32) {
         self.renderer.p_duration_select = duration_ms;
     }
 
     /// Changes the value of the duration_color parameter (affects only SVG rendering).
     /// This parameter affects the duration of the animation when a node is colored.
-    /// Default value is 1000 ms
+    /// Default value is 500 ms
     pub fn svg_param_duration_color(&mut self, duration_ms: u32) {
         self.renderer.p_duration_color = duration_ms;
     }
@@ -1207,5 +1366,13 @@ impl Graph {
     /// Default value is 20
     pub fn svg_param_radius_node(&mut self, radius: u32) {
         self.renderer.p_radius_node(radius);
+    }
+}
+
+impl Clone for Graph {
+    fn clone(&self) -> Self {
+        let mut graph = Graph::new();
+        graph.dyna_from(self.dyna_to()).unwrap();
+        graph
     }
 }

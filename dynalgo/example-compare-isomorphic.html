@@ -1,0 +1,214 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <meta http-equiv="cache-control" content="no-cache, must-revalidate">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Dynalgo - svg_render_animations_html example</title>
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+        }
+        .grid {
+            display:  grid;
+            grid-template-columns: repeat(2 , 1fr);
+        }
+        .svg_dynalgo {
+            position: relative;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            height: 100vh;
+         }
+    </style>
+    <script>
+        function pause(svg) {
+            if (svg.animationsPaused()) {
+                svg.unpauseAnimations();
+            } else {
+                svg.pauseAnimations();
+            }
+        }
+    </script>
+  </head>
+  <body>
+    <div class="grid"><div style="grid-column: span 1; grid-row: span 1; border: 1px solid #000000;" >
+<svg class="svg_dynalgo" onclick="pause(this)" viewBox="-40 -40 80 80" preserveAspectRatio="xMidYMid meet">
+<path id="b6" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M122 122 L-122 122 Z" />
+<g id="libb6" opacity="0">
+</g>
+<path id="a5" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M-100 -144 L-100 144 Z" />
+<g id="liba5" opacity="0">
+</g>
+<text id="bia5" fill="rgb(0,0,0)" opacity="0">
+<textpath startOffset="20" href="#a5">⇒</textpath>
+</text>
+<g id="A1" opacity="0">
+  <circle id="cA1" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coA1" x="0" y="0" dx="-6" dy="6" fill="rgb(0,0,0)">A</text>
+</g>
+<animate href="#A1" attributeName="opacity" from="0" to="1" dur="500ms" begin="0ms" fill="freeze"/>
+<animate attributeName="viewBox" from="-40 -40 80 80" to="-40 -30 80 80" begin="500ms" dur="500ms" fill="freeze" />
+<animateMotion href="#A1" begin="500ms" dur="500ms"
+                    fill="freeze" path="m 0 0 l 0 10" />
+<animate href="#cA1" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="500ms" begin="500ms" fill="freeze"/>
+<g id="B2" opacity="0">
+  <circle id="cB2" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coB2" x="0" y="0" dx="-6" dy="6" fill="rgb(0,0,0)">B</text>
+</g>
+<animate attributeName="viewBox" from="-40 -30 80 80" to="-40 -40 80 90" begin="1000ms" dur="500ms" fill="freeze" />
+<animate href="#B2" attributeName="opacity" from="0" to="1" dur="500ms" begin="1000ms" fill="freeze"/>
+<animate attributeName="viewBox" from="-40 -40 80 90" to="-40 -106 80 212" begin="1500ms" dur="500ms" fill="freeze" />
+<animateMotion href="#B2" begin="1500ms" dur="500ms"
+                    fill="freeze" path="m 0 0 l 0 66" />
+<animate href="#cB2" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="500ms" begin="1500ms" fill="freeze"/>
+<animateMotion href="#A1" begin="1500ms" dur="500ms"
+                    fill="freeze" path="m 0 10 l 0 -76" />
+<g id="C3" opacity="0">
+  <circle id="cC3" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coC3" x="0" y="0" dx="-6" dy="6" fill="rgb(0,0,0)">C</text>
+</g>
+<animate href="#C3" attributeName="opacity" from="0" to="1" dur="500ms" begin="2000ms" fill="freeze"/>
+<animate attributeName="viewBox" from="-40 -106 80 212" to="-131 -131 262 262" begin="2500ms" dur="500ms" fill="freeze" />
+<animateMotion href="#B2" begin="2500ms" dur="500ms"
+                    fill="freeze" path="m 0 66 l -91 25" />
+<animateMotion href="#C3" begin="2500ms" dur="500ms"
+                    fill="freeze" path="m 0 0 l 91 91" />
+<animate href="#cC3" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="500ms" begin="2500ms" fill="freeze"/>
+<animateMotion href="#A1" begin="2500ms" dur="500ms"
+                    fill="freeze" path="m 0 -66 l -91 -25" />
+<g id="D4" opacity="0">
+  <circle id="cD4" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coD4" x="0" y="0" dx="-6" dy="6" fill="rgb(0,0,0)">D</text>
+</g>
+<animate href="#D4" attributeName="opacity" from="0" to="1" dur="500ms" begin="3000ms" fill="freeze"/>
+<animate attributeName="viewBox" from="-131 -131 262 262" to="-140 -184 280 368" begin="3500ms" dur="500ms" fill="freeze" />
+<animateMotion href="#A1" begin="3500ms" dur="500ms"
+                    fill="freeze" path="m -91 -91 l -9 -53" />
+<animateMotion href="#B2" begin="3500ms" dur="500ms"
+                    fill="freeze" path="m -91 91 l -9 53" />
+<animateMotion href="#D4" begin="3500ms" dur="500ms"
+                    fill="freeze" path="m 0 0 l 100 -144" />
+<animate href="#cD4" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="500ms" begin="3500ms" fill="freeze"/>
+<animateMotion href="#C3" begin="3500ms" dur="500ms"
+                    fill="freeze" path="m 91 91 l 9 53" />
+<animate href="#a5" attributeName="opacity" from="0" to="1" dur="500ms" begin="4000ms" fill="freeze"/>
+<animate href="#liba5" attributeName="opacity" from="0" to="1" dur="500ms" begin="4000ms" fill="freeze"/>
+<animate href="#bia5" attributeName="opacity" from="0" to="1" dur="500ms" begin="4000ms" fill="freeze"/>
+<animate attributeName="viewBox" from="-140 -184 280 368" to="-162 -162 324 324" begin="4500ms" dur="500ms" fill="freeze" />
+<animate href="#a5" begin="4500ms" fill="freeze" attributeName="d" dur="500ms" values="M-100 -144 L-100 144 Z;M-122 -122 L-122 122 Z" />
+<animateMotion href="#liba5" begin="4500ms" dur="500ms" fill="freeze" path="m 0 0 l -22 0" />
+<animate href="#a5" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="500ms" begin="4500ms" fill="freeze"/>
+<animateMotion href="#A1" begin="4500ms" dur="500ms"
+                    fill="freeze" path="m -100 -144 l -22 22" />
+<animateMotion href="#B2" begin="4500ms" dur="500ms"
+                    fill="freeze" path="m -100 144 l -22 -22" />
+<animateMotion href="#D4" begin="4500ms" dur="500ms"
+                    fill="freeze" path="m 100 -144 l 22 22" />
+<animateMotion href="#C3" begin="4500ms" dur="500ms"
+                    fill="freeze" path="m 100 144 l 22 -22" />
+<animate href="#b6" attributeName="opacity" from="0" to="1" dur="500ms" begin="5000ms" fill="freeze"/>
+<animate href="#libb6" attributeName="opacity" from="0" to="1" dur="500ms" begin="5000ms" fill="freeze"/>
+<animate href="#bib6" attributeName="opacity" from="0" to="1" dur="500ms" begin="5000ms" fill="freeze"/>
+<animate href="#b6" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="500ms" begin="5500ms" fill="freeze"/>
+<animate href="#cA1" attributeName="fill" from="rgb(255,255,255)" to="rgb(127,254,127)" dur="500ms" begin="6000ms" fill="freeze"/>
+<animate href="#cB2" attributeName="fill" from="rgb(255,255,255)" to="rgb(127,127,127)" dur="500ms" begin="6500ms" fill="freeze"/>
+<animate href="#cC3" attributeName="fill" from="rgb(255,255,255)" to="rgb(254,127,127)" dur="500ms" begin="7000ms" fill="freeze"/>
+<animate href="#cD4" attributeName="fill" from="rgb(255,255,255)" to="rgb(127,254,254)" dur="500ms" begin="7500ms" fill="freeze"/>
+</svg>
+			    </div>
+			    <div style="grid-column: span 1; grid-row: span 1; border: 1px solid #000000;" >
+<svg class="svg_dynalgo" onclick="pause(this)" viewBox="-40 -40 80 80" preserveAspectRatio="xMidYMid meet">
+<path id="f12" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M122 122 L-122 122 Z" />
+<g id="libf12" opacity="0">
+</g>
+<path id="e11" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M-100 -144 L-100 144 Z" />
+<g id="libe11" opacity="0">
+</g>
+<text id="bie11" fill="rgb(0,0,0)" opacity="0">
+<textpath startOffset="20" href="#e11">⇒</textpath>
+</text>
+<g id="E7" opacity="0">
+  <circle id="cE7" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coE7" x="0" y="0" dx="-6" dy="6" fill="rgb(0,0,0)">E</text>
+</g>
+<animate href="#E7" attributeName="opacity" from="0" to="1" dur="500ms" begin="0ms" fill="freeze"/>
+<animate attributeName="viewBox" from="-40 -40 80 80" to="-40 -30 80 80" begin="500ms" dur="500ms" fill="freeze" />
+<animateMotion href="#E7" begin="500ms" dur="500ms"
+                    fill="freeze" path="m 0 0 l 0 10" />
+<animate href="#cE7" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="500ms" begin="500ms" fill="freeze"/>
+<g id="F8" opacity="0">
+  <circle id="cF8" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coF8" x="0" y="0" dx="-6" dy="6" fill="rgb(0,0,0)">F</text>
+</g>
+<animate attributeName="viewBox" from="-40 -30 80 80" to="-40 -40 80 90" begin="1000ms" dur="500ms" fill="freeze" />
+<animate href="#F8" attributeName="opacity" from="0" to="1" dur="500ms" begin="1000ms" fill="freeze"/>
+<animate attributeName="viewBox" from="-40 -40 80 90" to="-40 -106 80 212" begin="1500ms" dur="500ms" fill="freeze" />
+<animateMotion href="#E7" begin="1500ms" dur="500ms"
+                    fill="freeze" path="m 0 10 l 0 -76" />
+<animateMotion href="#F8" begin="1500ms" dur="500ms"
+                    fill="freeze" path="m 0 0 l 0 66" />
+<animate href="#cF8" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="500ms" begin="1500ms" fill="freeze"/>
+<g id="G9" opacity="0">
+  <circle id="cG9" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coG9" x="0" y="0" dx="-6" dy="6" fill="rgb(0,0,0)">G</text>
+</g>
+<animate href="#G9" attributeName="opacity" from="0" to="1" dur="500ms" begin="2000ms" fill="freeze"/>
+<animate attributeName="viewBox" from="-40 -106 80 212" to="-131 -131 262 262" begin="2500ms" dur="500ms" fill="freeze" />
+<animateMotion href="#G9" begin="2500ms" dur="500ms"
+                    fill="freeze" path="m 0 0 l 91 91" />
+<animate href="#cG9" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="500ms" begin="2500ms" fill="freeze"/>
+<animateMotion href="#E7" begin="2500ms" dur="500ms"
+                    fill="freeze" path="m 0 -66 l -91 -25" />
+<animateMotion href="#F8" begin="2500ms" dur="500ms"
+                    fill="freeze" path="m 0 66 l -91 25" />
+<g id="H10" opacity="0">
+  <circle id="cH10" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coH10" x="0" y="0" dx="-6" dy="6" fill="rgb(0,0,0)">H</text>
+</g>
+<animate href="#H10" attributeName="opacity" from="0" to="1" dur="500ms" begin="3000ms" fill="freeze"/>
+<animate attributeName="viewBox" from="-131 -131 262 262" to="-140 -184 280 368" begin="3500ms" dur="500ms" fill="freeze" />
+<animateMotion href="#H10" begin="3500ms" dur="500ms"
+                    fill="freeze" path="m 0 0 l 100 -144" />
+<animate href="#cH10" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="500ms" begin="3500ms" fill="freeze"/>
+<animateMotion href="#G9" begin="3500ms" dur="500ms"
+                    fill="freeze" path="m 91 91 l 9 53" />
+<animateMotion href="#E7" begin="3500ms" dur="500ms"
+                    fill="freeze" path="m -91 -91 l -9 -53" />
+<animateMotion href="#F8" begin="3500ms" dur="500ms"
+                    fill="freeze" path="m -91 91 l -9 53" />
+<animate href="#e11" attributeName="opacity" from="0" to="1" dur="500ms" begin="4000ms" fill="freeze"/>
+<animate href="#libe11" attributeName="opacity" from="0" to="1" dur="500ms" begin="4000ms" fill="freeze"/>
+<animate href="#bie11" attributeName="opacity" from="0" to="1" dur="500ms" begin="4000ms" fill="freeze"/>
+<animate attributeName="viewBox" from="-140 -184 280 368" to="-162 -162 324 324" begin="4500ms" dur="500ms" fill="freeze" />
+<animate href="#e11" begin="4500ms" fill="freeze" attributeName="d" dur="500ms" values="M-100 -144 L-100 144 Z;M-122 -122 L-122 122 Z" />
+<animateMotion href="#libe11" begin="4500ms" dur="500ms" fill="freeze" path="m 0 0 l -22 0" />
+<animate href="#e11" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="500ms" begin="4500ms" fill="freeze"/>
+<animateMotion href="#H10" begin="4500ms" dur="500ms"
+                    fill="freeze" path="m 100 -144 l 22 22" />
+<animateMotion href="#G9" begin="4500ms" dur="500ms"
+                    fill="freeze" path="m 100 144 l 22 -22" />
+<animateMotion href="#E7" begin="4500ms" dur="500ms"
+                    fill="freeze" path="m -100 -144 l -22 22" />
+<animateMotion href="#F8" begin="4500ms" dur="500ms"
+                    fill="freeze" path="m -100 144 l -22 -22" />
+<animate href="#f12" attributeName="opacity" from="0" to="1" dur="500ms" begin="5000ms" fill="freeze"/>
+<animate href="#libf12" attributeName="opacity" from="0" to="1" dur="500ms" begin="5000ms" fill="freeze"/>
+<animate href="#bif12" attributeName="opacity" from="0" to="1" dur="500ms" begin="5000ms" fill="freeze"/>
+<animate href="#f12" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="500ms" begin="5500ms" fill="freeze"/>
+<animate href="#cE7" attributeName="fill" from="rgb(255,255,255)" to="rgb(127,254,127)" dur="500ms" begin="6000ms" fill="freeze"/>
+<animate href="#cF8" attributeName="fill" from="rgb(255,255,255)" to="rgb(127,127,127)" dur="500ms" begin="6500ms" fill="freeze"/>
+<animate href="#cG9" attributeName="fill" from="rgb(255,255,255)" to="rgb(254,127,127)" dur="500ms" begin="7000ms" fill="freeze"/>
+<animate href="#cH10" attributeName="fill" from="rgb(255,255,255)" to="rgb(127,254,254)" dur="500ms" begin="7500ms" fill="freeze"/>
+</svg>
+			    </div>
+			    
+    </div>
+  </body>
+</html>

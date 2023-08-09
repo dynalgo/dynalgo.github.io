@@ -3,7 +3,7 @@
 //! `dynalgo` is a tiny RUST library designed to produce animated SVG images that can illustrate graph algorithms in action.
 //!
 //! The crate offers a basic `graph` structure representation (nodes, links and adjacency list).
-//! The interesting point is that each modification of the structure of the graph results in an animation in SVG with SMIL language.
+//! The interesting point is that each modification of the structure of the graph results in an animation in SVG with SMIL language embeded within an HTML page. Several animations can be embeded together in the same HTML page.
 //! Additionally, custom animations can be made by playing with the properties of graphical representations of nodes and links.
 //! Graph's nodes are automatically layouted according to imaginary spring forces applied to nodes. `Algo` module will provide basic algorithms to apply to graph.
 //!

@@ -1,3 +1,5 @@
+//! Depth-first Search algorithm.
+
 use crate::graph::Graph;
 
 pub struct Dfs {}
@@ -86,7 +88,7 @@ impl Dfs {
         let mut trees = Vec::new();
         let mut visited = Vec::new();
 
-        graph.svg_param_duration_select(500);            
+        graph.svg_param_duration_select(500);
         graph.svg_param_duration_color(500);
         for (node_from, _) in adjacencies {
             match start_node {
@@ -94,22 +96,23 @@ impl Dfs {
                     if n != *node_from {
                         continue;
                     }
-                },
-                None => {},
+                }
+                None => {}
             };
-            
+
             if visited.contains(node_from) {
                 continue;
             }
-            visited.push(*node_from);            
+            visited.push(*node_from);
             graph.svg_node_color(*node_from, 0, 255, 0).unwrap();
             graph.svg_node_selected(*node_from, true).unwrap();
 
             let mut tree = Graph::new();
             tree.svg_automatic_animation(false);
-            tree.node_add(*node_from, graph.node_value(*node_from).unwrap()).unwrap();
+            tree.node_add(*node_from, graph.node_value(*node_from).unwrap())
+                .unwrap();
             tree.svg_layout();
-            
+
             self.dfs_node(node_from, graph, &mut visited, &mut tree);
             trees.push(tree);
         }
@@ -138,9 +141,10 @@ impl Dfs {
             graph.svg_node_selected(*node_to, true).unwrap();
             graph.svg_node_color(*node_to, 191, 255, 0).unwrap();
 
-
-            tree.node_add(*node_to, graph.node_value(*node_to).unwrap()).unwrap();
-            tree.link_add(link.0, *node_from, *node_to, true, link.1).unwrap();
+            tree.node_add(*node_to, graph.node_value(*node_to).unwrap())
+                .unwrap();
+            tree.link_add(link.0, *node_from, *node_to, true, link.1)
+                .unwrap();
 
             self.dfs_node(node_to, graph, visited, tree);
         }

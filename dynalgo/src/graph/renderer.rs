@@ -14,11 +14,14 @@ use std::cmp::max;
 use std::cmp::min;
 use std::collections::HashMap;
 use std::f64::consts::PI;
+use std::sync::Mutex;
 use svg::Svg;
 use tag::Tag;
 
+static SEQ: Mutex<u32> = Mutex::new(0);
+
 pub struct Renderer {
-    id_seq: u32,
+    //id_seq: u32,
     nodes: HashMap<char, Node>,
     links: HashMap<char, Link>,
     previous_nodes: HashMap<char, Node>,
@@ -62,7 +65,7 @@ impl Renderer {
             p_radius_node,
         );
         Renderer {
-            id_seq: 0,
+            //id_seq: 0,
             nodes: HashMap::new(),
             links: HashMap::new(),
             previous_nodes: HashMap::new(),
@@ -71,11 +74,11 @@ impl Renderer {
             initial_links: HashMap::new(),
             animation: String::new(),
             svg,
-            p_duration_add: 1000,
-            p_duration_delete: 1000,
-            p_duration_move: 1000,
-            p_duration_select: 1000,
-            p_duration_color: 1000,
+            p_duration_add: 500,
+            p_duration_delete: 500,
+            p_duration_move: 500,
+            p_duration_select: 500,
+            p_duration_color: 500,
             p_color_tag_created: Color::new(0, 0, 255),
             p_color_tag_selected: Color::new(191, 255, 0),
             p_color_tag_deleted: Color::new(255, 0, 0),
@@ -89,8 +92,11 @@ impl Renderer {
     }
 
     fn id_seq(&mut self) -> u32 {
-        self.id_seq += 1;
-        self.id_seq
+        let mut seq = SEQ.lock().unwrap();
+        *seq += 1;
+        //self.id_seq += 1;
+        //self.id_seq
+        *seq
     }
 
     pub fn node_add(&mut self, name: char, center: Option<Point>, value: Option<u8>) {
@@ -238,14 +244,8 @@ impl Renderer {
                 let mut sum_forces_y = 0;
 
                 for other in &all_nodes {
-                    //let mut virtual_point = false;
                     let c_other = if *node == *other {
-                        //if adjacencies.get(node).unwrap().is_empty() {
-                        //    virtual_point = true;
-                        //    Point::new(fixed_center_x, fixed_center_y)
-                        //} else {
                         continue;
-                        //}
                     } else {
                         *self.node_center(*other)
                     };
@@ -259,7 +259,6 @@ impl Renderer {
                     }
                     let (spring_length, k) = if adjacencies.get(node).unwrap().get(other).is_some()
                         || adjacencies.get(other).unwrap().get(node).is_some()
-                      //  || virtual_point
                     {
                         (
                             (self.svg.p_radius_node * (10. * density) as u32) as i32,
@@ -272,7 +271,6 @@ impl Renderer {
                         )
                     };
                     let force = (distance as i32 - spring_length) as f64 * k;
-                    //println!( "node : {} - other : {} - dist : {} - spring_length : {} force : {}", node, other, distance, spring_length, force );
                     let force_x = (force * (dx as f64 / distance as f64)) as i32;
                     let force_y = (force * (dy as f64 / distance as f64)) as i32;
                     sum_forces_x += force_x;
@@ -281,12 +279,10 @@ impl Renderer {
 
                 let mut x_next = c_node.x() + sum_forces_x;
                 let mut y_next = c_node.y() + sum_forces_y;
-                //println!("calcul next {} - x: {} - y: {}", node, x_next, y_next);
                 x_next = min(x_next, max_x);
                 x_next = max(x_next, -max_x);
                 y_next = min(y_next, max_y);
                 y_next = max(y_next, -max_y);
-                //println!("calcul MAX next {} - x: {} - y: {}", node, x_next, y_next);
 
                 let mut collision = true;
                 while collision && (x_next.abs() <= max_x) && (y_next.abs() <= max_y) {
@@ -321,7 +317,6 @@ impl Renderer {
                 }
 
                 self.node_move(*node, Point::new(x_next, y_next));
-                //println!("move {} - x: {} - y: {}", node, x_next, y_next);
             }
         }
     }
@@ -424,6 +419,12 @@ impl Renderer {
             )
         }
     }
+
+    /*
+        pub fn sleep(&mut self, duration: u32) {
+            self.total_duration += duration;
+        }
+    */
 
     pub fn animate(&mut self, duration: u32) {
         let mut svg = String::new();
