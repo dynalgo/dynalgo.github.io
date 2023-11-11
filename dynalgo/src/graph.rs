@@ -1,446 +1,365 @@
-//! Basic `graph` structure representation (nodes, links and adjacency list).
+//! Basic `graph` structure representation with animation properties.
 
-mod link;
-mod node;
 mod renderer;
 
-use link::Link;
-use node::Node;
 use renderer::color::Color;
 use renderer::html::Html;
 use renderer::point::Point;
 use renderer::Renderer;
-use std::collections::HashMap;
+use std::collections::BTreeMap;
+use std::fmt;
+use std::fs::File;
+use std::io::Write;
+use std::str::FromStr;
+
+#[derive(Debug)]
+pub struct GraphError {
+    action: String,
+    message: String,
+}
+
+impl fmt::Display for GraphError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "A Dynalgo graph error occurred while trying to {}.\nCause is : \"{}\"",
+            self.action, self.message
+        )
+    }
+}
+
+#[derive(PartialEq, Clone, Copy)]
+enum AnimState {
+    Paused,
+    Resumed,
+}
 
 pub struct Graph {
-    nodes: HashMap<char, Node>,
-    links: HashMap<char, Link>,
     renderer: Renderer,
-    svg_automatic_animation: bool,
-    svg_automatic_layout: bool,
+    auto_animation: bool,
+    adja: BTreeMap<char, BTreeMap<char, u8>>,
+    anim_state: AnimState,
+    layout_on_resume: bool,
+}
+
+impl fmt::Display for Graph {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", self.graph_config())
+    }
+}
+
+impl FromStr for Graph {
+    type Err = String;
+    fn from_str(s: &str) -> Result<Graph, String> {
+        let mut graph = Graph::new();
+        match graph.graph_from_config(s) {
+            Ok(_) => (),
+            Err(graph_error) => Err(format!("{}", graph_error))?,
+        }
+        Ok(graph)
+    }
 }
 
 impl Graph {
-    /// Creates an empty graph structure
-    ///
-    /// # Example:
-    ///
-    /// ```
-    /// use dynalgo::graph::Graph;
-    /// let graph = Graph::new();
-    /// ```
+    /// Creates an empty graph structure.
     pub fn new() -> Graph {
         Graph {
-            nodes: HashMap::new(),
-            links: HashMap::new(),
             renderer: Renderer::new(),
-            svg_automatic_animation: true,
-            svg_automatic_layout: true,
+            auto_animation: false,
+            adja: BTreeMap::new(),
+            anim_state: AnimState::Resumed,
+            layout_on_resume: false,
         }
     }
 
-    fn node_add_from(&mut self, name: &str, cx: &str, cy: &str, value: &str) -> Result<(), String> {
-        let name = name.chars().next().unwrap();
+    /// Appends graph structure elements from an existing graph.
+    ///
+    /// # Example
+    /// ```
+    /// use dynalgo::graph::Graph;
+    ///
+    /// let mut graph = Graph::new();
+    /// graph.node_add('A');
+    /// graph.node_add('B');
+    /// graph.link_add('A', 'B', true, 0);
+    ///
+    /// let mut other_graph = Graph::new();
+    /// other_graph.append_from_graph(&graph);
+    ///
+    /// assert!(other_graph.nodes_list() == vec!['A', 'B']);
+    /// assert!(other_graph.graph_config() == graph.graph_config());
+    /// ```
+    pub fn append_from_graph(&mut self, graph: &Graph) -> Result<&mut Self, GraphError> {
+        self.append_from_config(&graph.to_string())?;
 
-        let value = if value == "_" {
-            None
-        } else {
-            match value.parse::<u8>() {
-                Ok(v) => Some(v),
-                Err(_) => Err(format!("Node {} - Invalid indicator value {}", name, value))?,
-            }
-        };
+        Ok(self)
+    }
+
+    /// Appends graph structure elements from a graph configuration.
+    ///
+    /// # Example
+    /// ```
+    /// use dynalgo::graph::Graph;
+    ///
+    /// let config = "A
+    ///               B
+    ///               A - B 0";
+    /// let mut graph = Graph::new();
+    /// graph.append_from_config(config);
+    ///
+    /// assert!(graph.nodes_list() == vec!['A', 'B']);
+    /// ```
+    pub fn append_from_config(&mut self, graph_config: &str) -> Result<&mut Self, GraphError> {
+        self.graph_from_config(graph_config)?;
+
+        Ok(self)
+    }
+
+    fn node_add_from(&mut self, name: &str, cx: &str, cy: &str) -> Result<&mut Self, GraphError> {
+        if name.chars().count() != 1 {
+            Err(GraphError {
+                action: String::from("add a node"),
+                message: format!("'{}' is an invalid node name (char type requiered)", name),
+            })?
+        }
+        let name = name.chars().next().unwrap();
 
         if cx != "_" {
             let cx = match cx.parse::<i16>() {
                 Ok(v) => v,
-                Err(_) => Err(format!("Node {} - Invalid cx value {}", name, cx))?,
+                Err(_) => Err(GraphError {
+                    action: String::from("add a node"),
+                    message: format!("'{}' is an invalid x coordinate for node {}", cx, name),
+                })?,
             };
 
             let cy = match cy.parse::<i16>() {
                 Ok(v) => v,
-                Err(_) => Err(format!("Node {} - Invalid cy value {}", name, cy))?,
+                Err(_) => Err(GraphError {
+                    action: String::from("add a node"),
+                    message: format!("'{}' is an invalid y coordinate for node {}", cy, name),
+                })?,
             };
 
-            self.node_add_xy(name, Some((cx, cy)), value)?;
+            self.node_add_xy(name, Some((cx, cy)))?;
         } else {
-            self.node_add(name, value)?;
+            self.node_add(name)?;
         }
 
-        Ok(())
+        Ok(self)
     }
 
     /// Adds a node to the graph structure.
-    ///
-    /// # Example:
-    ///
-    /// ```
-    /// use dynalgo::graph::Graph;
-    /// use std::fs::File;
-    /// use std::io::Write;
-    ///
-    /// let mut graph = Graph::new();
-    /// graph.node_add('A', None);
-    /// graph.node_add('B', None);
-    /// graph.link_add('α', 'A', 'B', true, None);
-    /// graph.node_add('C', None);
-    /// graph.link_add('β', 'C', 'B', true, None);
-    /// graph.node_add('D', None);
-    /// graph.link_add('γ', 'D', 'A', true, None);
-    /// graph.link_add('δ', 'B', 'C', true, None);
-    ///
-    /// let html = graph.svg_render_animation_html("node_add example");
-    /// write!(File::create("example-node_add.html").unwrap(), "{}", html);
-    /// ```
-    pub fn node_add(&mut self, name: char, value: Option<u8>) -> Result<(), String> {
-        self.node_add_xy(name, None, value)
+    pub fn node_add(&mut self, name: char) -> Result<&mut Self, GraphError> {
+        self.node_add_xy(name, None)
     }
 
-    /// Adds a node to the graph structure, with a fixed (x,y) position (fixed coords of the element representation in SVG context).
-    ///
-    /// # Example:
-    ///
-    /// ```
-    /// use dynalgo::graph::Graph;
-    /// use std::fs::File;
-    /// use std::io::Write;
-    ///
-    /// let mut graph = Graph::new();
-    /// graph.node_add_fixed('A', 400, 400, None);
-    /// graph.node_add_fixed('B', 400, 100, None);
-    /// graph.node_add_fixed('C', 100, 400, None);
-    /// graph.node_add_fixed('D', 100, 100, None);
-    /// graph.node_add('E', None);
-    /// graph.link_add('α', 'E', 'A', true, None);
-    /// graph.link_add('β', 'E', 'B', true, None);
-    /// graph.link_add('γ', 'E', 'C', true, None);
-    /// graph.link_add('δ', 'E', 'D', true, None);
-    ///
-    /// let html = graph.svg_render_animation_html("node_add_fixed example");
-    /// write!(File::create("example-node_add_fixed.html").unwrap(), "{}", html);
-    /// ```
-    pub fn node_add_fixed(
+    /// Adds a node to the graph structure, with a freezed (x,y) position (freezed coords of the element representation in SVG context). So the (x,y) position won't change when automatic layout algo runs.
+    pub fn node_add_freezed(
         &mut self,
         name: char,
         x: i16,
         y: i16,
-        value: Option<u8>,
-    ) -> Result<(), String> {
-        self.node_add_xy(name, Some((x, y)), value)
+    ) -> Result<&mut Self, GraphError> {
+        self.node_add_xy(name, Some((x, y)))
     }
 
-    fn node_add_xy(
-        &mut self,
-        name: char,
-        xy: Option<(i16, i16)>,
-        value: Option<u8>,
-    ) -> Result<(), String> {
+    fn node_add_xy(&mut self, name: char, xy: Option<(i16, i16)>) -> Result<&mut Self, GraphError> {
         self.node_check_not_exist(name)?;
 
-        let node = Node::new(name, value);
+        self.anim_bulk_changes(
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            Some(vec![(name, xy)]),
+            None,
+            self.renderer.p_duration_add,
+        )?;
 
-        self.nodes.insert(name, node);
-        let point = match xy {
-            Some((x, y)) => Some(Point::new(x as i32, y as i32)),
-            None => None,
-        };
-        self.renderer.node_add(name, point, value);
+        self.anim_layout_need();
 
-        if self.svg_automatic_animation {
-            self.svg_animate(self.renderer.p_duration_add);
-        }
-        if self.svg_automatic_layout {
-            self.svg_layout_nodes(vec![name])?;
-        }
-
-        Ok(())
+        Ok(self)
     }
 
     /// Deletes a node from the graph structure.
-    /// The associated links are also deleted.
-    ///
-    /// # Example:
-    ///
-    /// ```
-    /// use dynalgo::graph::Graph;
-    /// use std::fs::File;
-    /// use std::io::Write;
-    ///
-    /// let mut graph = Graph::new();
-    /// graph.node_add('A', None);
-    /// graph.node_add('B', None);
-    /// graph.link_add('α', 'A', 'B', true, None);
-    /// graph.node_delete('B');
-    ///
-    /// let html = graph.svg_render_animation_html("node_delete example");
-    /// write!(File::create("example-node_delete.html").unwrap(), "{}", html);
-    /// ```
-    pub fn node_delete(&mut self, name: char) -> Result<(), String> {
-        self.node_check_exists(name)?;
-        for link in self.node_links(name)? {
-            self.link_delete(link.name())?;
-        }
-        self.nodes.remove(&name);
-        self.renderer.node_delete(name);
+    pub fn node_delete(&mut self, node: char) -> Result<&mut Self, GraphError> {
+        let links = self.node_links(node)?;
 
-        if self.svg_automatic_animation {
-            self.svg_animate(self.renderer.p_duration_delete);
-        }
+        let links_to_delete: Vec<(char, char)> = links
+            .iter()
+            .map(|(node_from, node_to, _, _)| (*node_from, *node_to))
+            .collect();
 
-        Ok(())
+        self.anim_bulk_changes(
+            None,
+            None,
+            None,
+            None,
+            Some(links_to_delete),
+            Some(vec![node]),
+            None,
+            None,
+            self.renderer.p_duration_delete,
+        )?;
+
+        self.anim_layout_need();
+
+        Ok(self)
     }
 
     fn link_add_from(
         &mut self,
-        name: &str,
-        from_node: &str,
-        to_node: &str,
-        bidirectional: &str,
+        node_from: &str,
+        node_to: &str,
+        bidirect: bool,
         value: &str,
-    ) -> Result<(), String> {
-        let name = name.chars().next().unwrap();
-        let from = from_node.chars().next().unwrap();
-        let to = to_node.chars().next().unwrap();
-
-        let bidirect = match bidirectional.parse::<bool>() {
-            Ok(v) => v,
-            Err(_) => Err(format!(
-                "Link {} - Invalid bidirect value {}",
-                name, bidirectional
-            ))?,
-        };
-
-        let value = if value == "_" {
-            None
-        } else {
-            match value.parse::<u8>() {
-                Ok(v) => Some(v),
-                Err(_) => Err(format!("Link {} - Invalid indicator value {}", name, value))?,
-            }
-        };
-
-        self.link_add(name, from, to, bidirect, value)?;
-
-        Ok(())
-    }
-
-    /// Adds a link between two nodes.
-    /// The link can be defined as bidirectional or not.
-    ///
-    /// # Example:
-    ///
-    /// ```
-    /// use dynalgo::graph::Graph;
-    /// use std::fs::File;
-    /// use std::io::Write;
-    ///
-    /// let mut graph = Graph::new();
-    /// graph.node_add('A', None);
-    /// graph.node_add('B', None);
-    /// graph.link_add('α', 'A', 'B', true, Some(10));
-    ///
-    /// let html = graph.svg_render_animation_html("link_add example");
-    /// write!(File::create("example-link_add.html").unwrap(), "{}", html);
-    /// ```
-    pub fn link_add(
-        &mut self,
-        name: char,
-        from_node: char,
-        to_node: char,
-        bidirectional: bool,
-        value: Option<u8>,
-    ) -> Result<(), String> {
-        self.link_check_not_exist(name, from_node, to_node)?;
-        self.node_check_exists(from_node)?;
-        self.node_check_exists(to_node)?;
-
-        let link = Link::new(name, from_node, to_node, bidirectional, value);
-
-        self.links.insert(name, link);
-        self.renderer
-            .link_add(name, from_node, to_node, bidirectional, value);
-
-        if self.svg_automatic_animation {
-            self.svg_animate(self.renderer.p_duration_add);
-            if self.svg_automatic_layout {
-                self.svg_layout_nodes(vec![from_node, to_node])?;
-            }
+    ) -> Result<&mut Self, GraphError> {
+        if node_from.chars().count() != 1 {
+            Err(GraphError {
+                action: String::from("add a link"),
+                message: format!(
+                    "'{}' is an invalid node name (char type requiered)",
+                    node_from
+                ),
+            })?
+        }
+        if node_to.chars().count() != 1 {
+            Err(GraphError {
+                action: String::from("add a link"),
+                message: format!(
+                    "'{}' is an invalid node name (char type requiered)",
+                    node_to
+                ),
+            })?
         }
 
-        Ok(())
+        let node_from = node_from.chars().next().unwrap();
+        let node_to = node_to.chars().next().unwrap();
+        let value = if value == "_" {
+            0
+        } else {
+            match value.parse::<u8>() {
+                Ok(v) => v,
+                Err(_) => Err(GraphError {
+                    action: String::from("add a link"),
+                    message: format!(
+                        "'{}' is an invalid value for link {}{}",
+                        value, node_from, node_to
+                    ),
+                })?,
+            }
+        };
+
+        self.link_add(node_from, node_to, bidirect, value)?;
+
+        Ok(self)
+    }
+
+    /// Adds a link between two nodes. The link can be defined as bidirectional or not.
+    pub fn link_add(
+        &mut self,
+        node_from: char,
+        node_to: char,
+        bidirectional: bool,
+        value: u8,
+    ) -> Result<&mut Self, GraphError> {
+        self.link_check_not_exist(node_from, node_to)?;
+
+        self.anim_bulk_changes(
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            Some(vec![(node_from, node_to, bidirectional, value)]),
+            self.renderer.p_duration_add,
+        )?;
+
+        self.anim_layout_need();
+
+        Ok(self)
     }
 
     /// Deletes a link.
-    ///
-    /// # Example:
-    ///
-    /// ```
-    /// use dynalgo::graph::Graph;
-    /// use std::fs::File;
-    /// use std::io::Write;
-    ///
-    /// let mut graph = Graph::new();
-    /// graph.node_add('A', None);
-    /// graph.node_add('B', None);
-    /// graph.link_add('α', 'A', 'B', true, Some(10));
-    /// graph.link_delete('α');
-    ///
-    /// let html = graph.svg_render_animation_html("link_delete example");
-    /// write!(File::create("example-link_delete.html").unwrap(), "{}", html);
-    /// ```
-    pub fn link_delete(&mut self, name: char) -> Result<(), String> {
-        self.link_check_exists(name)?;
+    pub fn link_delete(&mut self, node_from: char, node_to: char) -> Result<&mut Self, GraphError> {
+        self.link_check_exists(node_from, node_to)?;
 
-        //let link = self.links.get(&name).unwrap();
-        //let (from_node, to_node) = (link.from(), link.to());
+        self.anim_bulk_changes(
+            None,
+            None,
+            None,
+            None,
+            Some(vec![(node_from, node_to)]),
+            None,
+            None,
+            None,
+            self.renderer.p_duration_delete,
+        )?;
 
-        self.links.remove(&name);
-        self.renderer.link_delete(name);
+        self.anim_layout_need();
 
-        if self.svg_automatic_animation {
-            self.svg_animate(self.renderer.p_duration_delete);
-            //if self.svg_automatic_layout {
-            //    self.svg_layout(vec![from_node, to_node]);
-            //}
-        }
-
-        Ok(())
-    }
-
-    /// Returns the optional value associated to the node.
-    ///
-    /// # Example:
-    ///
-    /// ```
-    /// use dynalgo::graph::Graph;
-    ///
-    /// let mut graph = Graph::new();
-    /// graph.node_add('A', Some(10));
-    /// let value : Option<u8> = graph.node_value('A').unwrap();
-    /// ```
-    pub fn node_value(&self, name: char) -> Result<Option<u8>, String> {
-        self.node_check_exists(name)?;
-        Ok(self.nodes.get(&name).unwrap().value())
+        Ok(self)
     }
 
     /// Returns the list of nodes names.
-    ///
-    /// # Example:
-    ///
-    /// ```
-    /// use dynalgo::graph::Graph;
-    ///
-    /// let mut graph = Graph::new();
-    /// graph.node_add('A', None);
-    /// graph.node_add('B', None);
-    /// let nodes : Vec<char> = graph.nodes_list();
-    /// ```
     pub fn nodes_list(&self) -> Vec<char> {
-        self.nodes.keys().cloned().collect()
+        self.adja.keys().cloned().collect()
     }
 
-    fn node_links(&self, name: char) -> Result<Vec<Link>, String> {
-        self.node_check_exists(name)?;
-
-        let mut links = Vec::new();
-        for (_, link) in &self.links {
-            if link.from() != name && link.to() != name {
-                continue;
-            }
-            links.push(link.clone());
-        }
-
-        Ok(links)
-    }
-
-    /// Returns the graph order
+    /// Returns the adjacency list.
     ///
-    /// # Example:
-    ///
+    /// # Example
     /// ```
     /// use dynalgo::graph::Graph;
+    ///
+    /// let config = "A
+    ///               B
+    ///               A - B 0";
     /// let mut graph = Graph::new();
-    /// graph.node_add('A', None).unwrap();
-    /// graph.node_add('B', None).unwrap();
-    /// let order =graph.graph_order();
-    /// assert_eq!(order, 2);
+    /// graph.append_from_config(config);
+    ///
+    /// for (node_from, neighbors) in graph.adjacency_list() {
+    ///     for (node_to, link_value) in neighbors {
+    ///         println!("Can go from {} to {} (link value is {}).", node_from, node_to, link_value);
+    ///     }
+    /// }
     /// ```
-    pub fn graph_order(&self) -> usize {
-        self.nodes_list().len()
+    pub fn adjacency_list(&self) -> BTreeMap<char, BTreeMap<char, u8>> {
+        self.adja.clone()
     }
 
-    /// Returns the graph size
-    ///
-    /// # Example:
-    ///
-    /// ```
-    /// use dynalgo::graph::Graph;
-    /// let mut graph = Graph::new();
-    /// graph.node_add('A', None).unwrap();
-    /// graph.node_add('B', None).unwrap();
-    /// graph.link_add('α', 'A', 'B', true, None).unwrap();
-    /// let size = graph.graph_size();
-    /// assert_eq!(size, 1);
-    /// ```
-    pub fn graph_size(&self) -> usize {
-        let sum: usize = self.graph_sequence().iter().sum();
-        assert!(sum % 2 == 0);
-        sum / 2
-    }
+    fn adjacency_list_undirected(&self) -> BTreeMap<char, BTreeMap<char, u8>> {
+        let mut adja = self.adjacency_list();
 
-    /// Indicates whether the graph is directed or not
-    ///
-    /// # Example:
-    ///
-    /// ```
-    /// use dynalgo::graph::Graph;
-    /// let mut graph = Graph::new();
-    /// graph.node_add('A', None).unwrap();
-    /// graph.node_add('B', None).unwrap();
-    /// graph.link_add('α', 'A', 'B', false, None).unwrap();
-    /// let is_directed = graph.graph_directed();
-    /// assert!(is_directed);
-    /// ```
-    pub fn graph_directed(&self) -> bool {
-        let adjacencies = self.adjacency_list();
-        for (node_from, adjacent) in &adjacencies {
-            for (node_to, _) in adjacent {
-                match adjacencies.get(&node_to).unwrap().get(&node_from) {
-                    None => return true,
-                    _ => {}
+        for (node_from, neighbors) in &self.adja {
+            for (node_to, value) in neighbors {
+                if self.adja.get(node_to).unwrap().get(node_from).is_none() {
+                    adja.get_mut(node_to).unwrap().insert(*node_from, *value);
                 }
             }
         }
-        false
+
+        adja
     }
 
-    /// Returns the nodes degrees
-    ///
-    /// # Example:
-    ///
-    /// ```
-    /// use dynalgo::graph::Graph;
-    /// let mut graph = Graph::new();
-    /// graph.node_add('A', None).unwrap();
-    /// graph.node_add('B', None).unwrap();
-    /// let degrees = graph.nodes_degrees();
-    /// ```
-    pub fn nodes_degrees(&self) -> HashMap<char, usize> {
-        let mut degrees = HashMap::new();
-        let adjacencies = self.adjacency_list();
+    /// Returns the nodes degrees.
+    pub fn nodes_degrees(&self) -> BTreeMap<char, usize> {
+        let mut degrees = BTreeMap::new();
 
-        for (node_from, adjacent) in &adjacencies {
-            degrees.insert(*node_from, adjacent.len());
+        for (node_from, neighbors) in &self.adja {
+            degrees.insert(*node_from, neighbors.len());
         }
 
-        for (node_from, adjacent) in &adjacencies {
-            for (node_to, _) in adjacent {
-                match adjacencies.get(&node_to).unwrap().get(&node_from) {
-                    None => {
-                        let degree = degrees.get_mut(&node_to).unwrap();
-                        *degree += 1;
-                    }
-                    _ => {}
+        for (node_from, neighbors) in &self.adja {
+            for (node_to, _) in neighbors {
+                if self.adja.get(&node_to).unwrap().get(&node_from).is_none() {
+                    let degree = degrees.get_mut(&node_to).unwrap();
+                    *degree += 1;
                 }
             }
         }
@@ -448,21 +367,148 @@ impl Graph {
         degrees
     }
 
-    /// Returns the sequence (degrees in decreasing order)
+    fn node_links(&self, node: char) -> Result<Vec<(char, char, bool, u8)>, GraphError> {
+        self.node_check_exists(node)?;
+
+        let mut links = Vec::new();
+
+        for (neighbor, value) in self.adja.get(&node).unwrap().iter() {
+            let bidirect = self.adja.get(&neighbor).unwrap().get(&node).is_some();
+            links.push((node, *neighbor, bidirect, *value));
+        }
+        for (node_other, neighbors_other) in self.adja.iter() {
+            if *node_other == node {
+                continue;
+            };
+            if let Some(value) = neighbors_other.get(&node) {
+                if self.adja.get(&node).unwrap().get(&node_other).is_none() {
+                    links.push((*node_other, node, false, *value));
+                }
+            }
+        }
+
+        Ok(links)
+    }
+
+    /// Returns the neighbors accessible from a node.
     ///
-    /// # Example:
-    ///
+    /// # Example
     /// ```
     /// use dynalgo::graph::Graph;
+    ///
+    /// let config = "A
+    ///               B
+    ///               A - B 0";
     /// let mut graph = Graph::new();
-    /// graph.node_add('A', None).unwrap();
-    /// graph.node_add('B', None).unwrap();
-    /// graph.node_add('C', None).unwrap();
-    /// graph.link_add('α', 'A', 'B', true, None).unwrap();
-    /// graph.link_add('β', 'B', 'C', true, None).unwrap();
-    /// let sequence = graph.graph_sequence();
-    /// assert_eq!(sequence, vec![2,1,1]);
+    /// graph.append_from_config(config);
+    ///
+    /// for (neighbor, link_value) in graph.node_neighbors('A').unwrap() {
+    ///     println!("Can go from 'A' to {} (link value is {}).", neighbor, link_value);
+    /// }
     /// ```
+    pub fn node_neighbors(&self, node: char) -> Result<Vec<(char, u8)>, GraphError> {
+        self.node_check_exists(node)?;
+
+        let neighbors = self
+            .adja
+            .get(&node)
+            .unwrap()
+            .iter()
+            .map(|(k, v)| (*k, *v))
+            .collect();
+
+        Ok(neighbors)
+    }
+
+    /// Exchanges two nodes in the graph structure and its graphic representation.
+    pub fn nodes_exchange(&mut self, node_1: char, node_2: char) -> Result<&mut Self, GraphError> {
+        self.node_check_exists(node_1)?;
+        self.node_check_exists(node_2)?;
+
+        let (x1, y1, freezed_1) = self.anim_node_position(node_1)?;
+        let (x2, y2, freezed_2) = self.anim_node_position(node_2)?;
+
+        let mut links = self.node_links(node_1)?;
+        let links_2 = self.node_links(node_2)?;
+        links.extend(&links_2);
+
+        let links_to_delete: Vec<(char, char)> = links
+            .iter()
+            .map(|(node_from, node_to, _, _)| (*node_from, *node_to))
+            .collect();
+
+        let mut links_to_add = Vec::new();
+        for (node_from, node_to, bidirect, value) in links {
+            let node_from = match node_from {
+                n if n == node_1 => node_2,
+                n if n == node_2 => node_1,
+                n => n,
+            };
+            let node_to = match node_to {
+                n if n == node_1 => node_2,
+                n if n == node_2 => node_1,
+                n => n,
+            };
+            links_to_add.push((node_from, node_to, bidirect, value));
+        }
+
+        self.anim_bulk_changes(
+            None,
+            None,
+            None,
+            None,
+            Some(links_to_delete),
+            None,
+            None,
+            None,
+            self.renderer.p_duration_delete,
+        )?;
+
+        self.anim_bulk_changes(
+            None,
+            None,
+            Some(vec![
+                (node_1, (x2, y2), freezed_2),
+                (node_2, (x1, y1), freezed_1),
+            ]),
+            None,
+            None,
+            None,
+            None,
+            None,
+            self.renderer.p_duration_move,
+        )?;
+
+        self.anim_bulk_changes(
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            Some(links_to_add),
+            self.renderer.p_duration_add,
+        )?;
+
+        self.anim_layout_need();
+
+        Ok(self)
+    }
+
+    /// Returns the graph order.
+    pub fn graph_order(&self) -> usize {
+        self.adja.len()
+    }
+
+    /// Returns the graph size.
+    pub fn graph_size(&self) -> usize {
+        let sum: usize = self.graph_sequence().iter().sum();
+        assert!(sum % 2 == 0);
+        sum / 2
+    }
+
+    /// Returns the sequence (degrees in decreasing order).
     pub fn graph_sequence(&self) -> Vec<usize> {
         let degrees = self.nodes_degrees();
         let mut sequence = Vec::new();
@@ -473,906 +519,702 @@ impl Graph {
         sequence
     }
 
-    /// Returns an adjacency list.
-    ///
-    /// # Example:
-    ///
-    /// ```
-    /// use dynalgo::graph::Graph;
-    /// use std::collections::HashMap;
-    ///
-    /// let mut graph = Graph::new();
-    /// graph.node_add('A', None);
-    /// graph.node_add('B', None);
-    /// graph.link_add('α', 'A', 'B', true, Some(10));
-    ///
-    /// let adjacency : HashMap<char, HashMap<char, (char, Option<u8>)>> = graph.adjacency_list();
-    /// for (node_from, adjacent) in adjacency {
-    ///     for (node_to, link) in adjacent {
-    ///         println!("Can go from node {} to node {}", node_from, node_to);
-    ///         match link {
-    ///             (link_name, Some(value)) => println!("Link {} has value {}", link_name, value),
-    ///             (link_name, None) => println!("Link is {}", link_name),
-    ///         }
-    ///     }
-    /// }
-    /// ```
-    pub fn adjacency_list(&self) -> HashMap<char, HashMap<char, (char, Option<u8>)>> {
-        let mut adjacency = HashMap::new();
-        for (name, _) in &self.nodes {
-            adjacency.insert(*name, HashMap::new());
+    fn graph_from_config(&mut self, graph_config: &str) -> Result<&mut Self, GraphError> {
+        let anim_state_init = self.anim_state;
+        if anim_state_init == AnimState::Resumed {
+            self.anim_pause()?;
         }
-
-        for (_, link) in &self.links {
-            adjacency
-                .get_mut(&link.from())
-                .unwrap()
-                .insert(link.to(), (link.name(), link.value()));
-
-            if link.bidirect() {
-                adjacency
-                    .get_mut(&link.to())
-                    .unwrap()
-                    .insert(link.from(), (link.name(), link.value()));
-            }
-        }
-
-        adjacency
-    }
-
-    /// Exchanges two nodes in the graph structure.
-    ///
-    /// # Example:
-    ///
-    /// ```
-    /// use dynalgo::graph::Graph;
-    /// use std::fs::File;
-    /// use std::io::Write;
-    ///
-    /// let mut graph = Graph::new();
-    /// graph.svg_param_display_link_label(true);
-    /// graph.node_add('A', None);
-    /// graph.node_add('B', None);
-    /// graph.node_add('C', None);
-    /// graph.link_add('α', 'A', 'B', true, None);
-    /// graph.link_add('β', 'B', 'C', true, None);
-    /// graph.link_add('γ', 'C', 'A', true, None);
-    /// graph.nodes_exchange('A', 'B');
-    ///
-    /// let html = graph.svg_render_animation_html("nodes_exchange example");
-    /// write!(File::create("example-nodes_exchange.html").unwrap(), "{}", html);
-    /// ```
-    pub fn nodes_exchange(&mut self, name_1: char, name_2: char) -> Result<(), String> {
-        self.node_check_exists(name_1)?;
-        self.node_check_exists(name_2)?;
-
-        let (x1, y1) = self.svg_node_position(name_1)?;
-        let (x2, y2) = self.svg_node_position(name_2)?;
-
-        let links_1 = self.node_links(name_1)?;
-        let links_2 = self.node_links(name_2)?;
-
-        let automatic_layout = self.svg_automatic_layout;
-        self.svg_automatic_layout(false);
-        let automatic_animation = self.svg_automatic_animation;
-        self.svg_automatic_animation(false);
-
-        let mut already = Vec::new();
-        for link in &links_1 {
-            self.link_delete(link.name())?;
-            already.push(link.name());
-        }
-        for link in &links_2 {
-            if already.contains(&link.name()) {
-                continue;
-            }
-            self.link_delete(link.name())?;
-        }
-
-        if automatic_animation {
-            self.svg_animate(self.renderer.p_duration_delete);
-        }
-        self.svg_bulk_changes(
-            None,
-            None,
-            Some(vec![(name_1, (x2, y2)), (name_2, (x1, y1))]),
-            None,
-            self.renderer.p_duration_move,
-        )?;
-
-        if automatic_animation {
-            self.svg_animate(self.renderer.p_duration_move);
-        }
-
-        for link in &links_1 {
-            let from = match link.from() {
-                n if n == name_1 => name_2,
-                n if n == name_2 => name_1,
-                n => n,
-            };
-            let to = match link.to() {
-                n if n == name_1 => name_2,
-                n if n == name_2 => name_1,
-                n => n,
-            };
-            self.link_add(link.name(), from, to, link.bidirect(), link.value())?;
-        }
-        for link in &links_2 {
-            if already.contains(&link.name()) {
-                continue;
-            }
-            let from = match link.from() {
-                n if n == name_1 => name_2,
-                n if n == name_2 => name_1,
-                n => n,
-            };
-            let to = match link.to() {
-                n if n == name_1 => name_2,
-                n if n == name_2 => name_1,
-                n => n,
-            };
-            self.link_add(link.name(), from, to, link.bidirect(), link.value())?;
-        }
-
-        if automatic_animation {
-            self.svg_animate(self.renderer.p_duration_add);
-        }
-        self.svg_automatic_animation(automatic_animation);
-        self.svg_automatic_layout(automatic_layout);
-
-        Ok(())
-    }
-
-    /// Imports a graph structure from a formatted String
-    ///
-    /// # Example:
-    ///
-    /// ```
-    /// use dynalgo::graph::Graph;
-    /// use std::fs::File;
-    /// use std::io::Write;
-    ///
-    /// let mut graph = Graph::new();
-    /// let dyna = String::from(
-    ///        "N A _ _ _
-    ///         N B _ _ _
-    ///         N C _ _ _
-    ///         L a A B true 1
-    ///         L b A C true 2
-    ///         L c B C true 3"
-    /// );
-    /// graph.dyna_from(dyna);
-    ///
-    /// let html = graph.svg_render_animation_html("dyna_from example");
-    /// write!(File::create("example-dyna_from.html").unwrap(), "{}", html);
-    /// ```
-    pub fn dyna_from(&mut self, graph_config: String) -> Result<(), String> {
-        let automatic_animation = self.svg_automatic_animation;
-        self.svg_automatic_animation(false);
 
         for lign in graph_config.lines() {
             let fields: Vec<&str> = lign.trim().split_whitespace().collect();
             match fields.as_slice() {
-                ["N", name, cx, cy, value] => {
-                    self.node_add_from(name, cx, cy, value)?;
+                [node_1, "-", node_2, value] => {
+                    self.link_add_from(node_1, node_2, true, value)?;
                 }
-                ["L", name, from, to, bidirect, value] => {
-                    self.link_add_from(name, from, to, bidirect, value)?;
+                [node_1, "-", node_2] => {
+                    self.link_add_from(node_1, node_2, true, "_")?;
                 }
-                _ => Err(format!("Invalid graph config file - Line: {}", lign))?,
+                [node_from, ">", node_to, value] => {
+                    self.link_add_from(node_from, node_to, false, value)?;
+                }
+                [node_from, ">", node_to] => {
+                    self.link_add_from(node_from, node_to, false, "_")?;
+                }
+                [node, cx, cy] => {
+                    self.node_add_from(node, cx, cy)?;
+                }
+                [node] => {
+                    self.node_add_from(node, "_", "_")?;
+                }
+                _ => Err(GraphError {
+                    action: String::from("parse config"),
+                    message: format!("line '{}' is invalid", lign),
+                })?,
             }
         }
 
-        self.svg_animate(self.renderer.p_duration_add);
-        self.svg_automatic_animation(automatic_animation);
-
-        if self.svg_automatic_layout {
-            self.svg_layout();
+        if anim_state_init == AnimState::Resumed {
+            self.anim_resume()?;
         }
 
-        Ok(())
+        Ok(self)
     }
 
-    /// Exports a graph structure to a formatted String
-    ///
-    /// # Example:
-    ///
-    /// ```
-    /// use dynalgo::graph::Graph;
-    /// use std::fs::File;
-    /// use std::io::Write;
-    ///
-    /// let mut graph = Graph::new();
-    /// graph.node_add('A', None);
-    /// graph.node_add('B', Some(2));
-    /// graph.link_add('α', 'A', 'B', true, Some(1));
-    /// let dyna = graph.dyna_to();   
-    ///    
-    /// let mut dyna_file = File::create("example-dyna_to.dyna").unwrap();
-    /// write!(dyna_file, "{}", dyna);
-    /// ```
-    pub fn dyna_to(&self) -> String {
-        let mut dyna = String::new();
+    /// Returns a formatted string describing the graph structure.
+    pub fn graph_config(&self) -> String {
+        let mut config = String::new();
 
-        for (name, node) in self.nodes.iter() {
-            let value = match node.value() {
-                Some(v) => format!("{}", v),
-                None => "_".to_string(),
+        for (node_from, _) in &self.adja {
+            let (x, y, freezed) = self.anim_node_position(*node_from).unwrap();
+            let lign = match freezed {
+                true => format!("{} {} {}\n", node_from, x, y),
+                false => format!("{}\n", node_from),
             };
-            let center = self.renderer.node_center(*name);
-            let lign = format!(
-                "N {} {} {} {}\n",
-                node.name(),
-                center.x(),
-                center.y(),
-                value
-            );
-            dyna.push_str(&lign);
+            config.push_str(&lign);
         }
 
-        for (_, link) in self.links.iter() {
-            let value = match link.value() {
-                Some(v) => format!("{}", v),
-                None => "_".to_string(),
-            };
-            let lign = format!(
-                "L {} {} {} {} {}\n",
-                link.name(),
-                link.from(),
-                link.to(),
-                link.bidirect(),
-                value
-            );
-            dyna.push_str(&lign);
-        }
-
-        dyna
-    }
-
-    fn node_check_exists(&self, name: char) -> Result<(), String> {
-        if self.nodes.get(&name).is_none() {
-            Err(format!("Node {} does not exist", name))?;
-        };
-
-        Ok(())
-    }
-
-    fn node_check_not_exist(&self, name: char) -> Result<(), String> {
-        if self.nodes.get(&name).is_some() {
-            Err(format!("Node {} already exists", name))?;
-        };
-
-        Ok(())
-    }
-
-    fn link_check_exists(&self, name: char) -> Result<(), String> {
-        if self.links.get(&name).is_none() {
-            Err(format!("Link {} does not exist", name))?;
-        };
-
-        Ok(())
-    }
-
-    fn link_check_not_exist(
-        &self,
-        name: char,
-        from_node: char,
-        to_node: char,
-    ) -> Result<(), String> {
-        if self.links.get(&name).is_some() {
-            Err(format!("Link {} already exists", name))?;
-        }
-
-        if from_node == to_node {
-            Err(format!("Link {} is invalid (loop is not allowed)", name))?;
-        }
-
-        for (_, link) in &self.links {
-            if link.from() == from_node && link.to() == to_node
-                || link.from() == to_node && link.to() == from_node
-            {
-                Err(format!(
-                    "A link {} similar to {} already exists (multiple edges are not allowed)",
-                    link.name(),
-                    name
-                ))?;
+        for (node_from, neighbors) in &self.adja {
+            for (node_to, value) in neighbors {
+                let bidirect = match self.adja[&node_to].get(&node_from) {
+                    Some(_) => "-",
+                    None => ">",
+                };
+                if bidirect == "-" && node_from > node_to {
+                    continue;
+                }
+                let lign = format!("{} {} {} {}\n", node_from, bidirect, node_to, value);
+                config.push_str(&lign);
             }
         }
 
+        config
+    }
+
+    fn node_check_exists(&self, node: char) -> Result<(), GraphError> {
+        if self.adja.get(&node).is_none() {
+            Err(GraphError {
+                action: String::from("use a node"),
+                message: format!("node '{}' does not exist", node),
+            })?;
+        };
+
         Ok(())
     }
 
-    /// Activates or deactivates the `svg_automatic_animation` option (affects only SVG rendering).
-    /// When this option is activated, each change in the structure of the graph, and each change in the property of the representation of the node or of the link causes a graphic animation (the animations occur one after the other).
-    /// If this option is deactivated, then all the pending animations occur during the same period (i.e. not one after the other) when you manually call the `svg_animate` function.
-    ///
-    /// # Example:
-    ///
-    /// ```
-    /// use dynalgo::graph::Graph;
-    /// use std::fs::File;
-    /// use std::io::Write;
-    ///
-    /// let mut graph = Graph::new();
-    /// graph.node_add('A', None);
-    /// graph.node_add('B', None);
-    /// graph.link_add('α', 'A', 'B', true, Some(10));
-    /// graph.svg_automatic_animation(false);
-    /// graph.node_add_fixed('C', 0, 60, None);
-    /// graph.node_add_fixed('D', 0, -60, None);
-    /// graph.link_add('β', 'A', 'C', true, Some(20));
-    /// graph.link_add('γ', 'D', 'C', true, Some(30));
-    /// graph.svg_animate(5000);
-    /// graph.svg_automatic_animation(true);
-    /// graph.svg_layout();
-    ///
-    /// let html = graph.svg_render_animation_html("svg_automatic_animation example");
-    /// write!(File::create("example-svg_automatic_animation.html").unwrap(), "{}", html);
-    /// ```
-    pub fn svg_automatic_animation(&mut self, automatic: bool) {
-        self.svg_automatic_animation = automatic;
+    fn node_check_not_exist(&self, node: char) -> Result<(), GraphError> {
+        if self.adja.get(&node).is_some() {
+            Err(GraphError {
+                action: String::from("add a node"),
+                message: format!("node {} already exists", node),
+            })?;
+        };
+
+        Ok(())
     }
 
-    /// Creates SVG animations with SMIL language (affects only SVG rendering).
-    /// Each change in the structure of the graph, and each change in the property of the representation of the node or of the link causes an animation.
-    /// The animation show the evolution between the last represented state and the current state.
-    /// The value of the duration_ms parameter can not be less than 1 ms.
-    ///
-    /// # Example:
-    ///
-    /// ```
-    /// use dynalgo::graph::Graph;
-    /// use std::fs::File;
-    /// use std::io::Write;
-    ///
-    /// let mut graph = Graph::new();
-    /// graph.node_add_fixed('A', 0, 0, None);
-    /// graph.node_add_fixed('B', 100, 0, None);
-    /// graph.node_add_fixed('C', 50, -50, None);
-    /// graph.link_add('α', 'A', 'B', true, None);
-    /// graph.svg_node_move('A', 50, 0);
-    /// graph.svg_node_move('A', 50, 50);
-    /// graph.svg_node_move('A', 0, 50);
-    /// graph.svg_automatic_animation(false);
-    /// graph.svg_node_move('B', 150, 0);
-    /// graph.svg_node_move('B', 150, 50);
-    /// graph.svg_node_move('B', 100, 50);
-    /// graph.svg_animate(750);
-    /// graph.svg_automatic_animation(true);
-    /// graph.nodes_exchange('A', 'B');
-    /// graph.svg_automatic_animation(false);
-    /// graph.svg_node_color('A', 255, 0, 0);
-    /// graph.svg_node_color('B', 0, 255, 0);
-    /// graph.nodes_exchange('A', 'B');
-    /// graph.nodes_exchange('A', 'B');
-    /// graph.svg_node_color('C', 0, 0, 255);
-    /// graph.svg_animate(750);
-    ///
-    /// let html = graph.svg_render_animation_html("svg_animate example");
-    /// write!(File::create("example-svg_animate.html").unwrap(), "{}", html);
-    /// ```
-    pub fn svg_animate(&mut self, duration_ms: u32) {
+    fn link_check_exists(&self, node_from: char, node_to: char) -> Result<(), GraphError> {
+        self.node_check_exists(node_from)?;
+        self.node_check_exists(node_to)?;
+        if self.adja.get(&node_from).unwrap().get(&node_to).is_none() {
+            Err(GraphError {
+                action: String::from("use a link"),
+                message: format!("link '{}{}' does not exist", node_from, node_to),
+            })?;
+        };
+
+        Ok(())
+    }
+
+    fn link_check_not_exist(&self, node_from: char, node_to: char) -> Result<(), GraphError> {
+        self.node_check_exists(node_from)?;
+        self.node_check_exists(node_to)?;
+
+        if node_from == node_to {
+            Err(GraphError {
+                action: String::from("add a link"),
+                message: format!(
+                    "link {}{} is invalid (loop is not allowed)",
+                    node_from, node_to
+                ),
+            })?;
+        }
+
+        if self.adja.get(&node_from).unwrap().get(&node_to).is_some() {
+            Err(GraphError {
+                action: String::from("add a link"),
+                message: format!("link {}{} already exists", node_from, node_to),
+            })?;
+        };
+
+        if self.adja.get(&node_to).unwrap().get(&node_from).is_some() {
+            Err(GraphError {
+                action: String::from("add a link"),
+                message: format!("directed link {}{} already exists", node_to, node_from),
+            })?;
+        };
+
+        Ok(())
+    }
+
+    /// Reactivates the `auto animation` option.
+    /// When this option is activated, each graph structure change causes graphic animation (the animations are rendered one after the other). By default, the option is activated when a graph is created.
+    /// When this option is deactivated, all pending animations occur during the same period (i.e. not one after the other) when you manually call the `anim_step()` or `anim_resume()`functions.
+    pub fn anim_resume(&mut self) -> Result<&mut Self, GraphError> {
+        match self.anim_state {
+            AnimState::Paused => {
+                self.anim_step(1)?;
+                self.anim_state = AnimState::Resumed;
+            }
+            _ => Err(GraphError {
+                action: String::from("resume animation"),
+                message: "animation has not been paused previoulsy".to_string(),
+            })?,
+        }
+
+        self.auto_animation = true;
+
+        Ok(self)
+    }
+
+    /// Deactivates the `auto animation` option.
+    pub fn anim_pause(&mut self) -> Result<&mut Self, GraphError> {
+        match self.anim_state {
+            AnimState::Resumed => {
+                self.anim_state = AnimState::Paused;
+            }
+            _ => Err(GraphError {
+                action: String::from("pause animation"),
+                message: "animation has not been resumed previoulsy".to_string(),
+            })?,
+        }
+        self.auto_animation = false;
+
+        Ok(self)
+    }
+
+    /// Creates an animation that show the evolution between the last represented state (when `anim_pause()` function was called previously) and the current state. The pending animations are rendered simultaneously (i.e. not one after the other).
+    /// The `anim_pause()` function must have been called previously.
+    /// After calling `anim_step()` function,  `auto animation` option still is deactivated.
+    pub fn anim_step(&mut self, duration_ms: u32) -> Result<&mut Self, GraphError> {
+        match self.anim_state {
+            AnimState::Paused => {}
+            _ => Err(GraphError {
+                action: String::from("step animation"),
+                message: "animation has not been paused previously".to_string(),
+            })?,
+        }
+        if self.layout_on_resume {
+            self.anim_layout();
+            self.layout_on_resume = false;
+        }
+        self.anim_animate(duration_ms);
+
+        Ok(self)
+    }
+
+    /// Renders graphs animations in SVG SMIL format to HTML format content.
+    /// The HTML code contains a little javascript so that each animation can be paused and resumed by clicking on the image.
+    pub fn render_to_html(title: &str, graphs: Vec<&Graph>) -> String {
+        let mut svgs = Vec::new();
+        for graph in graphs {
+            svgs.push(graph.anim_animation());
+        }
+        Html::render_flexbox(&vec![title.to_string()], 0, &vec!["".to_string()], svgs)
+    }
+
+    /// Renders graphs animations in SVG SMIL format into multiple HTML files.
+    /// Each HTML page contains a menu to access other pages (if there is more than one page).
+    pub fn render_to_html_files(pages: Vec<(&str, Vec<&Graph>)>) -> Result<(), std::io::Error> {
+        let titles: Vec<String> = pages.iter().map(|(title, _)| title.to_string()).collect();
+        let mut file_names: Vec<String> = Vec::new();
+        for title in &titles {
+            file_names.push(title.replace(" ", "_"));
+        }
+        for (i, (_title, graphs)) in pages.iter().enumerate() {
+            let mut svgs = Vec::new();
+            for graph in graphs {
+                svgs.push(graph.anim_animation());
+            }
+            let html = Html::render_flexbox(&titles, i, &file_names, svgs);
+            write!(
+                File::create(format!("{}.{}", file_names[i], "html"))?,
+                "{}",
+                html
+            )?;
+        }
+        Ok(())
+    }
+
+    /// Returns the total duration in milliseconds of rendered animations since the graph was created.
+    pub fn render_duration(&self) -> u32 {
+        self.renderer.duration()
+    }
+
+    /// Returns the current x,y coords of the node in the SVG graphic context.
+    pub fn anim_node_position(&self, node: char) -> Result<(i32, i32, bool), GraphError> {
+        self.node_check_exists(node)?;
+
+        let point = self.renderer.node_center(node);
+        let freezed = self.renderer.node_center_freezed(node);
+        Ok((point.x(), point.y(), freezed))
+    }
+
+    /// Changes the x,y coords of the SVG node representation. If `freezed` parameter is set to `True` then node position will not change when automatic layout algo runs.
+    pub fn anim_node_move(
+        &mut self,
+        node: char,
+        cx: i32,
+        cy: i32,
+        freezed: bool,
+    ) -> Result<&mut Self, GraphError> {
+        self.node_check_exists(node)?;
+
+        self.anim_bulk_changes(
+            None,
+            None,
+            Some(vec![(node, (cx, cy), freezed)]),
+            None,
+            None,
+            None,
+            None,
+            None,
+            self.renderer.p_duration_move,
+        )
+    }
+
+    /// Changes the fill color of the SVG node representation.
+    pub fn anim_node_color(
+        &mut self,
+        node: char,
+        red: u8,
+        green: u8,
+        blue: u8,
+    ) -> Result<&mut Self, GraphError> {
+        self.node_check_exists(node)?;
+
+        self.anim_bulk_changes(
+            None,
+            None,
+            None,
+            Some((vec![node], (red, green, blue))),
+            None,
+            None,
+            None,
+            None,
+            self.renderer.p_duration_color,
+        )
+    }
+
+    /// Changes the selected status of a node (affects only SVG rendering).
+    /// The selected status affects the stroke color of the node.
+    pub fn anim_node_selected(
+        &mut self,
+        node: char,
+        selected: bool,
+    ) -> Result<&mut Self, GraphError> {
+        self.node_check_exists(node)?;
+
+        self.anim_bulk_changes(
+            Some((vec![node], selected)),
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            self.renderer.p_duration_select,
+        )
+    }
+
+    /// Freezes or unfreezes the node position (coords in SVG graphic context), so the current position will change or not when automatic layout algo runs.
+    pub fn anim_node_freeze(&mut self, node: char, set: bool) -> Result<&mut Self, GraphError> {
+        self.node_check_exists(node)?;
+        self.renderer.node_freezed(node, set);
+
+        if !set {
+            self.anim_layout_need();
+        }
+
+        Ok(self)
+    }
+
+    /// Changes the selected status of a link (affects only SVG rendering).
+    /// The selected status affects the stroke color of the link.
+    pub fn anim_link_selected(
+        &mut self,
+        node_from: char,
+        node_to: char,
+        selected: bool,
+    ) -> Result<&mut Self, GraphError> {
+        self.link_check_exists(node_from, node_to)?;
+
+        self.anim_bulk_changes(
+            None,
+            Some((vec![(node_from, node_to)], selected)),
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            self.renderer.p_duration_select,
+        )
+    }
+
+    fn anim_animate(&mut self, duration_ms: u32) -> &mut Self {
         let duration_ms = match duration_ms {
             0 => 1,
             d => d,
         };
         self.renderer.animate(duration_ms);
+
+        self
     }
 
-    /// Activates or deactivates the `svg_automatic_layout` option (affects only SVG rendering).
-    /// When this option is activated, the nodes are layouted as they are created. When this option is deactivated, you must explicitly call the svg_layout or svg_layout_nodes function to layout the created nodes.
-    ///
-    /// # Example:
-    ///
-    /// ```
-    /// use dynalgo::graph::Graph;
-    /// use std::fs::File;
-    /// use std::io::Write;
-    ///
-    /// let mut graph = Graph::new();
-    /// graph.svg_automatic_layout(false);
-    /// graph.node_add('A', None);
-    /// graph.node_add('B', None);
-    /// graph.link_add('α', 'A', 'B', true, Some(10));
-    /// graph.svg_layout();
-    ///
-    /// let html = graph.svg_render_animation_html("svg_automatic_layout example");
-    /// write!(File::create("example-svg_automatic_layout.html").unwrap(), "{}", html);
-    /// ```
-    pub fn svg_automatic_layout(&mut self, automatic: bool) {
-        self.svg_automatic_layout = automatic;
-    }
-
-    /// Layouts the listed nodes (affects only SVG rendering).
-    /// Calling this function is revelant only if the option `svg_automatic_layout` is deactivated.
-    ///
-    /// # Example:
-    ///
-    /// ```
-    /// use dynalgo::graph::Graph;
-    /// use std::fs::File;
-    /// use std::io::Write;
-    ///
-    /// let mut graph = Graph::new();
-    /// graph.node_add('A', None);
-    /// graph.node_add('B', None);
-    /// graph.link_add('α', 'A', 'B', true, None);
-    /// graph.svg_automatic_layout(false);
-    /// graph.node_add('C', None);
-    /// graph.node_add('D', None);
-    /// graph.link_add('β', 'A', 'C', true, None);
-    /// graph.link_add('γ', 'B', 'D', true, None);
-    /// graph.svg_layout_nodes(vec!['C', 'D']);
-    ///
-    /// let html = graph.svg_render_animation_html("svg_layout_nodes example");
-    /// write!(File::create("example-svg_layout_nodes.html").unwrap(), "{}", html);
-    /// ```
-    pub fn svg_layout_nodes(&mut self, nodes_names: Vec<char>) -> Result<(), String> {
-        for name in &nodes_names {
-            self.node_check_exists(*name)?;
+    fn anim_layout_need(&mut self) -> &mut Self {
+        if self.anim_state == AnimState::Resumed {
+            self.anim_layout();
+        } else {
+            self.layout_on_resume = true;
         }
 
-        let adjacencies = self.adjacency_list();
-        self.renderer.layout(&nodes_names, adjacencies);
-        self.svg_animate(self.renderer.p_duration_move);
-
-        Ok(())
+        self
     }
 
-    /// Layouts all the nodes (affects only SVG rendering).
-    /// Calling this function is revelant only if the `svg_automatic_layout` option is deactivated.
-    ///
-    /// # Example:
-    ///
-    /// ```
-    /// use dynalgo::graph::Graph;
-    /// use std::fs::File;
-    /// use std::io::Write;
-    ///
-    /// let mut graph = Graph::new();
-    /// graph.svg_automatic_layout(false);
-    /// graph.node_add('A', None);
-    /// graph.node_add('B', None);
-    /// graph.link_add('α', 'A', 'B', true, None);
-    /// graph.node_add('C', None);
-    /// graph.node_add('D', None);
-    /// graph.link_add('β', 'A', 'C', true, None);
-    /// graph.link_add('γ', 'B', 'D', true, None);
-    /// graph.svg_layout();
-    ///
-    /// let html = graph.svg_render_animation_html("svg_layout example");
-    /// write!(File::create("example-svg_layout.html").unwrap(), "{}", html);
-    /// ```
-    pub fn svg_layout(&mut self) {
-        self.svg_layout_nodes(self.nodes_list()).unwrap()
+    fn anim_layout(&mut self) -> &mut Self {
+        self.renderer.layout(self.adjacency_list_undirected());
+        self.anim_animate(self.renderer.p_duration_move);
+
+        self
     }
 
-    fn svg_render_animation(&self) -> String {
+    fn anim_animation(&self) -> String {
         self.renderer.animation()
     }
 
-    /// Exports the animations in SVG format into a HTML page.
-    /// The HTML page contains a little javascript so that the animation can be paused and resumed by clickig on the image.
-    ///
-    /// # Example:
-    ///
-    /// ```
-    /// use dynalgo::graph::Graph;
-    /// use std::fs::File;
-    /// use std::io::Write;
-    ///
-    /// let mut graph = Graph::new();
-    /// graph.node_add('A', None);
-    /// graph.node_add('B', None);
-    /// graph.node_add('C', None);
-    /// graph.link_add('α', 'A', 'B', true, Some(10));
-    /// graph.link_add('β', 'B', 'C', true, Some(20));
-    /// graph.link_add('γ', 'C', 'A', true, Some(30));
-    ///
-    /// let html_file_content = graph.svg_render_animation_html("svg_render_animation_html example");       
-    /// let mut html_file = File::create("example-svg_render_animation_html.html").unwrap();
-    /// write!(html_file, "{}", html_file_content);
-    /// ```
-    pub fn svg_render_animation_html(&self, title: &str) -> String {
-        Html::render(title, self.svg_render_animation())
-    }
-
-    /// For several graphs, exports the animations in SVG format into a single HTML page.
-    /// The HTML page contains a little javascript so that each animation can be paused and resumed by clickig on the image.
-    ///
-    /// # Example:
-    ///
-    /// ```
-    /// use dynalgo::graph::Graph;
-    /// use std::fs::File;
-    /// use std::io::Write;
-    ///
-    /// let mut graph_1 = Graph::new();
-    /// graph_1.node_add('A', None);
-    /// graph_1.node_add('B', None);
-    /// graph_1.node_add('C', None);
-    /// graph_1.link_add('α', 'A', 'B', true, Some(10));
-    /// graph_1.link_add('β', 'B', 'C', true, Some(20));
-    /// graph_1.link_add('γ', 'C', 'A', true, Some(30));
-    /// let mut graph_2 = Graph::new();
-    /// graph_2.node_add('A', None);
-    /// graph_2.node_add('B', None);
-    /// graph_2.node_add('C', None);
-    /// graph_2.node_add('D', None);
-    /// graph_2.link_add('α', 'A', 'B', false, Some(10));
-    /// graph_2.link_add('β', 'B', 'C', false, Some(20));
-    /// graph_2.link_add('γ', 'C', 'A', false, Some(30));
-    ///
-    /// let html_file_content = Graph::svg_render_animations_html("svg_render_animation_html example",vec![&graph_1, &graph_2]);       
-    /// let mut html_file = File::create("example-svg_render_animations_html.html").unwrap();
-    /// write!(html_file, "{}", html_file_content);
-    /// ```
-    pub fn svg_render_animations_html(title: &str, graphs: Vec<&Graph>) -> String {
-        let mut svgs = Vec::new();
-        for graph in graphs {
-            svgs.push(graph.svg_render_animation());
-        }
-        Html::render_flexbox(title, svgs)
-    }
-
-    /// Returns the current x,y coords of the node in the SVG graphic context.
-    ///
-    /// # Example:
-    ///
-    /// ```
-    /// use dynalgo::graph::Graph;
-    /// let mut graph = Graph::new();
-    /// graph.node_add('A', None);
-    /// let (x,y) : (i32,i32) = graph.svg_node_position('A').unwrap();
-    /// ```
-    pub fn svg_node_position(&self, name: char) -> Result<(i32, i32), String> {
-        self.node_check_exists(name)?;
-
-        let point = self.renderer.node_center(name);
-        Ok((point.x(), point.y()))
-    }
-
-    fn svg_bulk_changes(
+    fn anim_bulk_changes(
         &mut self,
-        nodes_selected: Option<(Vec<char>, bool)>, // ( nodes_names, selected )
-        links_selected: Option<(Vec<char>, bool)>, // ( links_names, selected )
-        nodes_move: Option<Vec<(char, (i32, i32))>>, // Vec<(node_name, (cx: i32, cy: i32))>
-        nodes_color: Option<(Vec<char>, (u8, u8, u8))>, // ( nodes_names, (red, green, blue) )
+        nodes_selected: Option<(Vec<char>, bool)>, // ( nodes, selected )
+        links_selected: Option<(Vec<(char, char)>, bool)>, // ( links, selected )
+        nodes_move: Option<Vec<(char, (i32, i32), bool)>>, // Vec<(node, (cx: i32, cy: i32, freezed))>
+        nodes_color: Option<(Vec<char>, (u8, u8, u8))>,    // ( nodes, (red, green, blue) )
+        links_deleted: Option<Vec<(char, char)>>,
+        nodes_deleted: Option<Vec<char>>,
+        nodes_added: Option<Vec<(char, Option<(i16, i16)>)>>,
+        links_added: Option<Vec<(char, char, bool, u8)>>,
         duration_ms: u32,
-    ) -> Result<(), String> {
+    ) -> Result<&mut Self, GraphError> {
+        let anim_state_init = self.anim_state;
+        if anim_state_init == AnimState::Resumed {
+            self.anim_pause()?;
+        }
+
         match nodes_selected {
-            Some((names, selected)) => {
-                for name in names {
-                    self.node_check_exists(name)?;
-                    self.renderer.node_selected(name, selected);
+            Some((nodes, selected)) => {
+                for node in nodes {
+                    self.renderer.node_selected(node, selected);
                 }
             }
             None => {}
         }
         match links_selected {
-            Some((names, selected)) => {
-                for name in names {
-                    self.link_check_exists(name)?;
-                    self.renderer.link_selected(name, selected);
+            Some((links, selected)) => {
+                for (node_from, node_to) in links {
+                    self.renderer.link_selected(node_from, node_to, selected);
                 }
             }
             None => {}
         }
         match nodes_move {
             Some(moves) => {
-                for (name, (cx, cy)) in moves {
-                    self.node_check_exists(name)?;
-                    self.renderer.node_move(name, Point::new(cx, cy));
+                for (node, (cx, cy), freezed) in moves {
+                    self.renderer.node_move(node, Point::new(cx, cy), freezed);
                 }
             }
             None => {}
         }
         match nodes_color {
-            Some((names, (red, green, blue))) => {
-                for name in names {
-                    self.node_check_exists(name)?;
-                    self.renderer.node_color(name, (red, green, blue));
+            Some((nodes, (red, green, blue))) => {
+                for node in nodes {
+                    self.renderer.node_color(node, (red, green, blue));
+                }
+            }
+            None => {}
+        }
+        match links_deleted {
+            Some(links) => {
+                for (node_from, node_to) in links {
+                    self.adja.get_mut(&node_from).unwrap().remove(&node_to);
+                    self.adja.get_mut(&node_to).unwrap().remove(&node_from);
+
+                    self.renderer.link_delete(node_from, node_to);
+                }
+            }
+            None => {}
+        }
+        match nodes_deleted {
+            Some(nodes) => {
+                for node in nodes {
+                    self.adja.remove(&node);
+                    self.renderer.node_delete(node);
+                }
+            }
+            None => {}
+        }
+        match nodes_added {
+            Some(nodes) => {
+                for (node, xy) in nodes {
+                    self.adja.insert(node, BTreeMap::new());
+
+                    let point = match xy {
+                        Some((x, y)) => Some(Point::new(x as i32, y as i32)),
+                        None => None,
+                    };
+                    self.renderer.node_add(node, point);
+                }
+            }
+            None => {}
+        }
+        match links_added {
+            Some(links) => {
+                for (node_from, node_to, bidirect, value) in links {
+                    self.adja
+                        .get_mut(&node_from)
+                        .unwrap()
+                        .insert(node_to, value);
+                    if bidirect {
+                        self.adja
+                            .get_mut(&node_to)
+                            .unwrap()
+                            .insert(node_from, value);
+                    }
+                    self.renderer.link_add(node_from, node_to, bidirect, value);
                 }
             }
             None => {}
         }
 
-        if self.svg_automatic_animation {
-            self.svg_animate(duration_ms);
+        if anim_state_init == AnimState::Resumed {
+            self.anim_step(duration_ms)?;
+            self.anim_resume()?;
         }
 
-        Ok(())
+        Ok(self)
     }
 
-    /// Changes the selected status of a node (affects only SVG rendering).
-    /// The selected status affects the stroke color of the node.
-    /// # Example:
+    /// Creates a config for an undirected and unvalued graph with a defined sequence.
     ///
+    /// # Example
     /// ```
     /// use dynalgo::graph::Graph;
-    /// use std::fs::File;
-    /// use std::io::Write;
     ///
+    /// let config = Graph::config_with_graph_sequence(vec![4,3,3,3,3], vec!['A','B','C','D','E']).unwrap();
     /// let mut graph = Graph::new();
-    /// graph.svg_automatic_animation(false);
-    /// graph.node_add('A', None);
-    /// graph.node_add('B', None);
-    /// graph.node_add('C', None);
-    /// graph.link_add('α', 'A', 'B', true, Some(10));
-    /// graph.link_add('β', 'B', 'C', true, Some(20));
-    /// graph.link_add('γ', 'C', 'A', true, Some(30));
-    /// graph.svg_automatic_animation(true);
-    /// graph.svg_layout();
-    /// graph.svg_node_selected('A', true);
-    /// graph.svg_node_selected('B', true);
-    /// graph.svg_node_selected('C', true);
+    /// graph.append_from_config(&config);
     ///
-    /// let html = graph.svg_render_animation_html("svg_node_selected example");
-    /// write!(File::create("example-svg_node_selected.html").unwrap(), "{}", html);
+    /// assert_eq!(graph.graph_sequence(), vec![4,3,3,3,3]);
     /// ```
-    pub fn svg_node_selected(&mut self, name: char, selected: bool) -> Result<(), String> {
-        self.svg_bulk_changes(
-            Some((vec![name], selected)),
-            None,
-            None,
-            None,
-            self.renderer.p_duration_select,
-        )
+    pub fn config_with_graph_sequence(
+        sequence: Vec<usize>,
+        node_names: Vec<char>,
+    ) -> Result<String, GraphError> {
+        if node_names.len() != sequence.len() {
+            Err(GraphError {
+                action: String::from("create a config for a graph with a defined sequence"),
+                message: format!(
+                    "the sequence length is different from the node_names length ({} <> {})",
+                    sequence.len(),
+                    node_names.len()
+                ),
+            })?;
+        }
+
+        let mut sequence: Vec<(char, usize)> =
+            node_names.into_iter().zip(sequence.into_iter()).collect();
+
+        let mut graph = Graph::new();
+        graph.anim_pause()?;
+
+        while !sequence.is_empty() {
+            sequence.sort_by(|(_, d1), (_, d2)| d2.cmp(d1));
+            let (node, degree) = sequence.remove(0);
+            if !graph.nodes_list().contains(&node) {
+                graph.node_add(node)?;
+            }
+            if degree == 0 {
+                continue;
+            }
+            if sequence.len() < degree {
+                Err(GraphError {
+                    action: String::from("create a config for a graph with a defined sequence"),
+                    message: String::from(
+                        "the sequence is not valid (graph with such a sequence can't exist)",
+                    ),
+                })?;
+            }
+            for (n, d) in sequence.iter_mut().take(degree) {
+                *d -= 1;
+                if !graph.nodes_list().contains(n) {
+                    graph.node_add(*n)?;
+                }
+                graph.link_add(node, *n, true, 0)?;
+            }
+        }
+
+        Ok(graph.graph_config())
     }
 
-    /// Changes the selected status of a link (affects only SVG rendering).
-    /// The selected status affects the stroke color of the link.
-    /// # Example:
-    ///
-    /// ```
-    /// use dynalgo::graph::Graph;
-    /// use std::fs::File;
-    /// use std::io::Write;
-    ///
-    /// let mut graph = Graph::new();
-    /// graph.svg_automatic_animation(false);
-    /// graph.node_add('A', None);
-    /// graph.node_add('B', None);
-    /// graph.node_add('C', None);
-    /// graph.link_add('α', 'A', 'B', true, Some(10));
-    /// graph.link_add('β', 'B', 'C', true, Some(20));
-    /// graph.link_add('γ', 'C', 'A', true, Some(30));
-    /// graph.svg_automatic_animation(true);
-    /// graph.svg_layout();
-    /// graph.svg_link_selected('α', true);
-    /// graph.svg_link_selected('β', true);
-    /// graph.svg_link_selected('γ', true);
-    ///
-    /// let html = graph.svg_render_animation_html("svg_link_selected example");
-    /// write!(File::create("example-svg_link_selected.html").unwrap(), "{}", html);
-    /// ```
-    pub fn svg_link_selected(&mut self, name: char, selected: bool) -> Result<(), String> {
-        self.svg_bulk_changes(
-            None,
-            Some((vec![name], selected)),
-            None,
-            None,
-            self.renderer.p_duration_select,
-        )
-    }
-
-    /// Changes the x,y coords of the node SVG representation (affects only SVG rendering).
-    ///
-    /// # Example:
-    ///
-    /// ```
-    /// use dynalgo::graph::Graph;
-    /// use std::fs::File;
-    /// use std::io::Write;
-    ///
-    /// let mut graph = Graph::new();
-    /// graph.node_add_fixed('A', -50, 0, None);
-    /// graph.node_add_fixed('C', 450, 400, None);
-    /// graph.node_add('B', None);
-    /// graph.link_add('α', 'A', 'B', true, Some(10));
-    /// graph.link_add('β', 'B', 'C', true, Some(20));
-    /// graph.svg_node_move('B', 0, 0);
-    /// graph.svg_node_move('B', 0, 400);
-    /// graph.svg_node_move('B', 400, 400);
-    /// graph.svg_node_move('B', 400, 0);
-    /// graph.svg_node_move('B', 0, 0);
-    ///
-    /// let html = graph.svg_render_animation_html("svg_node_move example");
-    /// write!(File::create("example-svg_node_move.html").unwrap(), "{}", html);
-    /// ```
-    pub fn svg_node_move(&mut self, name: char, cx: i32, cy: i32) -> Result<(), String> {
-        self.svg_bulk_changes(
-            None,
-            None,
-            Some(vec![(name, (cx, cy))]),
-            None,
-            self.renderer.p_duration_move,
-        )
-    }
-
-    /// Changes the fill color of the node SVG representation (affects only SVG rendering).
-    ///
-    /// # Example:
-    ///
-    /// ```
-    /// use dynalgo::graph::Graph;
-    /// use std::fs::File;
-    /// use std::io::Write;
-    ///
-    /// let mut graph = Graph::new();
-    /// graph.svg_automatic_animation(false);
-    /// graph.node_add('A', None);
-    /// graph.node_add('B', None);
-    /// graph.node_add('C', None);
-    /// graph.link_add('α', 'A', 'B', true, Some(10));
-    /// graph.link_add('β', 'B', 'C', true, Some(20));
-    /// graph.link_add('γ', 'C', 'A', true, Some(30));
-    /// graph.svg_automatic_animation(true);
-    /// graph.svg_layout();
-    /// graph.svg_node_color('A', 255, 0, 0);
-    /// graph.svg_node_color('B', 0, 255, 0);
-    /// graph.svg_node_color('C', 0, 0, 255);
-    /// graph.svg_node_color('A', 0, 255, 0);
-    /// graph.svg_node_color('B', 0, 0, 255);
-    /// graph.svg_node_color('C', 255, 0, 0);
-    ///
-    /// let html = graph.svg_render_animation_html("svg_node_color example");
-    /// write!(File::create("example-svg_node_color.html").unwrap(), "{}", html);
-    /// ```
-    pub fn svg_node_color(
-        &mut self,
-        name: char,
-        red: u8,
-        green: u8,
-        blue: u8,
-    ) -> Result<(), String> {
-        self.svg_bulk_changes(
-            None,
-            None,
-            None,
-            Some((vec![name], (red, green, blue))),
-            self.renderer.p_duration_color,
-        )
-    }
-
-    /// Changes the value of the duration_add parameter (affects only SVG rendering).
-    /// This parameter affects the duration of the animation when a node or a link is added.
-    /// Default value is 500 ms
-    pub fn svg_param_duration_add(&mut self, duration_ms: u32) {
+    /// Changes the value of the `duration_add` parameter.
+    /// This parameter affects the animation duration when node or link is added.
+    /// Default value is 1000 ms
+    pub fn param_duration_add(&mut self, duration_ms: u32) -> &mut Self {
         self.renderer.p_duration_add = duration_ms;
+
+        self
     }
 
-    /// Changes the value of the duration_delete parameter (affects only SVG rendering).
-    /// This parameter affects the duration of the animation when a node or a link is deleted.
-    /// Default value is 500 ms
-    pub fn svg_param_duration_delete(&mut self, duration_ms: u32) {
+    /// Changes the value of the `duration_delete` parameter.
+    /// This parameter affects the animation duration when node or link is deleted.
+    /// Default value is 1000 ms
+    pub fn param_duration_delete(&mut self, duration_ms: u32) -> &mut Self {
         self.renderer.p_duration_delete = duration_ms;
+
+        self
     }
 
-    /// Changes the value of the duration_move parameter (affects only SVG rendering).
-    /// This parameter affects the duration of the animation when a node is moved.
-    /// Default value is 500 ms
-    pub fn svg_param_duration_move(&mut self, duration_ms: u32) {
+    /// Changes the value of the `duration_move` parameter.
+    /// This parameter affects the animation duration when node is moved.
+    /// Default value is 1000 ms
+    pub fn param_duration_move(&mut self, duration_ms: u32) -> &mut Self {
         self.renderer.p_duration_move = duration_ms;
+
+        self
     }
 
-    /// Changes the value of the duration_select parameter (affects only SVG rendering).
-    /// This parameter affects the duration of the animation when a node or a link is selected or deselected.
-    /// Default value is 500 ms
-    pub fn svg_param_duration_select(&mut self, duration_ms: u32) {
+    /// Changes the value of the `duration_select` parameter.
+    /// This parameter affects the animation duration when node or link is selected or deselected.
+    /// Default value is 1000 ms
+    pub fn param_duration_select(&mut self, duration_ms: u32) -> &mut Self {
         self.renderer.p_duration_select = duration_ms;
+
+        self
     }
 
-    /// Changes the value of the duration_color parameter (affects only SVG rendering).
-    /// This parameter affects the duration of the animation when a node is colored.
-    /// Default value is 500 ms
-    pub fn svg_param_duration_color(&mut self, duration_ms: u32) {
+    /// Changes the value of the `duration_color` parameter.
+    /// This parameter affects the animation duration when node is colored.
+    /// Default value is 1000 ms
+    pub fn param_duration_color(&mut self, duration_ms: u32) -> &mut Self {
         self.renderer.p_duration_color = duration_ms;
+
+        self
     }
 
-    /// Changes the value of the color_tag_created parameter (affects only SVG rendering).
-    /// This parameter affects the stroke color of a node or a link when just created.
+    /// Changes the value of the `color_tag_created` parameter.
+    /// This parameter affects the node or link stroke color when just created.
     /// Default rgb  value is (0, 0, 255)
-    pub fn svg_param_color_tag_created(&mut self, red: u8, green: u8, blue: u8) {
+    pub fn param_color_tag_created(&mut self, red: u8, green: u8, blue: u8) -> &mut Self {
         self.renderer.p_color_tag_created = Color::new(red, green, blue);
+
+        self
     }
 
-    /// Changes the value of the color_tag_selected parameter (affects only SVG rendering).
-    /// This parameter affects the stroke color of a node or a link when selected.
+    /// Changes the value of the `color_tag_selected` parameter.
+    /// This parameter affects the node or link stroke color when selected.
     /// Default rgb  value is (191, 255, 0)
-    pub fn svg_param_color_tag_selected(&mut self, red: u8, green: u8, blue: u8) {
+    pub fn param_color_tag_selected(&mut self, red: u8, green: u8, blue: u8) -> &mut Self {
         self.renderer.p_color_tag_selected = Color::new(red, green, blue);
+
+        self
     }
 
-    /// Changes the value of the color_tag_deleted parameter (affects only SVG rendering).
-    /// This parameter affects the color of a node or a link when deleted.
+    /// Changes the value of the `color_tag_deleted` parameter.
+    /// This parameter affects the node or link color when deleted.
     /// Default rgb  value is (255, 0, 0)
-    pub fn svg_param_color_tag_deleted(&mut self, red: u8, green: u8, blue: u8) {
+    pub fn param_color_tag_deleted(&mut self, red: u8, green: u8, blue: u8) -> &mut Self {
         self.renderer.p_color_tag_deleted = Color::new(red, green, blue);
+
+        self
     }
 
-    /// Changes the value of the color_node_fill parameter (affects only SVG rendering).
-    /// This parameter affects the default fill color of a node.
+    /// Changes the value of the `color_node_fill` parameter.
+    /// This parameter affects the node fill color.
     /// Default rgb  value is (255, 255, 255)
-    pub fn svg_param_color_node_fill(&mut self, red: u8, green: u8, blue: u8) {
+    pub fn param_color_node_fill(&mut self, red: u8, green: u8, blue: u8) -> &mut Self {
         self.renderer.p_color_node_fill = Color::new(red, green, blue);
+
+        self
     }
 
-    /// Changes the value of the color_node_stroke parameter (affects only SVG rendering).
-    /// This parameter affects the default stroke color of a node.
+    /// Changes the value of the `color_node_stroke` parameter.
+    /// This parameter affects the node stroke color.
     /// Default rgb  value is (128, 139, 150)
-    pub fn svg_param_color_node_stroke(&mut self, red: u8, green: u8, blue: u8) {
+    pub fn param_color_node_stroke(&mut self, red: u8, green: u8, blue: u8) -> &mut Self {
         self.renderer.p_color_node_stroke = Color::new(red, green, blue);
+
+        self
     }
 
-    /// Changes the value of the color_link_stroke parameter (affects only SVG rendering).
-    /// This parameter affects the stroke color of a link.
+    /// Changes the value of the `color_link_stroke` parameter.
+    /// This parameter affects the link stroke color.
     /// Default rgb  value is (128, 139, 150)
-    pub fn svg_param_color_link_stroke(&mut self, red: u8, green: u8, blue: u8) {
+    pub fn param_color_link_stroke(&mut self, red: u8, green: u8, blue: u8) -> &mut Self {
         self.renderer.p_color_link_stroke = Color::new(red, green, blue);
+
+        self
     }
 
-    /// Changes the value of the color_text parameter (affects only SVG rendering).
+    /// Changes the value of the `color_text` parameter.
     /// This parameter affects the font color.
     /// Default rgb  value is (0, 0, 0)
-    pub fn svg_param_color_text(&mut self, red: u8, green: u8, blue: u8) {
+    pub fn param_color_text(&mut self, red: u8, green: u8, blue: u8) -> &mut Self {
         self.renderer.p_color_text = Color::new(red, green, blue);
+
+        self
     }
 
-    /// Changes the value of the display_node_label parameter (affects only SVG rendering).
+    /// Changes the value of the `display_node_label` parameter.
     /// This parameter indicates whether the node label is displayed or not.
     /// Default value is True
-    pub fn svg_param_display_node_label(&mut self, display: bool) {
+    pub fn param_display_node_label(&mut self, display: bool) -> &mut Self {
         self.renderer.p_display_node_label(display);
+
+        self
     }
 
-    /// Changes the value of the display_node_value parameter (affects only SVG rendering).
-    /// This parameter indicates whether the node value is displayed or not.
-    /// Default value is False
-    pub fn svg_param_display_node_value(&mut self, display: bool) {
-        self.renderer.p_display_node_value(display);
-    }
-
-    /// Changes the value of the display_link_label parameter (affects only SVG rendering).
-    /// This parameter indicates whether the link label is displayed or not.
-    /// Default value is False
-    pub fn svg_param_display_link_label(&mut self, display: bool) {
-        self.renderer.p_display_link_label(display);
-    }
-
-    /// Changes the value of the display_link_value parameter (affects only SVG rendering).
+    /// Changes the value of the `display_link_value` parameter.
     /// This parameter indicates whether the link value is displayed or not.
     /// Default value is True
-    pub fn svg_param_display_link_value(&mut self, display: bool) {
+    pub fn param_display_link_value(&mut self, display: bool) -> &mut Self {
         self.renderer.p_display_link_value(display);
+
+        self
     }
 
-    /// Changes the value of the stroke_width_node parameter (affects only SVG rendering).
-    /// This parameter affects the stroke width of the nodes.
+    /// Changes the value of the `stroke_width_node` parameter.
+    /// This parameter affects the node stroke width.
     /// Default value is 2
-    pub fn svg_param_stroke_width_node(&mut self, width: u32) {
+    pub fn param_stroke_width_node(&mut self, width: u32) -> &mut Self {
         self.renderer.p_stroke_width_node(width);
+
+        self
     }
 
-    /// Changes the value of the stroke_width_link parameter (affects only SVG rendering).
-    /// This parameter affects the stroke width of the links.
+    /// Changes the value of the `stroke_width_link` parameter.
+    /// This parameter affects the link stroke width.
     /// Default value is 2
-    pub fn svg_param_stroke_width_link(&mut self, width: u32) {
+    pub fn param_stroke_width_link(&mut self, width: u32) -> &mut Self {
         self.renderer.p_stroke_width_link(width);
+
+        self
     }
 
-    /// Changes the value of the radius_node parameter (affects only SVG rendering).
-    /// This parameter affects the radius of the nodes.
+    /// Changes the value of the `radius_node` parameter.
+    /// This parameter affects the node radius.
     /// Default value is 20
-    pub fn svg_param_radius_node(&mut self, radius: u32) {
+    pub fn param_radius_node(&mut self, radius: u32) -> &mut Self {
         self.renderer.p_radius_node(radius);
-    }
-}
 
-impl Clone for Graph {
-    fn clone(&self) -> Self {
-        let mut graph = Graph::new();
-        graph.dyna_from(self.dyna_to()).unwrap();
-        graph
+        self
     }
 }

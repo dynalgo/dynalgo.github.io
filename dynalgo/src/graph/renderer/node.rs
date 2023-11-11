@@ -7,8 +7,7 @@ pub struct Node {
     id: u32,
     name: char,
     center: Point,
-    center_fixed: bool,
-    value: Option<u8>,
+    center_freezed: bool,
     pub radius: u32,
     pub fill_color: Color,
     pub stroke_color: Color,
@@ -22,14 +21,13 @@ impl Node {
         id: u32,
         name: char,
         center: Option<Point>,
-        value: Option<u8>,
         radius: u32,
         fill_color: Color,
         stroke_color: Color,
         text_color: Color,
         stroke_width: u32,
     ) -> Node {
-        let center_fixed = center.is_some();
+        let center_freezed = center.is_some();
         let center = match center {
             Some(c) => c,
             None => Point::new(0, 0),
@@ -38,8 +36,7 @@ impl Node {
             id,
             name,
             center,
-            center_fixed,
-            value,
+            center_freezed,
             radius,
             fill_color,
             stroke_color,
@@ -61,12 +58,12 @@ impl Node {
         &self.center
     }
 
-    pub fn center_fixed(&self) -> bool {
-        self.center_fixed
+    pub fn center_freeze(&mut self, freezed: bool) {
+        self.center_freezed = freezed;
     }
 
-    pub fn value(&self) -> Option<u8> {
-        self.value
+    pub fn center_freezed(&self) -> bool {
+        self.center_freezed
     }
 
     pub fn move_to(&mut self, center: Point) {

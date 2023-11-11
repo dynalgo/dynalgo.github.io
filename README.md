@@ -1,208 +1,342 @@
 # dynalgo.github.io
 
- `dynalgo` is a tiny RUST library designed to produce animated SVG images that can illustrate graph algorithms.
+`dynalgo` is a tiny RUST library designed to produce animated SVG images that can illustrate graph algorithms in action.
 
- The crate offers a basic graph structure representation (nodes, links and adjacency list).
- The interesting point is that each modification of the structure of the graph results in an animation in SVG with SMIL language embeded within an HTML page. Several animations can be embeded together in the same HTML page.
- Additionally, custom animations can be made by playing with the properties of graphical representations of nodes and links.
- Graph's nodes are automatically layouted according to imaginary spring forces applied to nodes. `Algo` module will provide basic algorithms to apply to graph.
+The library only focuces on providing a convenient tiny API for making animations in SVG SMIL format when developping algorithms working with graph structures.
 
+The crate offers a basic `graph` structure representation. Interesting point is that each graph structure modification results in an animation rendered in SVG SMIL format into a HTML page. Several graphs animations can be rendered together in the same HTML page (side to side).
 
-# Example n°1 :
-## (add nodes and links, and then play with their graphical representation as SVG elements. Finally, display the resulting animation as an animated SVG in a HTML page)
+Dynalgo automatically layout nodes according to imaginary springs forces applying to them.
+Custom animations can be made by playing with the nodes and links  graphical representations.
 
-[See example n°1](https://dynalgo.github.io/dynalgo/example-1.html)
-
-```
- use dynalgo::graph::Graph;
- use std::fs::File;
- use std::io::Write;
-
- let mut graph = Graph::new();
-
- graph.svg_automatic_layout(false);
- graph.svg_automatic_animation(false);
-
- graph.node_add('A', None);
- graph.node_add('B', None);
- graph.node_add('C', None);
- graph.link_add('α', 'A', 'B', true, Some(10));
- graph.link_add('β', 'B', 'C', true, Some(20));
- graph.link_add('γ', 'C', 'A', true, Some(30));
-
- graph.svg_automatic_animation(true);
- graph.svg_layout();
- graph.svg_automatic_layout(true);
-
- graph.nodes_exchange('A', 'B');
-
- graph.svg_node_color('A', 0,128,0);
- graph.svg_node_color('C' ,128,0,0);
-
- graph.link_delete('γ');
- graph.node_delete('B');
- graph.node_add('D', None);
- graph.link_add('δ', 'C', 'D', false, Some(40));
- graph.link_add('ε', 'D', 'A', false, Some(50));
-
- graph.svg_node_selected('D',true);
- graph.svg_link_selected('δ',true);
- graph.svg_link_selected('ε',true);
-
- let html = graph.svg_render_animation_html("This is the example n°1");
- write!(File::create("example-1.html").unwrap(), "{}", html);
-```
-
-# Example n°2 :
-## (build a graph from a formatted String, and then DFS algorithm traverses it. Finally the traversed graph is layouted as an animated SVG in a HTML page)
-
-[See example n°2](https://dynalgo.github.io/dynalgo/example-2.html)
-
-```
- use dynalgo::graph::Graph;
- use dynalgo::algo::travers::Dfs;
- use std::fs::File;
- use std::io::Write;
-
- let mut graph = Graph::new();
- let dyna = String::from(
-        "N A _ _ 1
-         N B _ _ 2
-         N C _ _ 3
-         N D _ _ 4
-         N E _ _ 5
-         N F _ _ 6
-         N G _ _ 7
-         N H _ _ 8
-         N I _ _ 9
-         N J _ _ _
-         N K _ _ 11
-         N L _ _ 12
-         N M _ _ _
-         N N _ _ 14
-         N O _ _ 15
-         N P _ _ 16
-         N Q _ _ 17
-         N R _ _ 18
-         N S _ _ 19
-         N T _ _ 21
-         N U _ _ 22
-         L a B G true 1
-         L b F C true 2
-         L c B C true 3
-         L d C G true 4
-         L e G F false 5
-         L f F B true 6
-         L g F E true 7
-         L h F J true 8
-         L i E I true 9
-         L j I J false _
-         L k K J true 11
-         L l A J true 12
-         L m I A true 13
-         L n K G true 14
-         L o K D false 15
-         L p K H true 16
-         L q K L true 17
-         L r L M true 18
-         L s L S true 19
-         L t L O false _
-         L u N O true 21
-         L v N P true 22
-         L w P Q true 23
-         L x P R true 24
-         L y P T false 25
-         L z T U true 26"
- );
- graph.dyna_from(dyna);
-
- let dfs = Dfs::new();
- dfs.run(&mut graph, None);
- 
- let html = graph.svg_render_animation_html("This is the example n°2");
- write!(File::create("example-2.html").unwrap(), "{}", html).unwrap();
-```
-
-# Example n°3 :
-## (for fun, build a graph that represents a maze, and then use DFS algorithm to traverse it to reach arrival)
-
-[See example n°3](https://dynalgo.github.io/dynalgo/example-3.html)
-
-```
- use dynalgo::algo::fun::Maze;
- use std::fs::File;
- use std::io::Write;
- 
- let maze = Maze::new();
- let graph = maze.run(9);
- let html = graph.svg_render_animation_html("maze example");
- write!(File::create("example-fun-maze.html").unwrap(), "{}", html).unwrap();
-```
-
-# Example n°4 :
-## (algorithm that performs the union of 2 graphs)
-
-[See example n°4](https://dynalgo.github.io/dynalgo/example-sets-union.html)
-
+### Example: basic uses
+[See example](https://dynalgo.github.io/dynalgo/Dynalgo_Rust_library_demo.html)
 ```
 use dynalgo::graph::Graph;
 use std::fs::File;
 use std::io::Write;
-use dynalgo::algo::sets::Sets;
 
-let mut graph1 = Graph::new();
-graph1.svg_automatic_animation(false);
-graph1.svg_automatic_layout(false);
-graph1.svg_param_duration_move(1);
-graph1.node_add('A', None).unwrap();
-graph1.node_add('B', None).unwrap();
-graph1.link_add('α', 'A', 'B', false, None);
-graph1.svg_layout();
-graph1.svg_animate(1);
+let config = "A
+        B
+        C
+        A > B 1
+        B - C 2";
+let mut graph = Graph::new();
+graph.append_from_config(config);
 
-let mut graph2 = Graph::new();
-graph2.svg_automatic_animation(false);
-graph2.svg_automatic_layout(false);
-graph2.svg_param_duration_move(1);
-graph2.node_add('A', None).unwrap();
-graph2.node_add('B', None).unwrap();
-graph2.node_add('C', None).unwrap();
-graph2.link_add('α', 'B', 'C', false, None);
-graph2.link_add('β', 'B', 'A', false, None);
-graph2.svg_layout();
-graph2.svg_animate(1);
+graph.node_add('D');
 
-let graph_union = Sets::union(&graph1, &graph2).unwrap();
+graph.link_add('C', 'D', true, 3);
+graph.link_add('D', 'A', false, 4);
 
-let html_file_content = Graph::svg_render_animations_html(
-    "sets-union example",
-    vec![&graph1, &graph2, &graph_union],
-);
-write!(File::create("example-sets-union.html").unwrap(), "{}", html_file_content);
+graph.nodes_exchange('A', 'B');
+graph.nodes_exchange('A', 'B');
+
+graph.anim_node_selected('A', true);
+graph.anim_link_selected('A', 'B', true);
+graph.anim_node_selected('B', true);
+graph.anim_link_selected('B', 'C', true);
+graph.anim_node_selected('C', true);
+graph.anim_link_selected('C', 'D', true);
+graph.anim_node_selected('D', true);
+graph.anim_link_selected('D', 'A', true);
+
+let timing_add = graph.render_duration();
+
+graph.anim_pause();
+graph.node_add('E');
+graph.link_add('A', 'E', true, 5);
+graph.link_add('B', 'E', true, 6);
+graph.link_add('C', 'E', true, 7);
+graph.link_add('D', 'E', true, 8);
+graph.anim_step(1000);
+graph.anim_resume();
+
+graph.anim_node_color('E', 0, 128, 0);
+graph.anim_node_color('E', 128, 0, 0);
+
+let (x, y, _) = graph.anim_node_position('E').unwrap();
+graph.anim_node_move('E', x - 20, y - 20, false);
+graph.anim_node_move('E', x - 20, y + 20, false);
+graph.anim_node_move('E', x + 20, y + 20, false);
+graph.anim_node_move('E', x + 20, y - 20, false);
+graph.anim_node_move('E', x - 20, y - 20, false);
+graph.anim_node_move('E', x, y, false);
+        
+let timing_delete = graph.render_duration();
+graph.node_delete('E');
+
+
+let mut other_graph = Graph::new();
+other_graph.append_from_graph(&graph);
+
+other_graph.anim_pause();
+
+other_graph.anim_step(timing_add - other_graph.render_duration());
+
+other_graph.node_add('E');
+other_graph.link_add('A', 'E', true, 5);
+other_graph.link_add('B', 'E', true, 6);
+other_graph.link_add('C', 'E', true, 7);
+other_graph.link_add('D', 'E', true, 8);
+
+other_graph.anim_step(1);
+
+other_graph.anim_step(timing_delete - other_graph.render_duration());
+other_graph.anim_resume();
+other_graph.node_delete('E');
+
+let html = Graph::render_to_html("Dynalgo Rust library demo", vec![&graph, &other_graph]);
+write!(File::create("Dynalgo_Rust_library_demo.html").unwrap(), "{}", html);
 ```
 
-# Other examples showing part of the API:
-[Graph::node_add](https://dynalgo.github.io/dynalgo/example-node_add.html)  
-[Graph::node_add_fixed](https://dynalgo.github.io/dynalgo/example-node_add_fixed.html)  
-[Graph::node_delete](https://dynalgo.github.io/dynalgo/example-node_delete.html)  
-[Graph::link_add](https://dynalgo.github.io/dynalgo/example-link_add.html)  
-[Graph::link_delete](https://dynalgo.github.io/dynalgo/example-link_delete.html)  
-[Graph::nodes_exchange](https://dynalgo.github.io/dynalgo/example-nodes_exchange.html)  
-[Graph::svg_node_selected](https://dynalgo.github.io/dynalgo/example-svg_node_selected.html)  
-[Graph::svg_node_color](https://dynalgo.github.io/dynalgo/example-svg_node_color.html)  
-[Graph::svg_node_move](https://dynalgo.github.io/dynalgo/example-svg_node_move.html)  
-[Graph::svg_link_selected](https://dynalgo.github.io/dynalgo/example-svg_link_selected.html)  
-[Graph::dyna_from](https://dynalgo.github.io/dynalgo/example-dyna_from.html)  
-[Graph::dyna_to](https://dynalgo.github.io/dynalgo/example-dyna_to.html)  
-[Graph::svg_automatic_animation](https://dynalgo.github.io/dynalgo/example-svg_automatic_animation.html)  
-[Graph::svg_animate](https://dynalgo.github.io/dynalgo/example-svg_animate.html)  
-[Graph::svg_automatic_layout](https://dynalgo.github.io/dynalgo/example-svg_automatic_layout.html)  
-[Graph::svg_layout](https://dynalgo.github.io/dynalgo/example-svg_layout.html)  
 
-# Other examples showing animations of algorithms:
-[algo::travers::Dfs](https://dynalgo.github.io/dynalgo/example-Travers-DFS.html)  
-[algo::fun::Maze](https://dynalgo.github.io/dynalgo/example-fun-maze.html)  
-[algo::compare::Compare](https://dynalgo.github.io/dynalgo/example-compare-isomorphic.html)  
-[algo::sequence::Sequence](https://dynalgo.github.io/dynalgo/example-sequence-complete.html)  
-[algo::sets::Sets](https://dynalgo.github.io/dynalgo/example-sets-complementary.html)  
-[algo::sets::Sets](https://dynalgo.github.io/dynalgo/example-sets-union.html)  
+### Example: rendering to html files
+[See example](https://dynalgo.github.io/dynalgo/K_3,4,5,6_complete_graph.html)
+```
+let mut pages = Vec::new();
+let mut graphs = Vec::new();
+for i in 3..12 {
+    let names: Vec<char> = ('A'..'Z')
+        .collect::<Vec<char>>()
+        .into_iter()
+        .take(i)
+        .collect();
+    let config =
+        Graph::config_with_graph_sequence(vec![names.len() - 1; names.len()], names).unwrap();
+    let mut graph = Graph::new();
+    graph.append_from_config(&config);
+    graphs.push(graph);
+}
+pages.push((
+    "K 3,4,5,6 complete graph",
+    vec![&graphs[0], &graphs[1], &graphs[2], &graphs[3]],
+));
+pages.push((
+    "K 7,8,9 complete graph",
+    vec![&graphs[4], &graphs[5], &graphs[6]],
+));
+pages.push(("K 10,11 complete graph", vec![&graphs[7], &graphs[8]]));
+
+Graph::render_to_html_files(pages).unwrap();
+```
+
+
+### Example: maze demo
+[See example](https://dynalgo.github.io/dynalgo/Dynalgo_maze_example.html)
+```
+use dynalgo::graph::Graph;
+use std::fs::File;
+use std::io::Write;
+
+let config = "😀 0 0
+			😁 45 0
+			😂 90 0
+			😃 135 0
+			😄 180 0
+			😅 225 0
+			😆 270 0
+			😇 315 0
+			😈 0 45
+			😉 45 45
+			😊 90 45
+			😋 135 45
+			😌 180 45
+			😍 225 45
+			😎 270 45
+			😏 315 45
+			😐 0 90
+			😑 45 90
+			😒 90 90
+			😓 135 90
+			😔 180 90
+			😕 225 90
+			😖 270 90
+			😗 315 90
+			😘 0 135
+			😙 45 135
+			😚 90 135
+			😛 135 135
+			😜 180 135
+			😝 225 135
+			😞 270 135
+			😟 315 135
+			😠 0 180
+			😡 45 180
+			😢 90 180
+			😣 135 180
+			😤 180 180
+			😥 225 180
+			😦 270 180
+			😧 315 180
+			😨 0 225
+			😩 45 225
+			😪 90 225
+			😫 135 225
+			😬 180 225
+			😭 225 225
+			😮 270 225
+			😯 315 225
+			😰 0 270
+			😱 45 270
+			😲 90 270
+			😳 135 270
+			😴 180 270
+			😵 225 270
+			😶 270 270
+			😷 315 270
+			😸 0 315
+			😹 45 315
+			😺 90 315
+			😻 135 315
+			😼 180 315
+			😽 225 315
+			😾 270 315
+			😿 315 315
+			😀 - 😁 0
+			😁 - 😉 0
+			😂 - 😃 0
+			😂 - 😊 0
+			😃 - 😄 0
+			😄 - 😅 0
+			😅 - 😍 0
+			😆 - 😎 0
+			😇 - 😏 0
+			😈 - 😉 0
+			😈 - 😐 0
+			😊 - 😒 0
+			😋 - 😓 0
+			😌 - 😔 0
+			😎 - 😏 0
+			😎 - 😖 0
+			😐 - 😑 0
+			😐 - 😘 0
+			😑 - 😒 0
+			😒 - 😓 0
+			😓 - 😛 0
+			😔 - 😕 0
+			😕 - 😖 0
+			😕 - 😝 0
+			😗 - 😟 0
+			😘 - 😠 0
+			😙 - 😚 0
+			😚 - 😢 0
+			😜 - 😝 0
+			😝 - 😥 0
+			😞 - 😟 0
+			😞 - 😦 0
+			😠 - 😡 0
+			😡 - 😢 0
+			😡 - 😩 0
+			😢 - 😪 0
+			😣 - 😤 0
+			😤 - 😬 0
+			😥 - 😦 0
+			😥 - 😭 0
+			😦 - 😧 0
+			😦 - 😮 0
+			😧 - 😯 0
+			😨 - 😩 0
+			😩 - 😱 0
+			😪 - 😫 0
+			😪 - 😲 0
+			😫 - 😬 0
+			😬 - 😴 0
+			😮 - 😶 0
+			😯 - 😷 0
+			😰 - 😱 0
+			😱 - 😹 0
+			😳 - 😻 0
+			😴 - 😼 0
+			😵 - 😶 0
+			😶 - 😾 0
+			😷 - 😿 0
+			😸 - 😹 0
+			😹 - 😺 0
+			😻 - 😼 0
+			😼 - 😽 0
+			😽 - 😾 0";
+
+let node_start = '😀';
+let node_searched = '😿';
+
+let mut freezed_maze = Graph::new();
+let mut unfreezed_maze = Graph::new();
+
+for graph in [&mut freezed_maze, &mut unfreezed_maze] {
+    graph
+        .param_display_link_value(false)
+        .param_radius_node(15)
+        .param_color_tag_created(128, 139, 150)
+        .param_duration_select(300)
+        .param_duration_color(500)
+        .param_color_tag_selected(0, 0, 255);
+
+    graph.append_from_config(config);
+
+    graph.anim_node_selected(node_start, true);
+    graph.anim_node_selected(node_searched, true);
+    graph.param_color_tag_selected(191, 255, 0);
+}
+
+freezed_maze.anim_pause();
+freezed_maze.anim_step(5000);
+freezed_maze.anim_resume();
+deep_first_search(
+    &mut freezed_maze,
+    node_start,
+    node_searched,
+    &mut Vec::new(),
+);
+
+unfreezed_maze.anim_pause();
+unfreezed_maze.anim_step(3000);
+for node in unfreezed_maze.nodes_list() {
+    unfreezed_maze.anim_node_freeze(node, false);
+}
+unfreezed_maze.anim_step(2000);
+unfreezed_maze.anim_resume();
+
+deep_first_search(
+    &mut unfreezed_maze,
+    node_start,
+    node_searched,
+    &mut Vec::new(),
+);
+
+let html = Graph::render_to_html("Dynalgo maze example", vec![&freezed_maze, &unfreezed_maze]);
+write!(File::create("Dynalgo_maze_example.html").unwrap(), "{}", html );
+
+fn deep_first_search(
+    graph: &mut Graph,
+    node_from: char,
+    node_searched: char,
+    visited: &mut Vec<char>,
+) -> bool {
+    visited.push(node_from);
+    graph.anim_node_color(node_from, 0, 255, 0);
+
+    if node_from == node_searched {
+        return true;
+    }
+
+    let adja = &graph.adjacency_list();
+    let mut found = false;
+    for (node_to, _link) in adja.get(&node_from).unwrap() {
+        if visited.contains(node_to) {
+            continue;
+        }
+        graph.anim_link_selected(node_from, *node_to, true);
+
+        found = deep_first_search(graph, *node_to, node_searched, visited);
+        if found {
+            break;
+        }
+    }
+
+    if !found {
+        graph.anim_node_color(node_from, 255, 0, 0);
+    }
+    found
+}
+```

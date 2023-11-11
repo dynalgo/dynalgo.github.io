@@ -1,0 +1,1138 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <meta http-equiv="cache-control" content="no-cache, must-revalidate">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Dynalgo - K 7,8,9 complete graph</title>
+   <style>
+		body {
+			background-color: white;
+			color: darkblue;
+			margin: 0px;
+			padding: 0px;
+			display: flex;
+		}
+
+		:link {
+			color:darkblue;
+		}
+		nav {
+		    font-size: 1em;
+		    border: none;
+		    display: flex;
+		    flex-flow: column wrap;
+		    padding: 0px;
+		    margin: 0px;
+		    min-width: 230px;
+		}
+
+		nav ul {
+		    margin: 0px;
+		    padding: 0px;
+		    list-style: none;
+		    display: flex;
+		    flex-flow: column wrap;
+		    justify-content: left;
+		}
+
+		nav a {
+		    padding-top: 0.2em;
+		    display: block;
+		    text-align: left;
+		    text-decoration: none;
+		}
+
+        li {
+	        border-top : 1px solid white;
+	        border-bottom : 1px solid white;
+        }
+
+		li:hover {
+		    border-top : 1px solid darkblue;
+		    border-bottom : 1px solid darkblue;
+		}
+
+		header {
+		    display: flex;
+		    padding: 0px;
+		    margin: 0px;
+		    justify-content: space-around;
+			border-bottom: 1px solid lightgrey;
+		}
+		section {
+			display: flex;
+			flex-flow: row nowrap;
+			width: 100%;
+			height: 100vh;
+			padding: 0px;
+			margin: 0px;
+			justify-content: space-between;
+		}
+
+		article {
+			display: flex;
+			border: none;
+			width: 50%;
+			height: 100%;
+			padding: 0px;
+			margin: 0px;
+			overflow: hidden;
+			border-left: 1px solid lightgrey;
+		}
+
+		 svg text{
+		  text-anchor: middle;
+		  dominant-baseline: middle;
+		}
+
+		@media screen and (max-width: 800px) {
+			body {
+				flex-direction: column;
+				width: 100%;
+			}
+
+			section {
+				border-left: none;
+				flex-direction: column;
+				width: 100%;
+			}
+
+			article {
+				border-top: 1px solid lightgrey;
+				border-left: none;
+				width: 100%;
+			}
+
+			nav {
+		    	width: 100%;
+			}
+
+			nav ul {
+				border-right: none;
+			    justify-content: center;
+			}
+
+			nav a {
+			    text-align: center;
+			}
+		}
+
+		.selected {
+			font-style: italic;
+		    border-top : 1px solid darkblue;
+		    border-bottom : 1px solid darkblue;
+		}
+
+		.info a {
+			font-size: 1.5em;
+		    padding: 0px;
+		    margin: 0px;
+		    text-decoration: none;
+			cursor: pointer;
+			font-style: italic;
+		}
+
+
+    </style>
+    <script>
+        function pause(svg) {
+            if (svg.animationsPaused()) {
+                svg.unpauseAnimations();
+            } else {
+                svg.pauseAnimations();
+            }
+        }
+    </script>
+  </head>
+  <body>
+
+    <nav>
+    	<header>
+        	<div class="info"> <a href="https://github.com/dynalgo/dynalgo.github.io">Dynalgo</a>
+        	</div>
+        </header>
+        <ul id="menu">
+		<li><a href="K_3,4,5,6_complete_graph.html">K 3,4,5,6 complete graph</a>
+		</li>
+		<li class="selected"><a href="K_7,8,9_complete_graph.html">K 7,8,9 complete graph</a>
+		</li>
+		<li><a href="K_10,11_complete_graph.html">K 10,11 complete graph</a>
+		</li>
+        </ul>
+    </nav>
+    <section>
+		<article>
+<svg class="svg_dynalgo" onclick="pause(this)" viewBox="-363 -390 696 786" preserveAspectRatio="xMidYMid meet">
+<path id="FG160" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libFG160" opacity="0">
+</g>
+<path id="EG159" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libEG159" opacity="0">
+</g>
+<path id="EF158" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libEF158" opacity="0">
+</g>
+<path id="DG157" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libDG157" opacity="0">
+</g>
+<path id="DF156" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libDF156" opacity="0">
+</g>
+<path id="DE155" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libDE155" opacity="0">
+</g>
+<path id="CG154" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libCG154" opacity="0">
+</g>
+<path id="CF153" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libCF153" opacity="0">
+</g>
+<path id="CE152" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libCE152" opacity="0">
+</g>
+<path id="CD151" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libCD151" opacity="0">
+</g>
+<path id="BG150" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libBG150" opacity="0">
+</g>
+<path id="BF149" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libBF149" opacity="0">
+</g>
+<path id="BE148" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libBE148" opacity="0">
+</g>
+<path id="BD147" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libBD147" opacity="0">
+</g>
+<path id="BC146" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libBC146" opacity="0">
+</g>
+<path id="AG145" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libAG145" opacity="0">
+</g>
+<path id="AF144" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libAF144" opacity="0">
+</g>
+<path id="AE143" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libAE143" opacity="0">
+</g>
+<path id="AD142" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libAD142" opacity="0">
+</g>
+<path id="AC141" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libAC141" opacity="0">
+</g>
+<path id="AB140" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libAB140" opacity="0">
+</g>
+<g id="A133" opacity="0">
+  <circle id="cA133" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coA133" x="0" y="0" fill="rgb(0,0,0)">A</text>
+</g>
+<g id="B134" opacity="0">
+  <circle id="cB134" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coB134" x="0" y="0" fill="rgb(0,0,0)">B</text>
+</g>
+<g id="C135" opacity="0">
+  <circle id="cC135" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coC135" x="0" y="0" fill="rgb(0,0,0)">C</text>
+</g>
+<g id="D136" opacity="0">
+  <circle id="cD136" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coD136" x="0" y="0" fill="rgb(0,0,0)">D</text>
+</g>
+<g id="E137" opacity="0">
+  <circle id="cE137" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coE137" x="0" y="0" fill="rgb(0,0,0)">E</text>
+</g>
+<g id="F138" opacity="0">
+  <circle id="cF138" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coF138" x="0" y="0" fill="rgb(0,0,0)">F</text>
+</g>
+<g id="G139" opacity="0">
+  <circle id="cG139" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coG139" x="0" y="0" fill="rgb(0,0,0)">G</text>
+</g>
+<animate href="#AB140" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M56 16 L293 219 Z" />
+<animateMotion href="#libAB140" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 174 117" />
+<animate href="#AB140" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libAB140" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biAB140" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#AC141" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M56 16 L-47 356 Z" />
+<animateMotion href="#libAC141" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 4 186" />
+<animate href="#AC141" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libAC141" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biAC141" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#AD142" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M56 16 L-323 160 Z" />
+<animateMotion href="#libAD142" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -133 88" />
+<animate href="#AD142" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libAD142" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biAD142" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#AE143" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M56 16 L-319 -167 Z" />
+<animateMotion href="#libAE143" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -131 -75" />
+<animate href="#AE143" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libAE143" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biAE143" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#AF144" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M56 16 L-38 -350 Z" />
+<animateMotion href="#libAF144" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 9 -167" />
+<animate href="#AF144" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libAF144" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biAF144" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#AG145" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M56 16 L284 -224 Z" />
+<animateMotion href="#libAG145" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 170 -104" />
+<animate href="#AG145" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libAG145" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biAG145" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#BC146" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M293 219 L-47 356 Z" />
+<animateMotion href="#libBC146" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 123 287" />
+<animate href="#BC146" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libBC146" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biBC146" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#BD147" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M293 219 L-323 160 Z" />
+<animateMotion href="#libBD147" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -15 189" />
+<animate href="#BD147" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libBD147" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biBD147" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#BE148" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M293 219 L-319 -167 Z" />
+<animateMotion href="#libBE148" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -13 26" />
+<animate href="#BE148" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libBE148" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biBE148" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#BF149" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M293 219 L-38 -350 Z" />
+<animateMotion href="#libBF149" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 127 -65" />
+<animate href="#BF149" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libBF149" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biBF149" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#BG150" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M293 219 L284 -224 Z" />
+<animateMotion href="#libBG150" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 288 -2" />
+<animate href="#BG150" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libBG150" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biBG150" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#CD151" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-47 356 L-323 160 Z" />
+<animateMotion href="#libCD151" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -185 258" />
+<animate href="#CD151" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libCD151" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biCD151" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#CE152" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-47 356 L-319 -167 Z" />
+<animateMotion href="#libCE152" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -183 94" />
+<animate href="#CE152" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libCE152" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biCE152" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#CF153" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-47 356 L-38 -350 Z" />
+<animateMotion href="#libCF153" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -42 3" />
+<animate href="#CF153" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libCF153" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biCF153" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#CG154" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-47 356 L284 -224 Z" />
+<animateMotion href="#libCG154" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 118 66" />
+<animate href="#CG154" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libCG154" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biCG154" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#DE155" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-323 160 L-319 -167 Z" />
+<animateMotion href="#libDE155" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -321 -3" />
+<animate href="#DE155" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libDE155" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biDE155" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#DF156" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-323 160 L-38 -350 Z" />
+<animateMotion href="#libDF156" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -180 -95" />
+<animate href="#DF156" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libDF156" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biDF156" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#DG157" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-323 160 L284 -224 Z" />
+<animateMotion href="#libDG157" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -19 -32" />
+<animate href="#DG157" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libDG157" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biDG157" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#EF158" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-319 -167 L-38 -350 Z" />
+<animateMotion href="#libEF158" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -178 -258" />
+<animate href="#EF158" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libEF158" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biEF158" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#EG159" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-319 -167 L284 -224 Z" />
+<animateMotion href="#libEG159" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -17 -195" />
+<animate href="#EG159" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libEG159" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biEG159" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#FG160" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-38 -350 L284 -224 Z" />
+<animateMotion href="#libFG160" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 123 -287" />
+<animate href="#FG160" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libFG160" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biFG160" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animateMotion href="#A133" begin="0ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l 56 16" />
+<animate href="#A133" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animateMotion href="#B134" begin="0ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l 293 219" />
+<animate href="#B134" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animateMotion href="#C135" begin="0ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l -47 356" />
+<animate href="#C135" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animateMotion href="#D136" begin="0ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l -323 160" />
+<animate href="#D136" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animateMotion href="#E137" begin="0ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l -319 -167" />
+<animate href="#E137" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animateMotion href="#F138" begin="0ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l -38 -350" />
+<animate href="#F138" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animateMotion href="#G139" begin="0ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l 284 -224" />
+<animate href="#G139" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#AB140" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#AC141" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#AD142" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#AE143" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#AF144" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#AG145" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#BC146" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#BD147" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#BE148" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#BF149" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#BG150" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#CD151" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#CE152" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#CF153" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#CG154" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#DE155" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#DF156" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#DG157" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#EF158" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#EG159" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#FG160" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#cA133" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#cB134" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#cC135" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#cD136" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#cE137" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#cF138" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#cG139" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+</svg>
+		</article>
+		<article>
+<svg class="svg_dynalgo" onclick="pause(this)" viewBox="-403 -385 755 784" preserveAspectRatio="xMidYMid meet">
+<path id="GH232" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libGH232" opacity="0">
+</g>
+<path id="FH231" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libFH231" opacity="0">
+</g>
+<path id="FG230" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libFG230" opacity="0">
+</g>
+<path id="EH229" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libEH229" opacity="0">
+</g>
+<path id="EG228" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libEG228" opacity="0">
+</g>
+<path id="EF227" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libEF227" opacity="0">
+</g>
+<path id="DH226" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libDH226" opacity="0">
+</g>
+<path id="DG225" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libDG225" opacity="0">
+</g>
+<path id="DF224" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libDF224" opacity="0">
+</g>
+<path id="DE223" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libDE223" opacity="0">
+</g>
+<path id="CH222" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libCH222" opacity="0">
+</g>
+<path id="CG221" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libCG221" opacity="0">
+</g>
+<path id="CF220" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libCF220" opacity="0">
+</g>
+<path id="CE219" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libCE219" opacity="0">
+</g>
+<path id="CD218" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libCD218" opacity="0">
+</g>
+<path id="BH217" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libBH217" opacity="0">
+</g>
+<path id="BG216" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libBG216" opacity="0">
+</g>
+<path id="BF215" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libBF215" opacity="0">
+</g>
+<path id="BE214" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libBE214" opacity="0">
+</g>
+<path id="BD213" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libBD213" opacity="0">
+</g>
+<path id="BC212" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libBC212" opacity="0">
+</g>
+<path id="AH211" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libAH211" opacity="0">
+</g>
+<path id="AG210" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libAG210" opacity="0">
+</g>
+<path id="AF209" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libAF209" opacity="0">
+</g>
+<path id="AE208" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libAE208" opacity="0">
+</g>
+<path id="AD207" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libAD207" opacity="0">
+</g>
+<path id="AC206" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libAC206" opacity="0">
+</g>
+<path id="AB205" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libAB205" opacity="0">
+</g>
+<g id="A197" opacity="0">
+  <circle id="cA197" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coA197" x="0" y="0" fill="rgb(0,0,0)">A</text>
+</g>
+<g id="B198" opacity="0">
+  <circle id="cB198" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coB198" x="0" y="0" fill="rgb(0,0,0)">B</text>
+</g>
+<g id="C199" opacity="0">
+  <circle id="cC199" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coC199" x="0" y="0" fill="rgb(0,0,0)">C</text>
+</g>
+<g id="D200" opacity="0">
+  <circle id="cD200" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coD200" x="0" y="0" fill="rgb(0,0,0)">D</text>
+</g>
+<g id="E201" opacity="0">
+  <circle id="cE201" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coE201" x="0" y="0" fill="rgb(0,0,0)">E</text>
+</g>
+<g id="F202" opacity="0">
+  <circle id="cF202" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coF202" x="0" y="0" fill="rgb(0,0,0)">F</text>
+</g>
+<g id="G203" opacity="0">
+  <circle id="cG203" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coG203" x="0" y="0" fill="rgb(0,0,0)">G</text>
+</g>
+<g id="H204" opacity="0">
+  <circle id="cH204" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coH204" x="0" y="0" fill="rgb(0,0,0)">H</text>
+</g>
+<animate href="#AB205" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M49 12 L312 191 Z" />
+<animateMotion href="#libAB205" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 180 101" />
+<animate href="#AB205" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libAB205" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biAB205" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#AC206" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M49 12 L38 359 Z" />
+<animateMotion href="#libAC206" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 43 185" />
+<animate href="#AC206" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libAC206" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biAC206" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#AD207" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M49 12 L-247 263 Z" />
+<animateMotion href="#libAD207" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -99 137" />
+<animate href="#AD207" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libAD207" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biAD207" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#AE208" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M49 12 L-363 0 Z" />
+<animateMotion href="#libAE208" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -157 6" />
+<animate href="#AE208" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libAE208" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biAE208" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#AF209" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M49 12 L-242 -266 Z" />
+<animateMotion href="#libAF209" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -96 -127" />
+<animate href="#AF209" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libAF209" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biAF209" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#AG210" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M49 12 L36 -345 Z" />
+<animateMotion href="#libAG210" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 42 -166" />
+<animate href="#AG210" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libAG210" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biAG210" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#AH211" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M49 12 L307 -195 Z" />
+<animateMotion href="#libAH211" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 178 -91" />
+<animate href="#AH211" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libAH211" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biAH211" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#BC212" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M312 191 L38 359 Z" />
+<animateMotion href="#libBC212" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 175 275" />
+<animate href="#BC212" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libBC212" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biBC212" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#BD213" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M312 191 L-247 263 Z" />
+<animateMotion href="#libBD213" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 32 227" />
+<animate href="#BD213" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libBD213" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biBD213" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#BE214" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M312 191 L-363 0 Z" />
+<animateMotion href="#libBE214" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -25 95" />
+<animate href="#BE214" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libBE214" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biBE214" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#BF215" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M312 191 L-242 -266 Z" />
+<animateMotion href="#libBF215" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 35 -37" />
+<animate href="#BF215" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libBF215" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biBF215" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#BG216" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M312 191 L36 -345 Z" />
+<animateMotion href="#libBG216" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 174 -77" />
+<animate href="#BG216" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libBG216" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biBG216" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#BH217" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M312 191 L307 -195 Z" />
+<animateMotion href="#libBH217" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 309 -2" />
+<animate href="#BH217" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libBH217" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biBH217" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#CD218" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M38 359 L-247 263 Z" />
+<animateMotion href="#libCD218" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -104 311" />
+<animate href="#CD218" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libCD218" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biCD218" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#CE219" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M38 359 L-363 0 Z" />
+<animateMotion href="#libCE219" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -162 179" />
+<animate href="#CE219" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libCE219" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biCE219" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#CF220" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M38 359 L-242 -266 Z" />
+<animateMotion href="#libCF220" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -102 46" />
+<animate href="#CF220" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libCF220" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biCF220" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#CG221" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M38 359 L36 -345 Z" />
+<animateMotion href="#libCG221" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 37 7" />
+<animate href="#CG221" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libCG221" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biCG221" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#CH222" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M38 359 L307 -195 Z" />
+<animateMotion href="#libCH222" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 172 82" />
+<animate href="#CH222" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libCH222" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biCH222" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#DE223" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-247 263 L-363 0 Z" />
+<animateMotion href="#libDE223" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -305 131" />
+<animate href="#DE223" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libDE223" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biDE223" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#DF224" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-247 263 L-242 -266 Z" />
+<animateMotion href="#libDF224" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -244 -1" />
+<animate href="#DF224" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libDF224" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biDF224" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#DG225" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-247 263 L36 -345 Z" />
+<animateMotion href="#libDG225" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -105 -41" />
+<animate href="#DG225" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libDG225" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biDG225" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#DH226" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-247 263 L307 -195 Z" />
+<animateMotion href="#libDH226" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 30 34" />
+<animate href="#DH226" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libDH226" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biDH226" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#EF227" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-363 0 L-242 -266 Z" />
+<animateMotion href="#libEF227" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -302 -133" />
+<animate href="#EF227" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libEF227" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biEF227" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#EG228" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-363 0 L36 -345 Z" />
+<animateMotion href="#libEG228" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -163 -172" />
+<animate href="#EG228" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libEG228" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biEG228" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#EH229" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-363 0 L307 -195 Z" />
+<animateMotion href="#libEH229" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -28 -97" />
+<animate href="#EH229" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libEH229" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biEH229" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#FG230" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-242 -266 L36 -345 Z" />
+<animateMotion href="#libFG230" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -103 -305" />
+<animate href="#FG230" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libFG230" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biFG230" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#FH231" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-242 -266 L307 -195 Z" />
+<animateMotion href="#libFH231" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 32 -230" />
+<animate href="#FH231" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libFH231" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biFH231" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#GH232" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M36 -345 L307 -195 Z" />
+<animateMotion href="#libGH232" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 171 -270" />
+<animate href="#GH232" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libGH232" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biGH232" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animateMotion href="#A197" begin="0ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l 49 12" />
+<animate href="#A197" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animateMotion href="#B198" begin="0ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l 312 191" />
+<animate href="#B198" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animateMotion href="#C199" begin="0ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l 38 359" />
+<animate href="#C199" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animateMotion href="#D200" begin="0ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l -247 263" />
+<animate href="#D200" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animateMotion href="#E201" begin="0ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l -363 0" />
+<animate href="#E201" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animateMotion href="#F202" begin="0ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l -242 -266" />
+<animate href="#F202" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animateMotion href="#G203" begin="0ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l 36 -345" />
+<animate href="#G203" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animateMotion href="#H204" begin="0ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l 307 -195" />
+<animate href="#H204" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#AB205" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#AC206" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#AD207" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#AE208" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#AF209" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#AG210" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#AH211" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#BC212" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#BD213" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#BE214" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#BF215" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#BG216" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#BH217" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#CD218" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#CE219" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#CF220" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#CG221" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#CH222" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#DE223" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#DF224" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#DG225" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#DH226" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#EF227" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#EG228" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#EH229" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#FG230" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#FH231" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#GH232" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#cA197" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#cB198" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#cC199" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#cD200" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#cE201" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#cF202" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#cG203" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#cH204" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+</svg>
+		</article>
+		<article>
+<svg class="svg_dynalgo" onclick="pause(this)" viewBox="-489 -487 967 979" preserveAspectRatio="xMidYMid meet">
+<path id="HI322" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libHI322" opacity="0">
+</g>
+<path id="GI321" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libGI321" opacity="0">
+</g>
+<path id="GH320" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libGH320" opacity="0">
+</g>
+<path id="FI319" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libFI319" opacity="0">
+</g>
+<path id="FH318" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libFH318" opacity="0">
+</g>
+<path id="FG317" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libFG317" opacity="0">
+</g>
+<path id="EI316" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libEI316" opacity="0">
+</g>
+<path id="EH315" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libEH315" opacity="0">
+</g>
+<path id="EG314" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libEG314" opacity="0">
+</g>
+<path id="EF313" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libEF313" opacity="0">
+</g>
+<path id="DI312" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libDI312" opacity="0">
+</g>
+<path id="DH311" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libDH311" opacity="0">
+</g>
+<path id="DG310" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libDG310" opacity="0">
+</g>
+<path id="DF309" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libDF309" opacity="0">
+</g>
+<path id="DE308" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libDE308" opacity="0">
+</g>
+<path id="CI307" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libCI307" opacity="0">
+</g>
+<path id="CH306" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libCH306" opacity="0">
+</g>
+<path id="CG305" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libCG305" opacity="0">
+</g>
+<path id="CF304" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libCF304" opacity="0">
+</g>
+<path id="CE303" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libCE303" opacity="0">
+</g>
+<path id="CD302" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libCD302" opacity="0">
+</g>
+<path id="BI301" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libBI301" opacity="0">
+</g>
+<path id="BH300" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libBH300" opacity="0">
+</g>
+<path id="BG299" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libBG299" opacity="0">
+</g>
+<path id="BF298" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libBF298" opacity="0">
+</g>
+<path id="BE297" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libBE297" opacity="0">
+</g>
+<path id="BD296" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libBD296" opacity="0">
+</g>
+<path id="BC295" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libBC295" opacity="0">
+</g>
+<path id="AI294" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libAI294" opacity="0">
+</g>
+<path id="AH293" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libAH293" opacity="0">
+</g>
+<path id="AG292" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libAG292" opacity="0">
+</g>
+<path id="AF291" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libAF291" opacity="0">
+</g>
+<path id="AE290" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libAE290" opacity="0">
+</g>
+<path id="AD289" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libAD289" opacity="0">
+</g>
+<path id="AC288" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libAC288" opacity="0">
+</g>
+<path id="AB287" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="libAB287" opacity="0">
+</g>
+<g id="A278" opacity="0">
+  <circle id="cA278" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coA278" x="0" y="0" fill="rgb(0,0,0)">A</text>
+</g>
+<g id="B279" opacity="0">
+  <circle id="cB279" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coB279" x="0" y="0" fill="rgb(0,0,0)">B</text>
+</g>
+<g id="C280" opacity="0">
+  <circle id="cC280" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coC280" x="0" y="0" fill="rgb(0,0,0)">C</text>
+</g>
+<g id="D281" opacity="0">
+  <circle id="cD281" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coD281" x="0" y="0" fill="rgb(0,0,0)">D</text>
+</g>
+<g id="E282" opacity="0">
+  <circle id="cE282" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coE282" x="0" y="0" fill="rgb(0,0,0)">E</text>
+</g>
+<g id="F283" opacity="0">
+  <circle id="cF283" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coF283" x="0" y="0" fill="rgb(0,0,0)">F</text>
+</g>
+<g id="G284" opacity="0">
+  <circle id="cG284" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coG284" x="0" y="0" fill="rgb(0,0,0)">G</text>
+</g>
+<g id="H285" opacity="0">
+  <circle id="cH285" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coH285" x="0" y="0" fill="rgb(0,0,0)">H</text>
+</g>
+<g id="I286" opacity="0">
+  <circle id="cI286" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coI286" x="0" y="0" fill="rgb(0,0,0)">I</text>
+</g>
+<animate href="#AB287" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M66 16 L438 219 Z" />
+<animateMotion href="#libAB287" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 252 117" />
+<animate href="#AB287" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libAB287" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biAB287" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#AC288" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M66 16 L135 452 Z" />
+<animateMotion href="#libAC288" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 100 234" />
+<animate href="#AC288" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libAC288" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biAC288" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#AD289" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M66 16 L-219 429 Z" />
+<animateMotion href="#libAD289" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -76 222" />
+<animate href="#AD289" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libAD289" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biAD289" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#AE290" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M66 16 L-443 164 Z" />
+<animateMotion href="#libAE290" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -188 90" />
+<animate href="#AE290" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libAE290" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biAE290" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#AF291" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M66 16 L-449 -175 Z" />
+<animateMotion href="#libAF291" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -191 -79" />
+<animate href="#AF291" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libAF291" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biAF291" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#AG292" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M66 16 L-213 -425 Z" />
+<animateMotion href="#libAG292" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -73 -204" />
+<animate href="#AG292" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libAG292" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biAG292" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#AH293" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M66 16 L132 -447 Z" />
+<animateMotion href="#libAH293" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 99 -215" />
+<animate href="#AH293" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libAH293" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biAH293" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#AI294" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M66 16 L432 -227 Z" />
+<animateMotion href="#libAI294" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 249 -105" />
+<animate href="#AI294" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libAI294" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biAI294" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#BC295" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M438 219 L135 452 Z" />
+<animateMotion href="#libBC295" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 286 335" />
+<animate href="#BC295" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libBC295" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biBC295" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#BD296" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M438 219 L-219 429 Z" />
+<animateMotion href="#libBD296" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 109 324" />
+<animate href="#BD296" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libBD296" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biBD296" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#BE297" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M438 219 L-443 164 Z" />
+<animateMotion href="#libBE297" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -2 191" />
+<animate href="#BE297" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libBE297" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biBE297" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#BF298" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M438 219 L-449 -175 Z" />
+<animateMotion href="#libBF298" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -5 22" />
+<animate href="#BF298" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libBF298" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biBF298" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#BG299" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M438 219 L-213 -425 Z" />
+<animateMotion href="#libBG299" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 112 -103" />
+<animate href="#BG299" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libBG299" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biBG299" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#BH300" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M438 219 L132 -447 Z" />
+<animateMotion href="#libBH300" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 285 -114" />
+<animate href="#BH300" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libBH300" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biBH300" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#BI301" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M438 219 L432 -227 Z" />
+<animateMotion href="#libBI301" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 435 -4" />
+<animate href="#BI301" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libBI301" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biBI301" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#CD302" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M135 452 L-219 429 Z" />
+<animateMotion href="#libCD302" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -42 440" />
+<animate href="#CD302" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libCD302" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biCD302" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#CE303" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M135 452 L-443 164 Z" />
+<animateMotion href="#libCE303" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -154 308" />
+<animate href="#CE303" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libCE303" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biCE303" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#CF304" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M135 452 L-449 -175 Z" />
+<animateMotion href="#libCF304" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -157 138" />
+<animate href="#CF304" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libCF304" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biCF304" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#CG305" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M135 452 L-213 -425 Z" />
+<animateMotion href="#libCG305" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -39 13" />
+<animate href="#CG305" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libCG305" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biCG305" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#CH306" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M135 452 L132 -447 Z" />
+<animateMotion href="#libCH306" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 133 2" />
+<animate href="#CH306" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libCH306" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biCH306" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#CI307" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M135 452 L432 -227 Z" />
+<animateMotion href="#libCI307" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 283 112" />
+<animate href="#CI307" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libCI307" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biCI307" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#DE308" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-219 429 L-443 164 Z" />
+<animateMotion href="#libDE308" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -331 296" />
+<animate href="#DE308" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libDE308" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biDE308" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#DF309" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-219 429 L-449 -175 Z" />
+<animateMotion href="#libDF309" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -334 127" />
+<animate href="#DF309" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libDF309" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biDF309" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#DG310" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-219 429 L-213 -425 Z" />
+<animateMotion href="#libDG310" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -216 2" />
+<animate href="#DG310" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libDG310" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biDG310" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#DH311" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-219 429 L132 -447 Z" />
+<animateMotion href="#libDH311" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -43 -9" />
+<animate href="#DH311" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libDH311" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biDH311" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#DI312" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-219 429 L432 -227 Z" />
+<animateMotion href="#libDI312" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 106 101" />
+<animate href="#DI312" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libDI312" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biDI312" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#EF313" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-443 164 L-449 -175 Z" />
+<animateMotion href="#libEF313" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -446 -5" />
+<animate href="#EF313" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libEF313" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biEF313" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#EG314" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-443 164 L-213 -425 Z" />
+<animateMotion href="#libEG314" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -328 -130" />
+<animate href="#EG314" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libEG314" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biEG314" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#EH315" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-443 164 L132 -447 Z" />
+<animateMotion href="#libEH315" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -155 -141" />
+<animate href="#EH315" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libEH315" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biEH315" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#EI316" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-443 164 L432 -227 Z" />
+<animateMotion href="#libEI316" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -5 -31" />
+<animate href="#EI316" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libEI316" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biEI316" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#FG317" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-449 -175 L-213 -425 Z" />
+<animateMotion href="#libFG317" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -331 -300" />
+<animate href="#FG317" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libFG317" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biFG317" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#FH318" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-449 -175 L132 -447 Z" />
+<animateMotion href="#libFH318" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -158 -311" />
+<animate href="#FH318" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libFH318" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biFH318" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#FI319" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-449 -175 L432 -227 Z" />
+<animateMotion href="#libFI319" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -8 -201" />
+<animate href="#FI319" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libFI319" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biFI319" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#GH320" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-213 -425 L132 -447 Z" />
+<animateMotion href="#libGH320" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -40 -436" />
+<animate href="#GH320" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libGH320" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biGH320" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#GI321" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-213 -425 L432 -227 Z" />
+<animateMotion href="#libGI321" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 109 -326" />
+<animate href="#GI321" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libGI321" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biGI321" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#HI322" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M132 -447 L432 -227 Z" />
+<animateMotion href="#libHI322" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 282 -337" />
+<animate href="#HI322" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libHI322" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biHI322" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animateMotion href="#A278" begin="0ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l 66 16" />
+<animate href="#A278" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animateMotion href="#B279" begin="0ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l 438 219" />
+<animate href="#B279" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animateMotion href="#C280" begin="0ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l 135 452" />
+<animate href="#C280" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animateMotion href="#D281" begin="0ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l -219 429" />
+<animate href="#D281" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animateMotion href="#E282" begin="0ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l -443 164" />
+<animate href="#E282" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animateMotion href="#F283" begin="0ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l -449 -175" />
+<animate href="#F283" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animateMotion href="#G284" begin="0ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l -213 -425" />
+<animate href="#G284" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animateMotion href="#H285" begin="0ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l 132 -447" />
+<animate href="#H285" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animateMotion href="#I286" begin="0ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l 432 -227" />
+<animate href="#I286" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#AB287" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#AC288" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#AD289" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#AE290" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#AF291" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#AG292" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#AH293" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#AI294" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#BC295" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#BD296" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#BE297" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#BF298" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#BG299" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#BH300" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#BI301" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#CD302" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#CE303" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#CF304" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#CG305" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#CH306" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#CI307" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#DE308" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#DF309" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#DG310" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#DH311" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#DI312" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#EF313" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#EG314" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#EH315" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#EI316" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#FG317" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#FH318" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#FI319" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#GH320" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#GI321" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#HI322" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#cA278" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#cB279" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#cC280" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#cD281" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#cE282" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#cF283" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#cG284" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#cH285" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#cI286" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+</svg>
+		</article>
+    </section>
+  </body>
+</html>

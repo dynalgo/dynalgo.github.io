@@ -5,13 +5,12 @@ use super::tag::Tag;
 #[derive(Copy, Clone)]
 pub struct Link {
     id: u32,
-    name: char,
     from: char,
     to: char,
     from_center: Point,
     to_center: Point,
     bidirect: bool,
-    value: Option<u8>,
+    value: u8,
     pub stroke_color: Color,
     pub text_color: Color,
     pub stroke_width: u32,
@@ -21,20 +20,18 @@ pub struct Link {
 impl Link {
     pub fn new(
         id: u32,
-        name: char,
         from: char,
         to: char,
         from_center: Point,
         to_center: Point,
         bidirect: bool,
-        value: Option<u8>,
+        value: u8,
         stroke_color: Color,
         text_color: Color,
         stroke_width: u32,
     ) -> Link {
         Link {
             id,
-            name,
             from,
             to,
             from_center,
@@ -49,11 +46,7 @@ impl Link {
     }
 
     pub fn id(&self) -> String {
-        format!("{}{}", self.name, self.id)
-    }
-
-    pub fn name(&self) -> char {
-        self.name
+        format!("{}{}{}", self.from, self.to, self.id)
     }
 
     pub fn from(&self) -> char {
@@ -84,7 +77,7 @@ impl Link {
         self.bidirect
     }
 
-    pub fn value(&self) -> Option<u8> {
+    pub fn value(&self) -> u8 {
         self.value
     }
 

@@ -12,7 +12,9 @@ use node::Node;
 use point::Point;
 use std::cmp::max;
 use std::cmp::min;
+use std::collections::BTreeMap;
 use std::collections::HashMap;
+
 use std::f64::consts::PI;
 use std::sync::Mutex;
 use svg::Svg;
@@ -21,13 +23,12 @@ use tag::Tag;
 static SEQ: Mutex<u32> = Mutex::new(0);
 
 pub struct Renderer {
-    //id_seq: u32,
-    nodes: HashMap<char, Node>,
-    links: HashMap<char, Link>,
-    previous_nodes: HashMap<char, Node>,
-    previous_links: HashMap<char, Link>,
-    initial_nodes: HashMap<char, Node>,
-    initial_links: HashMap<char, Link>,
+    nodes: BTreeMap<char, Node>,
+    links: BTreeMap<(char, char), Link>,
+    previous_nodes: BTreeMap<char, Node>,
+    previous_links: BTreeMap<(char, char), Link>,
+    initial_nodes: BTreeMap<char, Node>,
+    initial_links: BTreeMap<(char, char), Link>,
     animation: String,
     svg: Svg,
     pub p_duration_add: u32,
@@ -49,36 +50,31 @@ pub struct Renderer {
 impl Renderer {
     pub fn new() -> Renderer {
         let p_display_node_label = true;
-        let p_display_node_value = false;
-        let p_display_link_label = false;
         let p_display_link_value = true;
         let p_stroke_width_node = 2;
         let p_stroke_width_link = 2;
         let p_radius_node = 20;
         let svg = Svg::new(
             p_display_node_label,
-            p_display_node_value,
-            p_display_link_label,
             p_display_link_value,
             p_stroke_width_node,
             p_stroke_width_link,
             p_radius_node,
         );
         Renderer {
-            //id_seq: 0,
-            nodes: HashMap::new(),
-            links: HashMap::new(),
-            previous_nodes: HashMap::new(),
-            previous_links: HashMap::new(),
-            initial_nodes: HashMap::new(),
-            initial_links: HashMap::new(),
+            nodes: BTreeMap::new(),
+            links: BTreeMap::new(),
+            previous_nodes: BTreeMap::new(),
+            previous_links: BTreeMap::new(),
+            initial_nodes: BTreeMap::new(),
+            initial_links: BTreeMap::new(),
             animation: String::new(),
             svg,
-            p_duration_add: 500,
-            p_duration_delete: 500,
-            p_duration_move: 500,
-            p_duration_select: 500,
-            p_duration_color: 500,
+            p_duration_add: 1000,
+            p_duration_delete: 1000,
+            p_duration_move: 1000,
+            p_duration_select: 1000,
+            p_duration_color: 1000,
             p_color_tag_created: Color::new(0, 0, 255),
             p_color_tag_selected: Color::new(191, 255, 0),
             p_color_tag_deleted: Color::new(255, 0, 0),
@@ -94,17 +90,18 @@ impl Renderer {
     fn id_seq(&mut self) -> u32 {
         let mut seq = SEQ.lock().unwrap();
         *seq += 1;
-        //self.id_seq += 1;
-        //self.id_seq
         *seq
     }
 
-    pub fn node_add(&mut self, name: char, center: Option<Point>, value: Option<u8>) {
+    pub fn duration(&self) -> u32 {
+        self.total_duration
+    }
+
+    pub fn node_add(&mut self, name: char, center: Option<Point>) {
         let mut node = Node::new(
             self.id_seq(),
             name,
             center,
-            value,
             self.svg.p_radius_node,
             self.p_color_node_fill,
             self.p_color_node_stroke,
@@ -135,21 +132,13 @@ impl Renderer {
         self.nodes.get_mut(&name).unwrap().tag(tag);
     }
 
-    pub fn link_add(
-        &mut self,
-        name: char,
-        from: char,
-        to: char,
-        bidirect: bool,
-        value: Option<u8>,
-    ) {
+    pub fn link_add(&mut self, from: char, to: char, bidirect: bool, value: u8) {
         let id_seq = self.id_seq();
         let from = self.nodes.get(&from).unwrap();
         let to = self.nodes.get(&to).unwrap();
 
         let mut link = Link::new(
             id_seq,
-            name,
             from.name(),
             to.name(),
             from.center().clone(),
@@ -162,166 +151,281 @@ impl Renderer {
         );
         link.tag(Some(Tag::Created(self.p_color_tag_created)));
 
-        self.links.insert(link.name(), link.clone());
-        self.previous_links.insert(link.name(), link.clone());
-        self.initial_links.insert(link.name(), link);
+        self.links.insert((from.name(), to.name()), link.clone());
+        self.previous_links
+            .insert((from.name(), to.name()), link.clone());
+        self.initial_links.insert((from.name(), to.name()), link);
 
         self.animation
             .insert_str(0, &self.svg.instantiate_link(&link));
     }
 
-    pub fn link_delete(&mut self, name: char) {
-        self.links
-            .get_mut(&name)
-            .unwrap()
-            .tag(Some(Tag::Deleted(self.p_color_tag_deleted)));
+    pub fn link_delete(&mut self, from: char, to: char) {
+        let link = match self.links.get_mut(&(from, to)) {
+            None => self.links.get_mut(&(to, from)).unwrap(),
+            Some(l) => l,
+        };
+        link.tag(Some(Tag::Deleted(self.p_color_tag_deleted)));
     }
 
-    pub fn link_selected(&mut self, name: char, selected: bool) {
+    pub fn link_selected(&mut self, from: char, to: char, selected: bool) {
         let tag = match selected {
             true => Some(Tag::Selected(self.p_color_tag_selected)),
             false => None,
         };
-        self.links.get_mut(&name).unwrap().tag(tag);
+        let link = match self.links.get_mut(&(from, to)) {
+            None => self.links.get_mut(&(to, from)).unwrap(),
+            Some(l) => l,
+        };
+        link.tag(tag);
     }
 
-    pub fn layout(
-        &mut self,
-        nodes_names: &Vec<char>,
-        adjacencies: HashMap<char, HashMap<char, (char, Option<u8>)>>,
-    ) {
-        if nodes_names.is_empty() {
+    pub fn layout(&mut self, adja: BTreeMap<char, BTreeMap<char, u8>>) {
+        assert!(adja.len() == self.nodes.len());
+
+        if adja.is_empty() {
             return;
         }
 
-        let all_nodes: Vec<char> = self.nodes.keys().cloned().collect();
+        let distance = |x1: i64, y1: i64, x2: i64, y2: i64| {
+            (((x2 - x1).pow(2) + (y2 - y1).pow(2)) as f64).sqrt() as u64
+        };
 
-        let mut fixed_center_x: i32 = 0;
-        let mut fixed_center_y: i32 = 0;
-        for name in &all_nodes {
-            let center = self.node_center(*name);
-            fixed_center_x += center.x();
-            fixed_center_y += center.y();
-        }
-        fixed_center_x = fixed_center_x / self.nodes.len() as i32;
-        fixed_center_y = fixed_center_y / self.nodes.len() as i32;
-
-        let radius =
-            ((2 * self.svg.p_radius_node * self.nodes.len() as u32 * 4) as f64 / (2. * PI)) as f64;
-        let angle = 2. * PI / self.nodes.len() as f64;
-
-        for (i, name) in nodes_names.iter().enumerate() {
-            if self.node_center_fixed(*name) {
+        let mut avg_x: i64 = 0;
+        let mut avg_y: i64 = 0;
+        let mut freezed_count = 0;
+        let mut radius_min = 0;
+        let mut forces = BTreeMap::new();
+        let mut positions = BTreeMap::new();
+        for node in adja.keys() {
+            let xy = self.node_center(*node);
+            let freezed = self.node_center_freezed(*node);
+            positions.insert(*node, (freezed, xy.x() as i64, xy.y() as i64));
+            if freezed {
+                avg_x += xy.x() as i64;
+                avg_y += xy.y() as i64;
+                freezed_count += 1;
                 continue;
             }
-            if nodes_names.len() == 1 {
-                let square_size = (self.nodes.len() as f64).sqrt().ceil() as u32;
-                let dx = ((self.nodes.len() as u32) % square_size) as i32 * 10;
-                let dy = ((self.nodes.len() as u32) / square_size) as i32 * 10;
-                self.node_move(*name, Point::new(fixed_center_x + dx, fixed_center_y + dy));
-            } else {
-                let x = radius * (i as f64 * angle).cos() + fixed_center_x as f64;
-                let y = radius * (i as f64 * angle).sin() + fixed_center_y as f64;
-                self.node_move(*name, Point::new(x as i32, y as i32));
+            forces.insert(*node, (0, 0));
+        }
+
+        if freezed_count > 0 {
+            if adja.keys().len() == freezed_count {
+                return;
+            }
+            avg_x = avg_x / freezed_count as i64;
+            avg_y = avg_y / freezed_count as i64;
+            for (_, (freezed, x, y)) in &positions {
+                if *freezed {
+                    radius_min = max(radius_min, distance(*x, *y, avg_x, avg_y));
+                }
             }
         }
 
-        let density = if (self.links.len() as f64 / self.nodes.len() as f64) < 1.2 {
-            1.2
-        } else {
-            self.links.len() as f64 / self.nodes.len() as f64
-        };
-        let max_x = fixed_center_x + (density * radius) as i32;
-        let max_y = fixed_center_y + (density * radius) as i32;
+        let diameter = 2 * self.svg.p_radius_node;
+        let perimeter = (diameter * (positions.keys().len() - freezed_count) as u32 * 2) as f64;
+        let mut radius = (perimeter / (2. * PI)) as f64;
+        radius = max(radius as u32, radius_min as u32 + 2 * diameter) as f64;
+        let angle = 2. * PI / (positions.keys().len() - freezed_count) as f64;
 
-        for _i in 1..(200. * density) as u32 {
-            for node in &all_nodes {
-                if self.node_center_fixed(*node) {
+        let mut i = 0;
+        for (_, (freezed, x, y)) in positions.iter_mut() {
+            if *freezed {
+                continue;
+            }
+            *x = (radius * (i as f64 * angle).cos() + avg_x as f64) as i64;
+            *y = (radius * (i as f64 * angle).sin() + avg_y as f64) as i64;
+            i += 1;
+        }
+
+        let links_count: usize = adja
+            .iter()
+            .map(|(_, n)| n.len())
+            .collect::<Vec<usize>>()
+            .iter()
+            .sum::<usize>()
+            / 2;
+
+        let mut density = links_count / adja.len();
+        density = max(1, density);
+        let mut springs = HashMap::new();
+        let length_unit = self.svg.p_radius_node * density as u32;
+        let k_unit = 0.01;
+        for node in positions.keys() {
+            for other in positions.keys() {
+                if *other == *node {
                     continue;
                 }
-                let c_node = self.node_center(*node);
-                let mut sum_forces_x = 0;
-                let mut sum_forces_y = 0;
 
-                for other in &all_nodes {
-                    let c_other = if *node == *other {
-                        continue;
-                    } else {
-                        *self.node_center(*other)
-                    };
-                    let mut dx = (c_other.x() - c_node.x()) as i32;
-                    let mut dy = (c_other.y() - c_node.y()) as i32;
-                    let mut distance = ((dx * dx + dy * dy) as f64).sqrt() as u32;
-                    if dx == 0 && dy == 0 {
-                        dx = 1;
-                        dy = 1;
-                        distance = 1;
+                let (length, k) = if adja.get(node).unwrap().get(other).is_some()
+                //    || adja.get(other).unwrap().get(node).is_some()
+                {
+                    match max(
+                        adja.get(node).unwrap().len(),
+                        adja.get(other).unwrap().len(),
+                    ) {
+                        n if n == 1 => (5 * length_unit as i64, 30. * k_unit),
+                        n if n == 2 => (6 * length_unit as i64, 25. * k_unit),
+                        n if n == 3 => (7 * length_unit as i64, 20. * k_unit),
+                        n if n == 4 => (8 * length_unit as i64, 15. * k_unit),
+                        _ => (9 * length_unit as i64, 10. * k_unit),
                     }
-                    let (spring_length, k) = if adjacencies.get(node).unwrap().get(other).is_some()
-                        || adjacencies.get(other).unwrap().get(node).is_some()
-                    {
-                        (
-                            (self.svg.p_radius_node * (10. * density) as u32) as i32,
-                            0.6,
-                        )
+                } else {
+                    (
+                        max(24, adja.len() / 2) as i64 * length_unit as i64,
+                        5. * k_unit,
+                    )
+                };
+                springs.insert((*node, *other), (length, k));
+            }
+        }
+
+        let mut not_moved = Vec::with_capacity(adja.len());
+        for (node, neighbors) in &adja {
+            not_moved.push((*node, neighbors.len()));
+        }
+        not_moved.sort_by(|(_, l1), (_, l2)| l2.cmp(l1));
+        let mut not_moved: Vec<char> = not_moved.into_iter().map(|(n, _)| n).collect();
+
+        for i in 0..(10 * adja.len()) {
+            if i % adja.len() == 0 && not_moved.len() > 0 {
+                for node in &not_moved {
+                    let neighbors = adja.get(&node).unwrap();
+                    if neighbors.len() < 1 {
+                        continue;
+                    }
+
+                    let mut try_x: i64 = 0;
+                    let mut try_y: i64 = 0;
+                    if neighbors.len() == 1 {
+                        let (other, _) = neighbors.iter().next().unwrap();
+                        let (_, o_x, o_y) = positions.get(&other).unwrap();
+                        let dist = distance(*o_x, *o_y, 0, 0);
+                        try_x = o_x + (1.1 * diameter as f64 * *o_x as f64 / dist as f64) as i64;
+                        try_y = o_y + (1.1 * diameter as f64 * *o_y as f64 / dist as f64) as i64;
                     } else {
-                        (
-                            (self.svg.p_radius_node * (25. * density) as u32) as i32,
-                            0.1,
-                        )
-                    };
-                    let force = (distance as i32 - spring_length) as f64 * k;
-                    let force_x = (force * (dx as f64 / distance as f64)) as i32;
-                    let force_y = (force * (dy as f64 / distance as f64)) as i32;
-                    sum_forces_x += force_x;
-                    sum_forces_y += force_y;
-                }
+                        for (other, _) in neighbors {
+                            let (_, o_x, o_y) = positions.get(&other).unwrap();
+                            try_x += o_x;
+                            try_y += o_y;
+                        }
+                        try_x = 10 + try_x / neighbors.len() as i64;
+                        try_y = 10 + try_y / neighbors.len() as i64;
+                    }
 
-                let mut x_next = c_node.x() + sum_forces_x;
-                let mut y_next = c_node.y() + sum_forces_y;
-                x_next = min(x_next, max_x);
-                x_next = max(x_next, -max_x);
-                y_next = min(y_next, max_y);
-                y_next = max(y_next, -max_y);
-
-                let mut collision = true;
-                while collision && (x_next.abs() <= max_x) && (y_next.abs() <= max_y) {
-                    for other in &all_nodes {
-                        collision = false;
-                        if *node == *other {
+                    let mut collision = false;
+                    for (other, (_, o_x, o_y)) in &positions {
+                        if *other == *node {
                             continue;
                         }
-                        let c_other = self.node_center(*other);
-                        let dx = (c_other.x() - x_next) as i32;
-                        let dy = (c_other.y() - y_next) as i32;
-                        if dx.abs() < (self.svg.p_radius_node * 2) as i32
-                            && dy.abs() < (self.svg.p_radius_node * 2) as i32
-                        {
-                            if sum_forces_x == 0 && sum_forces_y == 0 {
-                                break;
-                            }
-                            collision = true;
-
-                            if sum_forces_x > 0 {
-                                x_next = c_other.x() + (self.svg.p_radius_node * 3) as i32;
-                            } else if sum_forces_x < 0 {
-                                x_next = c_other.x() - (self.svg.p_radius_node * 3) as i32;
-                            }
-                            if sum_forces_y > 0 {
-                                y_next = c_other.y() + (self.svg.p_radius_node * 3) as i32;
-                            } else if sum_forces_y < 0 {
-                                y_next = c_other.y() - (self.svg.p_radius_node * 3) as i32;
-                            }
+                        collision = distance(try_x, try_y, *o_x, *o_y) <= diameter as u64;
+                        if collision {
+                            break;
                         }
                     }
+                    if !collision {
+                        let (_, n_x, n_y) = positions.get_mut(node).unwrap();
+                        *n_x = try_x;
+                        *n_y = try_y;
+                    }
+                }
+                not_moved.clear();
+            }
+
+            let mut max_f = 0;
+            for (node, (n_freezed, n_x, n_y)) in &positions {
+                if *n_freezed {
+                    continue;
                 }
 
-                self.node_move(*node, Point::new(x_next, y_next));
+                let mut sum_f_x = 0;
+                let mut sum_f_y = 0;
+                for (other, (_, o_x, o_y)) in &positions {
+                    if *other == *node {
+                        continue;
+                    }
+
+                    let dist = distance(*n_x, *n_y, *o_x, *o_y);
+                    assert!(dist >= diameter as u64);
+
+                    let (d_x, d_y) = (o_x - n_x, o_y - n_y);
+                    let (spring_length, k) = springs.get(&(*node, *other)).unwrap();
+                    let force = (dist as i64 - spring_length) as f64 * k;
+                    let f_x = (force * (d_x as f64 / dist as f64)) as i64;
+                    let f_y = (force * (d_y as f64 / dist as f64)) as i64;
+                    sum_f_x += f_x;
+                    sum_f_y += f_y;
+                }
+
+                let f = distance(sum_f_x, sum_f_y, 0, 0) as i64;
+                max_f = max(max_f, f);
+
+                let (f_x, f_y) = forces.get_mut(node).unwrap();
+                *f_x = sum_f_x;
+                *f_y = sum_f_y;
             }
+
+            let maxi = 6 * radius as i64 / adja.len() as i64;
+            if max_f > maxi {
+                let reduce = maxi as f64 / max_f as f64;
+                for (_, (f_x, f_y)) in forces.iter_mut() {
+                    *f_x = (*f_x as f64 * reduce) as i64;
+                    *f_y = (*f_y as f64 * reduce) as i64;
+                }
+            }
+
+            for (node, (f_x, f_y)) in &forces {
+                let f = distance(*f_x, *f_y, 0, 0);
+                if f <= length_unit as u64 / 10 {
+                    continue;
+                };
+                let (_, n_x, n_y) = positions.get(node).unwrap();
+                let mut new_x = *n_x;
+                let mut new_y = *n_y;
+                for m in (0..=4).rev() {
+                    let try_x = *n_x + ((f * m / 4) as f64 * (*f_x as f64 / f as f64)) as i64;
+                    let try_y = *n_y + ((f * m / 4) as f64 * (*f_y as f64 / f as f64)) as i64;
+                    let mut collision = false;
+                    for (other, (_, o_x, o_y)) in &positions {
+                        if *other == *node {
+                            continue;
+                        }
+                        collision = distance(try_x, try_y, *o_x, *o_y) <= diameter as u64;
+                        if collision {
+                            assert!(m != 0);
+                            break;
+                        }
+                    }
+                    if !collision {
+                        new_x = try_x;
+                        new_y = try_y;
+                        break;
+                    }
+                }
+                if *n_x != new_x || *n_y != new_y {
+                    let (_, n_x, n_y) = positions.get_mut(node).unwrap();
+                    *n_x = new_x;
+                    *n_y = new_y;
+                } else {
+                    if !not_moved.contains(node) {
+                        not_moved.push(*node);
+                    }
+                }
+            }
+
+            if not_moved.len() == adja.len() {
+                println!("i == {} : no node moved ", i);
+                break;
+            }
+        }
+
+        for (node, (_, n_x, n_y)) in &positions {
+            self.node_move(*node, Point::new((*n_x) as i32, (*n_y) as i32), false);
         }
     }
 
-    pub fn node_move(&mut self, name: char, center: Point) {
+    pub fn node_move(&mut self, name: char, center: Point, freezed: bool) {
         let node = self.nodes.get_mut(&name).unwrap();
 
         let center_curr = node.center();
@@ -339,6 +443,12 @@ impl Renderer {
                 link.update_to_center(node.center().clone());
             }
         }
+
+        self.node_freezed(name, freezed);
+    }
+
+    pub fn node_freezed(&mut self, name: char, freezed: bool) {
+        self.nodes.get_mut(&name).unwrap().center_freeze(freezed);
     }
 
     pub fn node_color(&mut self, name: char, (red, green, blue): (u8, u8, u8)) {
@@ -349,8 +459,8 @@ impl Renderer {
         self.nodes.get(&name).unwrap().center()
     }
 
-    pub fn node_center_fixed(&self, name: char) -> bool {
-        self.nodes.get(&name).unwrap().center_fixed()
+    pub fn node_center_freezed(&self, name: char) -> bool {
+        self.nodes.get(&name).unwrap().center_freezed()
     }
 
     fn animate_viewbox(&mut self, duration: u32) -> String {
@@ -419,12 +529,6 @@ impl Renderer {
             )
         }
     }
-
-    /*
-        pub fn sleep(&mut self, duration: u32) {
-            self.total_duration += duration;
-        }
-    */
 
     pub fn animate(&mut self, duration: u32) {
         let mut svg = String::new();
@@ -515,14 +619,6 @@ impl Renderer {
 
     pub fn p_display_node_label(&mut self, display: bool) {
         self.svg.p_display_node_label = display;
-    }
-
-    pub fn p_display_node_value(&mut self, display: bool) {
-        self.svg.p_display_node_value = display;
-    }
-
-    pub fn p_display_link_label(&mut self, display: bool) {
-        self.svg.p_display_link_label = display;
     }
 
     pub fn p_display_link_value(&mut self, display: bool) {

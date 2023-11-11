@@ -3,8 +3,6 @@ use super::node::Node;
 
 pub struct Svg {
     pub p_display_node_label: bool,
-    pub p_display_node_value: bool,
-    pub p_display_link_label: bool,
     pub p_display_link_value: bool,
     pub p_stroke_width_node: u32,
     pub p_stroke_width_link: u32,
@@ -14,8 +12,6 @@ pub struct Svg {
 impl Svg {
     pub fn new(
         p_display_node_label: bool,
-        p_display_node_value: bool,
-        p_display_link_label: bool,
         p_display_link_value: bool,
         p_stroke_width_node: u32,
         p_stroke_width_link: u32,
@@ -23,8 +19,6 @@ impl Svg {
     ) -> Svg {
         Svg {
             p_display_node_label,
-            p_display_node_value,
-            p_display_link_label,
             p_display_link_value,
             p_stroke_width_node,
             p_stroke_width_link,
@@ -58,17 +52,11 @@ impl Svg {
         ));
 
         if self.p_display_node_label {
-            let (dx, dy) = match self.p_display_node_value {
-                false => (-6, 6),
-                true => (-6, -2),
-            };
             svg.push_str(&format!(
-                "  <text id=\"co{}\" x=\"{}\" y=\"{}\" dx=\"{}\" dy=\"{}\" ",
+                "  <text id=\"co{}\" x=\"{}\" y=\"{}\" ",
                 node.id(),
                 node.center().x(),
-                node.center().y(),
-                dx,
-                dy
+                node.center().y()
             ));
             svg.push_str(&format!(
                 "fill=\"rgb({},{},{})\">{}</text>\n",
@@ -76,27 +64,6 @@ impl Svg {
                 node.text_color.g(),
                 node.text_color.b(),
                 node.name()
-            ));
-        }
-        if self.p_display_node_value && node.value().is_some() {
-            let (dx, dy) = match self.p_display_node_label {
-                false => (-5, -5),
-                true => (-12, 13),
-            };
-            svg.push_str(&format!(
-                "  <text id=\"m{}\" x=\"{}\" y=\"{}\" dx=\"{}\" dy=\"{}\" ",
-                node.id(),
-                node.center().x(),
-                node.center().y(),
-                dx,
-                dy
-            ));
-            svg.push_str(&format!(
-                "fill=\"rgb({},{},{})\">{}</text>\n",
-                node.text_color.r(),
-                node.text_color.g(),
-                node.text_color.b(),
-                node.value().unwrap()
             ));
         }
         svg.push_str("</g>\n");
@@ -126,32 +93,13 @@ impl Svg {
 
         svg.push_str(&format!("<g id=\"lib{}\" opacity=\"{}\">\n", link.id(), 0));
 
-        if self.p_display_link_label {
-            let (dx, dy) = match self.p_display_link_value {
-                false => (-5, -5),
-                true => (-5, -3),
-            };
-            svg.push_str(&format!(
-                "  <text id=\"co{}\" x=\"{}\" y=\"{}\" dx=\"{}\" dy=\"{}\"",
-                link.id(),
-                (link.from_center().x() + link.to_center().x()) / 2 as i32,
-                (link.from_center().y() + link.to_center().y()) / 2 as i32,
-                dx,
-                dy
-            ));
-            svg.push_str(&format!(
-                " fill=\"rgb({},{},{})\">{}</text>\n",
-                link.text_color.r(),
-                link.text_color.g(),
-                link.text_color.b(),
-                link.name()
-            ));
-        }
-
-        if self.p_display_link_value && link.value().is_some() {
-            let (dx, dy) = match self.p_display_link_label {
-                false => (-5, -5),
-                true => (-12, 14),
+        if self.p_display_link_value && link.value() > 0 {
+            let (dx, dy) = match (
+                link.from_center().x() > link.to_center().x(),
+                link.from_center().y() > link.to_center().y(),
+            ) {
+                (true, true) | (false, false) => (5, -5),
+                _ => (-5, -5),
             };
             svg.push_str(&format!(
                 "  <text id=\"m{}\" x=\"{}\" y=\"{}\" dx=\"{}\" dy=\"{}\" ",
@@ -166,7 +114,7 @@ impl Svg {
                 link.text_color.r(),
                 link.text_color.g(),
                 link.text_color.b(),
-                link.value().unwrap()
+                link.value()
             ));
         }
         svg.push_str("</g>\n");
@@ -182,7 +130,7 @@ impl Svg {
             ));
             svg.push_str(&format!(
                 "<textpath startOffset=\"{}\" href=\"#{}\">⇒</textpath>\n",
-                self.p_radius_node,
+                self.p_radius_node + 15,
                 link.id()
             ));
             svg.push_str("</text>\n");
