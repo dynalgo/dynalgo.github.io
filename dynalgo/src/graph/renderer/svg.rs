@@ -91,9 +91,8 @@ impl Svg {
             link.to_center().y()
         ));
 
-        svg.push_str(&format!("<g id=\"lib{}\" opacity=\"{}\">\n", link.id(), 0));
-
         if self.p_display_link_value && link.value() > 0 {
+            svg.push_str(&format!("<g id=\"lib{}\" opacity=\"{}\">\n", link.id(), 0));
             let (dx, dy) = match (
                 link.from_center().x() > link.to_center().x(),
                 link.from_center().y() > link.to_center().y(),
@@ -116,8 +115,8 @@ impl Svg {
                 link.text_color.b(),
                 link.value()
             ));
+            svg.push_str("</g>\n");
         }
-        svg.push_str("</g>\n");
 
         if !link.bidirect() {
             svg.push_str(&format!(

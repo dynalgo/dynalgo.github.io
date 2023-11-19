@@ -1,0 +1,387 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <meta http-equiv="cache-control" content="no-cache, must-revalidate">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Dynalgo - equal</title>
+   <style>
+		body {
+			background-color: white;
+			color: darkblue;
+			margin: 0px;
+			padding: 0px;
+			display: flex;
+		}
+
+		:link {
+			color:darkblue;
+		}
+		nav {
+		    font-size: 1em;
+		    border: none;
+		    display: flex;
+		    flex-flow: column wrap;
+		    padding: 0px;
+		    margin: 0px;
+		    min-width: 230px;
+		}
+
+		nav ul {
+		    margin: 0px;
+		    padding: 0px;
+		    list-style: none;
+		    display: flex;
+		    flex-flow: column wrap;
+		    justify-content: left;
+		}
+
+		nav a {
+		    padding-top: 0.2em;
+		    display: block;
+		    text-align: left;
+		    text-decoration: none;
+		}
+
+        li {
+	        border-top : 1px solid white;
+	        border-bottom : 1px solid white;
+        }
+
+		li:hover {
+		    border-top : 1px solid darkblue;
+		    border-bottom : 1px solid darkblue;
+		}
+
+		header {
+		    display: flex;
+		    padding: 0px;
+		    margin: 0px;
+		    justify-content: space-around;
+			border-bottom: 1px solid lightgrey;
+		}
+		section {
+			display: flex;
+			flex-flow: row nowrap;
+			width: 100%;
+			height: 100vh;
+			padding: 0px;
+			margin: 0px;
+			justify-content: space-between;
+		}
+
+		article {
+			display: flex;
+			border: none;
+			width: 50%;
+			height: 100%;
+			padding: 0px;
+			margin: 0px;
+			overflow: hidden;
+			border-left: 1px solid lightgrey;
+		}
+
+		 svg text{
+		  text-anchor: middle;
+		  dominant-baseline: middle;
+		}
+
+		@media screen and (max-width: 800px) {
+			body {
+				flex-direction: column;
+				width: 100%;
+			}
+
+			section {
+				border-left: none;
+				flex-direction: column;
+				width: 100%;
+			}
+
+			article {
+				border-top: 1px solid lightgrey;
+				border-left: none;
+				width: 100%;
+			}
+
+			nav {
+		    	width: 100%;
+			}
+
+			nav ul {
+				border-right: none;
+			    justify-content: center;
+			}
+
+			nav a {
+			    text-align: center;
+			}
+		}
+
+		.selected {
+			font-style: italic;
+		    border-top : 1px solid darkblue;
+		    border-bottom : 1px solid darkblue;
+		}
+
+		.info a {
+			font-size: 1.5em;
+		    padding: 0px;
+		    margin: 0px;
+		    text-decoration: none;
+			cursor: pointer;
+			font-style: italic;
+		}
+
+
+    </style>
+    <script>
+        function pause(svg) {
+            if (svg.animationsPaused()) {
+                svg.unpauseAnimations();
+            } else {
+                svg.pauseAnimations();
+            }
+        }
+    </script>
+  </head>
+  <body>
+
+    <nav>
+    	<header>
+        	<div class="info"> <a href="https://github.com/dynalgo/dynalgo.github.io">Dynalgo</a>
+        	</div>
+        </header>
+        <ul id="menu">
+		<li><a href="maze.html">maze</a>
+		</li>
+		<li><a href="isomorphic.html">isomorphic</a>
+		</li>
+		<li class="selected"><a href="equal.html">equal</a>
+		</li>
+        </ul>
+    </nav>
+    <section>
+		<article>
+<svg class="svg_dynalgo" onclick="pause(this)" viewBox="-157 -156 285 320" preserveAspectRatio="xMidYMid meet">
+<path id="DA278" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<text id="biDA278" fill="rgb(0,0,0)" opacity="0">
+<textpath startOffset="35" href="#DA278">⇒</textpath>
+</text>
+<path id="DC277" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<path id="CB276" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<path id="AB275" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<text id="biAB275" fill="rgb(0,0,0)" opacity="0">
+<textpath startOffset="35" href="#AB275">⇒</textpath>
+</text>
+<g id="A271" opacity="0">
+  <circle id="cA271" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coA271" x="0" y="0" fill="rgb(0,0,0)">A</text>
+</g>
+<g id="B272" opacity="0">
+  <circle id="cB272" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coB272" x="0" y="0" fill="rgb(0,0,0)">B</text>
+</g>
+<g id="C273" opacity="0">
+  <circle id="cC273" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coC273" x="0" y="0" fill="rgb(0,0,0)">C</text>
+</g>
+<g id="D274" opacity="0">
+  <circle id="cD274" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coD274" x="0" y="0" fill="rgb(0,0,0)">D</text>
+</g>
+<animate href="#AB275" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M88 3 L-15 124 Z" />
+<animateMotion href="#libAB275" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 36 63" />
+<animate href="#AB275" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libAB275" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biAB275" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#CB276" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-117 0 L-15 124 Z" />
+<animateMotion href="#libCB276" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -66 62" />
+<animate href="#CB276" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libCB276" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biCB276" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#DA278" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-13 -116 L88 3 Z" />
+<animateMotion href="#libDA278" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 37 -56" />
+<animate href="#DA278" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libDA278" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biDA278" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#DC277" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-13 -116 L-117 0 Z" />
+<animateMotion href="#libDC277" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -65 -58" />
+<animate href="#DC277" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libDC277" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biDC277" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animateMotion href="#A271" begin="0ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l 88 3" />
+<animate href="#A271" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animateMotion href="#B272" begin="0ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l -15 124" />
+<animate href="#B272" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animateMotion href="#C273" begin="0ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l -117 0" />
+<animate href="#C273" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animateMotion href="#D274" begin="0ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l -13 -116" />
+<animate href="#D274" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#AB275" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#CB276" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#DA278" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#DC277" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#cA271" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#cB272" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#cC273" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#cD274" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+</svg>
+		</article>
+		<article>
+<svg class="svg_dynalgo" onclick="pause(this)" viewBox="-157 -156 285 320" preserveAspectRatio="xMidYMid meet">
+<path id="GF286" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<path id="EF285" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<text id="biEF285" fill="rgb(0,0,0)" opacity="0">
+<textpath startOffset="35" href="#EF285">⇒</textpath>
+</text>
+<path id="HE283" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<text id="biHE283" fill="rgb(0,0,0)" opacity="0">
+<textpath startOffset="35" href="#HE283">⇒</textpath>
+</text>
+<path id="HG281" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<g id="G279" opacity="0">
+  <circle id="cG279" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coG279" x="0" y="0" fill="rgb(0,0,0)">G</text>
+</g>
+<g id="H280" opacity="0">
+  <circle id="cH280" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coH280" x="0" y="0" fill="rgb(0,0,0)">H</text>
+</g>
+<g id="E282" opacity="0">
+  <circle id="cE282" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coE282" x="0" y="0" fill="rgb(0,0,0)">E</text>
+</g>
+<g id="F284" opacity="0">
+  <circle id="cF284" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coF284" x="0" y="0" fill="rgb(0,0,0)">F</text>
+</g>
+<animate href="#EF285" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M88 3 L-15 124 Z" />
+<animateMotion href="#libEF285" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 36 63" />
+<animate href="#EF285" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libEF285" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biEF285" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#GF286" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-117 0 L-15 124 Z" />
+<animateMotion href="#libGF286" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -66 62" />
+<animate href="#GF286" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libGF286" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biGF286" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#HE283" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-13 -116 L88 3 Z" />
+<animateMotion href="#libHE283" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 37 -56" />
+<animate href="#HE283" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libHE283" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biHE283" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#HG281" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-13 -116 L-117 0 Z" />
+<animateMotion href="#libHG281" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -65 -58" />
+<animate href="#HG281" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libHG281" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biHG281" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animateMotion href="#E282" begin="0ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l 88 3" />
+<animate href="#E282" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animateMotion href="#F284" begin="0ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l -15 124" />
+<animate href="#F284" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animateMotion href="#G279" begin="0ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l -117 0" />
+<animate href="#G279" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animateMotion href="#H280" begin="0ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l -13 -116" />
+<animate href="#H280" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#EF285" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#GF286" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#HE283" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#HG281" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#cE282" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#cF284" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#cG279" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#cH280" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#cE282" attributeName="fill" from="rgb(255,255,255)" to="rgb(196,0,0)" dur="100ms" begin="1001ms" fill="freeze"/>
+<animate href="#cF284" attributeName="fill" from="rgb(255,255,255)" to="rgb(196,0,0)" dur="100ms" begin="1102ms" fill="freeze"/>
+<animate href="#cG279" attributeName="fill" from="rgb(255,255,255)" to="rgb(196,0,0)" dur="100ms" begin="1203ms" fill="freeze"/>
+<animate href="#cH280" attributeName="fill" from="rgb(255,255,255)" to="rgb(196,0,0)" dur="100ms" begin="1304ms" fill="freeze"/>
+</svg>
+		</article>
+		<article>
+<svg class="svg_dynalgo" onclick="pause(this)" viewBox="-157 -156 285 320" preserveAspectRatio="xMidYMid meet">
+<path id="DC294" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<path id="CB293" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<path id="AB291" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<text id="biAB291" fill="rgb(0,0,0)" opacity="0">
+<textpath startOffset="35" href="#AB291">⇒</textpath>
+</text>
+<path id="DA289" stroke-width="2" opacity="0" stroke="rgb(0,0,255)" d="M0 0 L0 0 Z" />
+<text id="biDA289" fill="rgb(0,0,0)" opacity="0">
+<textpath startOffset="35" href="#DA289">⇒</textpath>
+</text>
+<g id="A287" opacity="0">
+  <circle id="cA287" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coA287" x="0" y="0" fill="rgb(0,0,0)">A</text>
+</g>
+<g id="D288" opacity="0">
+  <circle id="cD288" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coD288" x="0" y="0" fill="rgb(0,0,0)">D</text>
+</g>
+<g id="B290" opacity="0">
+  <circle id="cB290" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coB290" x="0" y="0" fill="rgb(0,0,0)">B</text>
+</g>
+<g id="C292" opacity="0">
+  <circle id="cC292" cx="0" cy="0" r="20" fill="rgb(255,255,255)" stroke="rgb(0,0,255)" stroke-width="2"></circle>
+  <text id="coC292" x="0" y="0" fill="rgb(0,0,0)">C</text>
+</g>
+<animate href="#AB291" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M88 3 L-15 124 Z" />
+<animateMotion href="#libAB291" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 36 63" />
+<animate href="#AB291" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libAB291" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biAB291" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#CB293" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-117 0 L-15 124 Z" />
+<animateMotion href="#libCB293" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -66 62" />
+<animate href="#CB293" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libCB293" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biCB293" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#DA289" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-13 -116 L88 3 Z" />
+<animateMotion href="#libDA289" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l 37 -56" />
+<animate href="#DA289" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libDA289" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biDA289" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#DC294" begin="0ms" fill="freeze" attributeName="d" dur="1000ms" values="M0 0 L0 0 Z;M-13 -116 L-117 0 Z" />
+<animateMotion href="#libDC294" begin="0ms" dur="1000ms" fill="freeze" path="m 0 0 l -65 -58" />
+<animate href="#DC294" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#libDC294" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#biDC294" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animateMotion href="#A287" begin="0ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l 88 3" />
+<animate href="#A287" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animateMotion href="#B290" begin="0ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l -15 124" />
+<animate href="#B290" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animateMotion href="#C292" begin="0ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l -117 0" />
+<animate href="#C292" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animateMotion href="#D288" begin="0ms" dur="1000ms"
+                    fill="freeze" path="m 0 0 l -13 -116" />
+<animate href="#D288" attributeName="opacity" from="0" to="1" dur="1000ms" begin="0ms" fill="freeze"/>
+<animate href="#AB291" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#CB293" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#DA289" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#DC294" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#cA287" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#cB290" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#cC292" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#cD288" attributeName="stroke" from="rgb(0,0,255)" to="rgb(128,139,150)" dur="1ms" begin="1000ms" fill="freeze"/>
+<animate href="#cA287" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,196,0)" dur="100ms" begin="1001ms" fill="freeze"/>
+<animate href="#cB290" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,196,0)" dur="100ms" begin="1102ms" fill="freeze"/>
+<animate href="#cC292" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,196,0)" dur="100ms" begin="1203ms" fill="freeze"/>
+<animate href="#cD288" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,196,0)" dur="100ms" begin="1304ms" fill="freeze"/>
+</svg>
+		</article>
+    </section>
+  </body>
+</html>
