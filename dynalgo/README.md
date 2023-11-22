@@ -32,14 +32,14 @@ graph.link_add('D', 'A', false, 4);
 graph.nodes_exchange('A', 'B');
 graph.nodes_exchange('A', 'B');
 
-graph.anim_node_selected('A', true);
-graph.anim_link_selected('A', 'B', true);
-graph.anim_node_selected('B', true);
-graph.anim_link_selected('B', 'C', true);
-graph.anim_node_selected('C', true);
-graph.anim_link_selected('C', 'D', true);
-graph.anim_node_selected('D', true);
-graph.anim_link_selected('D', 'A', true);
+graph.anim_node_select('A', true);
+graph.anim_link_select('A', 'B', true);
+graph.anim_node_select('B', true);
+graph.anim_link_select('B', 'C', true);
+graph.anim_node_select('C', true);
+graph.anim_link_select('C', 'D', true);
+graph.anim_node_select('D', true);
+graph.anim_link_select('D', 'A', true);
 
 let timing_add = graph.render_duration();
 
@@ -274,8 +274,8 @@ for graph in [&mut freezed_maze, &mut unfreezed_maze] {
 
     graph.append_from_config(config);
 
-    graph.anim_node_selected(node_start, true);
-    graph.anim_node_selected(node_searched, true);
+    graph.anim_node_select(node_start, true);
+    graph.anim_node_select(node_searched, true);
     graph.param_color_tag_selected(191, 255, 0);
 }
 
@@ -326,7 +326,7 @@ fn deep_first_search(
         if visited.contains(node_to) {
             continue;
         }
-        graph.anim_link_selected(node_from, *node_to, true);
+        graph.anim_link_select(node_from, *node_to, true);
 
         found = deep_first_search(graph, *node_to, node_searched, visited);
         if found {

@@ -52,7 +52,7 @@ impl FromStr for Graph {
     type Err = String;
     fn from_str(s: &str) -> Result<Graph, String> {
         let mut graph = Graph::new();
-        match graph.graph_from_config(s) {
+        match graph.append_from_config(s) {
             Ok(_) => (),
             Err(graph_error) => Err(format!("{}", graph_error))?,
         }
@@ -110,7 +110,42 @@ impl Graph {
     /// assert!(graph.nodes_list() == vec!['A', 'B']);
     /// ```
     pub fn append_from_config(&mut self, graph_config: &str) -> Result<&mut Self, GraphError> {
-        self.graph_from_config(graph_config)?;
+        let anim_state_init = self.anim_state;
+        if anim_state_init == AnimState::Resumed {
+            self.anim_pause()?;
+        }
+
+        for lign in graph_config.lines() {
+            let fields: Vec<&str> = lign.trim().split_whitespace().collect();
+            match fields.as_slice() {
+                [node_1, "-", node_2, value] => {
+                    self.link_add_from(node_1, node_2, true, value)?;
+                }
+                [node_1, "-", node_2] => {
+                    self.link_add_from(node_1, node_2, true, "_")?;
+                }
+                [node_from, ">", node_to, value] => {
+                    self.link_add_from(node_from, node_to, false, value)?;
+                }
+                [node_from, ">", node_to] => {
+                    self.link_add_from(node_from, node_to, false, "_")?;
+                }
+                [node, cx, cy] => {
+                    self.node_add_from(node, cx, cy)?;
+                }
+                [node] => {
+                    self.node_add_from(node, "_", "_")?;
+                }
+                _ => Err(GraphError {
+                    action: String::from("parse config"),
+                    message: format!("line '{}' is invalid", lign),
+                })?,
+            }
+        }
+
+        if anim_state_init == AnimState::Resumed {
+            self.anim_resume()?;
+        }
 
         Ok(self)
     }
@@ -306,9 +341,24 @@ impl Graph {
         Ok(self)
     }
 
-    /// Returns the list of nodes names.
+    /// Returns the nodes names list.
     pub fn nodes_list(&self) -> Vec<char> {
         self.adja.keys().cloned().collect()
+    }
+
+    /// Returns the links names list.
+    pub fn links_list(&self) -> Vec<(char, char)> {
+        let mut links = Vec::new();
+        for (node_from, neihgbors) in &self.adja {
+            for (node_to, _) in neihgbors {
+                let link = (*node_from, *node_to);
+                if !links.contains(&(*node_to, *node_from)) {
+                    links.push(link);
+                }
+            }
+        }
+
+        links
     }
 
     /// Returns the adjacency list.
@@ -432,10 +482,15 @@ impl Graph {
         let links_2 = self.node_links(node_2)?;
         links.extend(&links_2);
 
-        let links_to_delete: Vec<(char, char)> = links
-            .iter()
-            .map(|(node_from, node_to, _, _)| (*node_from, *node_to))
-            .collect();
+        let mut links_to_delete = Vec::new();
+        for (node_from, node_to, bidirect, _) in &links {
+            if *bidirect && links_to_delete.contains(&(*node_to, *node_from))
+                || links_to_delete.contains(&(*node_from, *node_to))
+            {
+                continue;
+            }
+            links_to_delete.push((*node_from, *node_to));
+        }
 
         let mut links_to_add = Vec::new();
         for (node_from, node_to, bidirect, value) in links {
@@ -449,6 +504,11 @@ impl Graph {
                 n if n == node_2 => node_1,
                 n => n,
             };
+            if bidirect && links_to_add.contains(&(node_to, node_from, bidirect, value))
+                || links_to_add.contains(&(node_from, node_to, bidirect, value))
+            {
+                continue;
+            }
             links_to_add.push((node_from, node_to, bidirect, value));
         }
 
@@ -517,47 +577,6 @@ impl Graph {
         }
         sequence.sort_by(|a, b| b.cmp(a));
         sequence
-    }
-
-    fn graph_from_config(&mut self, graph_config: &str) -> Result<&mut Self, GraphError> {
-        let anim_state_init = self.anim_state;
-        if anim_state_init == AnimState::Resumed {
-            self.anim_pause()?;
-        }
-
-        for lign in graph_config.lines() {
-            let fields: Vec<&str> = lign.trim().split_whitespace().collect();
-            match fields.as_slice() {
-                [node_1, "-", node_2, value] => {
-                    self.link_add_from(node_1, node_2, true, value)?;
-                }
-                [node_1, "-", node_2] => {
-                    self.link_add_from(node_1, node_2, true, "_")?;
-                }
-                [node_from, ">", node_to, value] => {
-                    self.link_add_from(node_from, node_to, false, value)?;
-                }
-                [node_from, ">", node_to] => {
-                    self.link_add_from(node_from, node_to, false, "_")?;
-                }
-                [node, cx, cy] => {
-                    self.node_add_from(node, cx, cy)?;
-                }
-                [node] => {
-                    self.node_add_from(node, "_", "_")?;
-                }
-                _ => Err(GraphError {
-                    action: String::from("parse config"),
-                    message: format!("line '{}' is invalid", lign),
-                })?,
-            }
-        }
-
-        if anim_state_init == AnimState::Resumed {
-            self.anim_resume()?;
-        }
-
-        Ok(self)
     }
 
     /// Returns a formatted string describing the graph structure.
@@ -712,6 +731,11 @@ impl Graph {
         Ok(self)
     }
 
+    // Indicates whether the animation is paused or not
+    pub fn anim_paused(&self) -> bool {
+        self.anim_state == AnimState::Paused
+    }
+
     /// Renders graphs animations in SVG SMIL format to HTML format content.
     /// The HTML code contains a little javascript so that each animation can be paused and resumed by clicking on the image.
     pub fn render_to_html(title: &str, graphs: Vec<&Graph>) -> String {
@@ -790,13 +814,26 @@ impl Graph {
         green: u8,
         blue: u8,
     ) -> Result<&mut Self, GraphError> {
-        self.node_check_exists(node)?;
+        self.anim_nodes_color(vec![node], red, green, blue)
+    }
+
+    /// Changes the fill color of the SVG node representation.
+    pub fn anim_nodes_color(
+        &mut self,
+        nodes: Vec<char>,
+        red: u8,
+        green: u8,
+        blue: u8,
+    ) -> Result<&mut Self, GraphError> {
+        for node in &nodes {
+            self.node_check_exists(*node)?;
+        }
 
         self.anim_bulk_changes(
             None,
             None,
             None,
-            Some((vec![node], (red, green, blue))),
+            Some((nodes, (red, green, blue))),
             None,
             None,
             None,
@@ -806,16 +843,28 @@ impl Graph {
     }
 
     /// Changes the selected status of a node (affects only SVG rendering).
-    /// The selected status affects the stroke color of the node.
-    pub fn anim_node_selected(
+    /// The selected status affects the node stroke color.
+    pub fn anim_node_select(
         &mut self,
         node: char,
         selected: bool,
     ) -> Result<&mut Self, GraphError> {
-        self.node_check_exists(node)?;
+        self.anim_nodes_select(vec![node], selected)
+    }
+
+    /// Changes the selected status of nodes (affects only SVG rendering).
+    /// The selected status affects the nodes stroke color.
+    pub fn anim_nodes_select(
+        &mut self,
+        nodes: Vec<char>,
+        selected: bool,
+    ) -> Result<&mut Self, GraphError> {
+        for node in &nodes {
+            self.node_check_exists(*node)?;
+        }
 
         self.anim_bulk_changes(
-            Some((vec![node], selected)),
+            Some((nodes, selected)),
             None,
             None,
             None,
@@ -839,19 +888,43 @@ impl Graph {
         Ok(self)
     }
 
+    /// Freezes or unfreezes the nodes positions (coords in SVG graphic context), so the current positions will change or not when automatic layout algo runs.
+    pub fn anim_nodes_freeze(
+        &mut self,
+        nodes: Vec<char>,
+        set: bool,
+    ) -> Result<&mut Self, GraphError> {
+        for node in nodes {
+            self.anim_node_freeze(node, set)?;
+        }
+        Ok(self)
+    }
+
     /// Changes the selected status of a link (affects only SVG rendering).
-    /// The selected status affects the stroke color of the link.
-    pub fn anim_link_selected(
+    /// The selected status affects the link stroke color.
+    pub fn anim_link_select(
         &mut self,
         node_from: char,
         node_to: char,
         selected: bool,
     ) -> Result<&mut Self, GraphError> {
-        self.link_check_exists(node_from, node_to)?;
+        self.anim_links_select(vec![(node_from, node_to)], selected)
+    }
+
+    /// Changes the selected status of links (affects only SVG rendering).
+    /// The selected status affects the links stroke color.
+    pub fn anim_links_select(
+        &mut self,
+        links: Vec<(char, char)>,
+        selected: bool,
+    ) -> Result<&mut Self, GraphError> {
+        for (node_from, node_to) in &links {
+            self.link_check_exists(*node_from, *node_to)?;
+        }
 
         self.anim_bulk_changes(
             None,
-            Some((vec![(node_from, node_to)], selected)),
+            Some((links, selected)),
             None,
             None,
             None,
@@ -884,7 +957,10 @@ impl Graph {
 
     fn anim_layout(&mut self) -> &mut Self {
         self.renderer.layout(self.adjacency_list_undirected());
-        self.anim_animate(self.renderer.p_duration_move);
+
+        if !self.anim_paused() {
+            self.anim_animate(self.renderer.p_duration_move);
+        }
 
         self
     }

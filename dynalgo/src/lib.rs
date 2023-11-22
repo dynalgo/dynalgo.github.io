@@ -2,12 +2,12 @@
 //!
 //! `dynalgo` is a tiny RUST library designed to produce animated SVG images that can illustrate graph algorithms in action.
 //!
-//! The library only focuces on providing a convenient tiny API for making animations in SVG SMIL format when developping algorithms working on graph structures.
+//! The library only focuces on providing a convenient tiny API for making animations in SVG SMIL format when developping algorithms working with graph structures.
 //!
-//! The crate offers a basic `graph` structure representation.But, interesting point is that each graph structure modification results in an animation with SVG SMIL format rendered into an HTML page. Moreover, several graphs animations can be rendered together in the same HTML page (side to side).
+//! The crate offers a basic `graph` structure representation. Interesting point is that each graph structure modification results in an animation rendered in SVG SMIL format into a HTML page. Several graphs animations can be rendered together in the same HTML page (side to side).
 //!
-//! Dyynalgo automatically layout nodes according to imaginary springs forces applying to them.
-//! Additionally, custom animations can be made by playing with the graphical properties of nodes and links representations.
+//! Dynalgo automatically layout nodes according to imaginary springs forces applying to them.
+//! Custom animations can be made by playing with the nodes and links  graphical representations.
 //!
 //! ### Example: basic usage
 //! ```
@@ -31,14 +31,14 @@
 //! graph.nodes_exchange('A', 'B');
 //! graph.nodes_exchange('A', 'B');
 //!
-//! graph.anim_node_selected('A', true);
-//! graph.anim_link_selected('A', 'B', true);
-//! graph.anim_node_selected('B', true);
-//! graph.anim_link_selected('B', 'C', true);
-//! graph.anim_node_selected('C', true);
-//! graph.anim_link_selected('C', 'D', true);
-//! graph.anim_node_selected('D', true);
-//! graph.anim_link_selected('D', 'A', true);
+//! graph.anim_node_select('A', true);
+//! graph.anim_link_select('A', 'B', true);
+//! graph.anim_node_select('B', true);
+//! graph.anim_link_select('B', 'C', true);
+//! graph.anim_node_select('C', true);
+//! graph.anim_link_select('C', 'D', true);
+//! graph.anim_node_select('D', true);
+//! graph.anim_link_select('D', 'A', true);
 //!
 //! let timing_add = graph.render_duration();
 //!
@@ -78,8 +78,6 @@
 //! other_graph.link_add('B', 'E', true, 6);
 //! other_graph.link_add('C', 'E', true, 7);
 //! other_graph.link_add('D', 'E', true, 8);
-//!
-//! other_graph.anim_step(1);
 //!
 //! other_graph.anim_step(timing_delete - other_graph.render_duration());
 //! other_graph.anim_resume();
@@ -241,8 +239,8 @@
 //!
 //!     graph.append_from_config(config);
 //!
-//!     graph.anim_node_selected(node_start, true);
-//!     graph.anim_node_selected(node_searched, true);
+//!     graph.anim_node_select(node_start, true);
+//!     graph.anim_node_select(node_searched, true);
 //!     graph.param_color_tag_selected(191, 255, 0);
 //! }
 //!
@@ -293,7 +291,7 @@
 //!         if visited.contains(node_to) {
 //!             continue;
 //!         }
-//!         graph.anim_link_selected(node_from, *node_to, true);
+//!         graph.anim_link_select(node_from, *node_to, true);
 //!
 //!         found = deep_first_search(graph, *node_to, node_searched, visited);
 //!         if found {
@@ -365,14 +363,14 @@ mod tests {
         graph.nodes_exchange('A', 'B')?;
         graph.nodes_exchange('A', 'B')?;
 
-        graph.anim_node_selected('A', true)?;
-        graph.anim_link_selected('A', 'B', true)?;
-        graph.anim_node_selected('B', true)?;
-        graph.anim_link_selected('B', 'C', true)?;
-        graph.anim_node_selected('C', true)?;
-        graph.anim_link_selected('C', 'D', true)?;
-        graph.anim_node_selected('D', true)?;
-        graph.anim_link_selected('D', 'A', true)?;
+        graph.anim_node_select('A', true)?;
+        graph.anim_link_select('A', 'B', true)?;
+        graph.anim_node_select('B', true)?;
+        graph.anim_link_select('B', 'C', true)?;
+        graph.anim_node_select('C', true)?;
+        graph.anim_link_select('C', 'D', true)?;
+        graph.anim_node_select('D', true)?;
+        graph.anim_link_select('D', 'A', true)?;
 
         let timing_add = graph.render_duration();
 
@@ -426,8 +424,6 @@ mod tests {
         other_graph.link_add('B', 'E', true, 6)?;
         other_graph.link_add('C', 'E', true, 8)?;
         other_graph.link_add('D', 'E', true, 9)?;
-
-        other_graph.anim_step(1)?;
 
         other_graph.anim_step(timing_delete - other_graph.render_duration())?;
         other_graph.anim_resume()?;
@@ -585,8 +581,8 @@ mod tests {
 
             graph.append_from_config(config).unwrap();
 
-            graph.anim_node_selected(node_start, true).unwrap();
-            graph.anim_node_selected(node_searched, true).unwrap();
+            graph.anim_node_select(node_start, true).unwrap();
+            graph.anim_node_select(node_searched, true).unwrap();
             graph.param_color_tag_selected(191, 255, 0);
         }
 
@@ -635,7 +631,7 @@ mod tests {
             if visited.contains(node_to) {
                 continue;
             }
-            graph.anim_link_selected(node_from, *node_to, true).unwrap();
+            graph.anim_link_select(node_from, *node_to, true).unwrap();
 
             found = deep_first_search(graph, *node_to, node_searched, visited);
             if found {
@@ -696,9 +692,9 @@ mod tests {
         assert!(graph.node_delete('C').is_err());
         assert!(graph.nodes_exchange('A', 'C').is_err());
         assert!(graph.anim_node_color('C', 0, 0, 0).is_err());
-        assert!(graph.anim_node_selected('C', true).is_err());
+        assert!(graph.anim_node_select('C', true).is_err());
 
         assert!(graph.link_delete('A', 'C').is_err());
-        assert!(graph.anim_link_selected('A', 'C', true).is_err());
+        assert!(graph.anim_link_select('A', 'C', true).is_err());
     }
 }

@@ -1,26 +1,18 @@
 use super::combination::Combination;
+use crate::utils::colors::Colors;
 use dynalgo::graph::Graph;
+use dynalgo::graph::GraphError;
 use std::collections::BTreeMap;
 use std::collections::HashMap;
 
 pub struct Compare {}
 
 impl Compare {
-    pub fn equal(graph_1: &Graph, graph_2: &Graph, link_value_check: bool) -> bool {
-        if graph_1.graph_sequence() != graph_2.graph_sequence()
-            || graph_1.nodes_list() != graph_2.nodes_list()
-        {
-            return false;
-        }
-        Self::equal_adj(
-            graph_1.adjacency_list(),
-            graph_2.adjacency_list(),
-            link_value_check,
-            None,
-        )
+    pub fn equal(graph_1: &mut Graph, graph_2: &mut Graph, link_value_check: bool) -> bool {
+        Self::equal_adj(graph_1, graph_2, link_value_check, None).unwrap()
     }
 
-    pub fn isomorphic(graph_1: &Graph, graph_2: &Graph) -> Option<HashMap<char, char>> {
+    pub fn isomorphic(graph_1: &mut Graph, graph_2: &mut Graph) -> Option<HashMap<char, char>> {
         if graph_1.graph_sequence() != graph_2.graph_sequence() {
             return None;
         }
@@ -60,7 +52,6 @@ impl Compare {
             }
         }
         let combinations = Combination::combine::<char>(elements_list);
-        //println!("combinations : {:?}", combinations);
 
         for combination in combinations {
             assert_eq!(combination.len(), nodes_names_2.len());
@@ -70,16 +61,23 @@ impl Compare {
                 bijection.insert(*node_name, chars.next().unwrap());
             }
 
-            //println!("bijection : {:?}", bijection);
-            if Self::equal_adj(
-                graph_1.adjacency_list(),
-                graph_2.adjacency_list(),
-                false,
-                Some(&bijection),
-            ) {
+            if Self::equal_adj(graph_1, graph_2, false, Some(&bijection)).unwrap() {
+                let colors = Colors::colors(graph_1.nodes_list().len());
+                graph_1.param_duration_color(300);
+                graph_2.param_duration_color(300);
+                graph_1.anim_pause().unwrap();
+                graph_2.anim_pause().unwrap();
+
+                for (i, (node, node_bij)) in bijection.iter().enumerate() {
+                    let (r, g, b) = colors[i];
+                    graph_1.anim_node_color(*node_bij, r, g, b).unwrap();
+                    graph_2.anim_node_color(*node, r, g, b).unwrap();
+                }
+                graph_1.anim_resume().unwrap();
+                graph_2.anim_resume().unwrap();
+
                 let bijection: HashMap<char, char> = bijection.into_iter().collect();
                 return Some(bijection);
-            } else {
             }
         }
 
@@ -87,15 +85,31 @@ impl Compare {
     }
 
     fn equal_adj(
-        adja_1: BTreeMap<char, BTreeMap<char, u8>>,
-        adja_2: BTreeMap<char, BTreeMap<char, u8>>,
+        g_1: &mut Graph,
+        g_2: &mut Graph,
         link_value_check: bool,
-        bijection_2: Option<&HashMap<char, char>>,
-    ) -> bool {
-        if adja_1.len() != adja_2.len() || adja_1.is_empty() {
-            return false;
+        bij_2: Option<&HashMap<char, char>>,
+    ) -> Result<bool, GraphError> {
+        let adja_1 = g_1.adjacency_list();
+        let adja_2 = g_2.adjacency_list();
+        if bij_2.is_none() {
+            g_1.param_color_tag_selected(0, 255, 0)
+                .param_duration_select(300)
+                .param_duration_color(500);
+            g_2.param_color_tag_selected(0, 255, 0)
+                .param_duration_select(300)
+                .param_duration_color(500);
         }
-        let adja_2 = match bijection_2 {
+        //if g_1.sequence() != g_2.sequence() {
+        if adja_1.len() != adja_2.len() {
+            if bij_2.is_none() {
+                g_2.param_color_tag_selected(196, 0, 0);
+                g_2.anim_nodes_select(g_2.nodes_list(), true)?;
+            }
+            return Ok(false);
+        }
+
+        let adja_2 = match bij_2 {
             None => adja_2,
             Some(bijection) => {
                 let mut adja_bij = BTreeMap::new();
@@ -110,34 +124,76 @@ impl Compare {
                 adja_bij
             }
         };
+
         let mut iter_1 = adja_1.iter();
         let mut iter_2 = adja_2.iter();
         for _ in 0..adja_1.len() {
             let (node_1, neighbors_1) = iter_1.next().unwrap();
+            if bij_2.is_none() {
+                g_1.anim_node_select(*node_1, true).unwrap();
+            }
+
             let (node_2, neighbors_2) = iter_2.next().unwrap();
-            assert!(node_1 == node_2);
+            if node_1 != node_2 {
+                if bij_2.is_none() {
+                    g_2.param_color_tag_selected(255, 0, 0);
+                    g_2.anim_node_select(*node_2, true).unwrap();
+                }
+                return Ok(false);
+            }
+            if bij_2.is_none() {
+                g_2.anim_node_select(*node_2, true).unwrap();
+            }
             for (neighbor, link_value) in neighbors_1 {
                 match neighbors_2.get(neighbor) {
                     Some(v) => {
                         if link_value_check && v != link_value {
-                            return false;
+                            if bij_2.is_none() {
+                                g_1.param_color_tag_selected(255, 0, 0);
+                                g_1.anim_link_select(*node_1, *neighbor, true)?;
+                                g_2.param_color_tag_selected(255, 0, 0);
+                                g_2.anim_link_select(*node_2, *neighbor, true)?;
+                            }
+                            return Ok(false);
                         }
                     }
-                    None => return false,
+                    None => {
+                        if bij_2.is_none() {
+                            g_1.param_color_tag_selected(255, 0, 0);
+                            g_1.anim_link_select(*node_1, *neighbor, true)?;
+                            g_1.param_color_tag_selected(255, 0, 0);
+                            g_1.anim_node_select(*neighbor, true).unwrap();
+                        }
+                        return Ok(false);
+                    }
                 }
             }
             for (neighbor, link_value) in neighbors_2 {
                 match neighbors_1.get(neighbor) {
                     Some(v) => {
                         if link_value_check && v != link_value {
-                            return false;
+                            if bij_2.is_none() {
+                                g_1.param_color_tag_selected(255, 0, 0);
+                                g_1.anim_link_select(*node_1, *neighbor, true)?;
+                                g_2.param_color_tag_selected(255, 0, 0);
+                                g_2.anim_link_select(*node_2, *neighbor, true)?;
+                            }
+                            return Ok(false);
                         }
                     }
-                    None => return false,
+                    None => {
+                        if bij_2.is_none() {
+                            g_2.param_color_tag_selected(255, 0, 0);
+                            g_2.anim_link_select(*node_2, *neighbor, true)?;
+                            g_2.param_color_tag_selected(255, 0, 0);
+                            g_2.anim_node_select(*neighbor, true).unwrap();
+                        }
+                        return Ok(false);
+                    }
                 }
             }
         }
 
-        true
+        Ok(true)
     }
 }

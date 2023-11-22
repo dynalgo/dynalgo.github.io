@@ -1,0 +1,1340 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <meta http-equiv="cache-control" content="no-cache, must-revalidate">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Dynalgo - Traverse a maze</title>
+   <style>
+		body {
+			background-color: white;
+			color: darkblue;
+			margin: 0px;
+			padding: 0px;
+			display: flex;
+		}
+
+		:link {
+			color:darkblue;
+		}
+		nav {
+		    font-size: 1em;
+		    border: none;
+		    display: flex;
+		    flex-flow: column wrap;
+		    padding: 0px;
+		    margin: 0px;
+		    min-width: 230px;
+		}
+
+		nav ul {
+		    margin: 0px;
+		    padding: 0px;
+		    list-style: none;
+		    display: flex;
+		    flex-flow: column wrap;
+		    justify-content: left;
+		}
+
+		nav a {
+		    padding-top: 0.2em;
+		    display: block;
+		    text-align: left;
+		    text-decoration: none;
+		}
+
+        li {
+	        border-top : 1px solid white;
+	        border-bottom : 1px solid white;
+        }
+
+		li:hover {
+		    border-top : 1px solid darkblue;
+		    border-bottom : 1px solid darkblue;
+		}
+
+		header {
+		    display: flex;
+		    padding: 0px;
+		    margin: 0px;
+		    justify-content: space-around;
+			border-bottom: 1px solid lightgrey;
+		}
+		section {
+			display: flex;
+			flex-flow: row nowrap;
+			width: 100%;
+			height: 100vh;
+			padding: 0px;
+			margin: 0px;
+			justify-content: space-between;
+		}
+
+		article {
+			display: flex;
+			border: none;
+			width: 50%;
+			height: 100%;
+			padding: 0px;
+			margin: 0px;
+			overflow: hidden;
+			border-left: 1px solid lightgrey;
+		}
+
+		 svg text{
+		  text-anchor: middle;
+		  dominant-baseline: middle;
+		}
+
+		@media screen and (max-width: 800px) {
+			body {
+				flex-direction: column;
+				width: 100%;
+			}
+
+			section {
+				border-left: none;
+				flex-direction: column;
+				width: 100%;
+			}
+
+			article {
+				border-top: 1px solid lightgrey;
+				border-left: none;
+				width: 100%;
+			}
+
+			nav {
+		    	width: 100%;
+			}
+
+			nav ul {
+				border-right: none;
+			    justify-content: center;
+			}
+
+			nav a {
+			    text-align: center;
+			}
+		}
+
+		.selected {
+			font-style: italic;
+		    border-top : 1px solid darkblue;
+		    border-bottom : 1px solid darkblue;
+		}
+
+		.info a {
+			font-size: 1.5em;
+		    padding: 0px;
+		    margin: 0px;
+		    text-decoration: none;
+			cursor: pointer;
+			font-style: italic;
+		}
+
+
+    </style>
+    <script>
+        function pause(svg) {
+            if (svg.animationsPaused()) {
+                svg.unpauseAnimations();
+            } else {
+                svg.pauseAnimations();
+            }
+        }
+    </script>
+  </head>
+  <body>
+
+    <nav>
+    	<header>
+        	<div class="info"> <a href="https://github.com/dynalgo/dynalgo.github.io">Dynalgo</a>
+        	</div>
+        </header>
+        <ul id="menu">
+		<li class="selected"><a href="Traverse_a_maze.html">Traverse a maze</a>
+		</li>
+		<li><a href="Check_isomorphism.html">Check isomorphism</a>
+		</li>
+		<li><a href="Check_equality.html">Check equality</a>
+		</li>
+        </ul>
+    </nav>
+    <section>
+		<article>
+<svg class="svg_dynalgo" onclick="pause(this)" viewBox="-30 -30 285 285" preserveAspectRatio="xMidYMid meet">
+<path id="😏😕71" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M135 90 L135 135 Z" />
+<path id="😃😄70" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M135 0 L180 0 Z" />
+<path id="😓😔69" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M45 135 L90 135 Z" />
+<path id="😓😙68" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M45 135 L45 180 Z" />
+<path id="😂😃67" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M90 0 L135 0 Z" />
+<path id="😈😉66" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M90 45 L135 45 Z" />
+<path id="😊😋65" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M180 45 L225 45 Z" />
+<path id="😆😇64" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M0 45 L45 45 Z" />
+<path id="😅😋63" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M225 0 L225 45 Z" />
+<path id="😒😘62" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M0 135 L0 180 Z" />
+<path id="😜😝61" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M180 180 L225 180 Z" />
+<path id="😏😐60" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M135 90 L180 90 Z" />
+<path id="😕😛59" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M135 135 L135 180 Z" />
+<path id="😡😢58" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M135 225 L180 225 Z" />
+<path id="😎😔57" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M90 90 L90 135 Z" />
+<path id="😀😁56" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M0 0 L45 0 Z" />
+<path id="😖😗55" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M180 135 L225 135 Z" />
+<path id="😘😙54" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M0 180 L45 180 Z" />
+<path id="😘😞53" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M0 180 L0 225 Z" />
+<path id="😈😎52" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M90 45 L90 90 Z" />
+<path id="😐😑51" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M180 90 L225 90 Z" />
+<path id="😚😠50" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M90 180 L90 225 Z" />
+<path id="😞😟49" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M0 225 L45 225 Z" />
+<path id="😁😇48" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M45 0 L45 45 Z" />
+<path id="😝😣47" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M225 180 L225 225 Z" />
+<path id="😍😎46" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M45 90 L90 90 Z" />
+<path id="😢😣45" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M180 225 L225 225 Z" />
+<path id="😆😌44" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M0 45 L0 90 Z" />
+<path id="😋😑43" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M225 45 L225 90 Z" />
+<path id="😕😖42" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M135 135 L180 135 Z" />
+<path id="😖😜41" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M180 135 L180 180 Z" />
+<path id="😃😉40" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M135 0 L135 45 Z" />
+<path id="😇😍39" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M45 45 L45 90 Z" />
+<path id="😙😚38" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M45 180 L90 180 Z" />
+<path id="😚😛37" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M90 180 L135 180 Z" />
+<g id="😀1" opacity="0">
+  <circle id="c😀1" cx="0" cy="0" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😀1" x="0" y="0" fill="rgb(0,0,0)">😀</text>
+</g>
+<g id="😁2" opacity="0">
+  <circle id="c😁2" cx="45" cy="0" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😁2" x="45" y="0" fill="rgb(0,0,0)">😁</text>
+</g>
+<g id="😂3" opacity="0">
+  <circle id="c😂3" cx="90" cy="0" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😂3" x="90" y="0" fill="rgb(0,0,0)">😂</text>
+</g>
+<g id="😃4" opacity="0">
+  <circle id="c😃4" cx="135" cy="0" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😃4" x="135" y="0" fill="rgb(0,0,0)">😃</text>
+</g>
+<g id="😄5" opacity="0">
+  <circle id="c😄5" cx="180" cy="0" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😄5" x="180" y="0" fill="rgb(0,0,0)">😄</text>
+</g>
+<g id="😅6" opacity="0">
+  <circle id="c😅6" cx="225" cy="0" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😅6" x="225" y="0" fill="rgb(0,0,0)">😅</text>
+</g>
+<g id="😆7" opacity="0">
+  <circle id="c😆7" cx="0" cy="45" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😆7" x="0" y="45" fill="rgb(0,0,0)">😆</text>
+</g>
+<g id="😇8" opacity="0">
+  <circle id="c😇8" cx="45" cy="45" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😇8" x="45" y="45" fill="rgb(0,0,0)">😇</text>
+</g>
+<g id="😈9" opacity="0">
+  <circle id="c😈9" cx="90" cy="45" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😈9" x="90" y="45" fill="rgb(0,0,0)">😈</text>
+</g>
+<g id="😉10" opacity="0">
+  <circle id="c😉10" cx="135" cy="45" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😉10" x="135" y="45" fill="rgb(0,0,0)">😉</text>
+</g>
+<g id="😊11" opacity="0">
+  <circle id="c😊11" cx="180" cy="45" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😊11" x="180" y="45" fill="rgb(0,0,0)">😊</text>
+</g>
+<g id="😋12" opacity="0">
+  <circle id="c😋12" cx="225" cy="45" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😋12" x="225" y="45" fill="rgb(0,0,0)">😋</text>
+</g>
+<g id="😌13" opacity="0">
+  <circle id="c😌13" cx="0" cy="90" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😌13" x="0" y="90" fill="rgb(0,0,0)">😌</text>
+</g>
+<g id="😍14" opacity="0">
+  <circle id="c😍14" cx="45" cy="90" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😍14" x="45" y="90" fill="rgb(0,0,0)">😍</text>
+</g>
+<g id="😎15" opacity="0">
+  <circle id="c😎15" cx="90" cy="90" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😎15" x="90" y="90" fill="rgb(0,0,0)">😎</text>
+</g>
+<g id="😏16" opacity="0">
+  <circle id="c😏16" cx="135" cy="90" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😏16" x="135" y="90" fill="rgb(0,0,0)">😏</text>
+</g>
+<g id="😐17" opacity="0">
+  <circle id="c😐17" cx="180" cy="90" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😐17" x="180" y="90" fill="rgb(0,0,0)">😐</text>
+</g>
+<g id="😑18" opacity="0">
+  <circle id="c😑18" cx="225" cy="90" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😑18" x="225" y="90" fill="rgb(0,0,0)">😑</text>
+</g>
+<g id="😒19" opacity="0">
+  <circle id="c😒19" cx="0" cy="135" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😒19" x="0" y="135" fill="rgb(0,0,0)">😒</text>
+</g>
+<g id="😓20" opacity="0">
+  <circle id="c😓20" cx="45" cy="135" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😓20" x="45" y="135" fill="rgb(0,0,0)">😓</text>
+</g>
+<g id="😔21" opacity="0">
+  <circle id="c😔21" cx="90" cy="135" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😔21" x="90" y="135" fill="rgb(0,0,0)">😔</text>
+</g>
+<g id="😕22" opacity="0">
+  <circle id="c😕22" cx="135" cy="135" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😕22" x="135" y="135" fill="rgb(0,0,0)">😕</text>
+</g>
+<g id="😖23" opacity="0">
+  <circle id="c😖23" cx="180" cy="135" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😖23" x="180" y="135" fill="rgb(0,0,0)">😖</text>
+</g>
+<g id="😗24" opacity="0">
+  <circle id="c😗24" cx="225" cy="135" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😗24" x="225" y="135" fill="rgb(0,0,0)">😗</text>
+</g>
+<g id="😘25" opacity="0">
+  <circle id="c😘25" cx="0" cy="180" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😘25" x="0" y="180" fill="rgb(0,0,0)">😘</text>
+</g>
+<g id="😙26" opacity="0">
+  <circle id="c😙26" cx="45" cy="180" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😙26" x="45" y="180" fill="rgb(0,0,0)">😙</text>
+</g>
+<g id="😚27" opacity="0">
+  <circle id="c😚27" cx="90" cy="180" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😚27" x="90" y="180" fill="rgb(0,0,0)">😚</text>
+</g>
+<g id="😛28" opacity="0">
+  <circle id="c😛28" cx="135" cy="180" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😛28" x="135" y="180" fill="rgb(0,0,0)">😛</text>
+</g>
+<g id="😜29" opacity="0">
+  <circle id="c😜29" cx="180" cy="180" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😜29" x="180" y="180" fill="rgb(0,0,0)">😜</text>
+</g>
+<g id="😝30" opacity="0">
+  <circle id="c😝30" cx="225" cy="180" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😝30" x="225" y="180" fill="rgb(0,0,0)">😝</text>
+</g>
+<g id="😞31" opacity="0">
+  <circle id="c😞31" cx="0" cy="225" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😞31" x="0" y="225" fill="rgb(0,0,0)">😞</text>
+</g>
+<g id="😟32" opacity="0">
+  <circle id="c😟32" cx="45" cy="225" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😟32" x="45" y="225" fill="rgb(0,0,0)">😟</text>
+</g>
+<g id="😠33" opacity="0">
+  <circle id="c😠33" cx="90" cy="225" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😠33" x="90" y="225" fill="rgb(0,0,0)">😠</text>
+</g>
+<g id="😡34" opacity="0">
+  <circle id="c😡34" cx="135" cy="225" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😡34" x="135" y="225" fill="rgb(0,0,0)">😡</text>
+</g>
+<g id="😢35" opacity="0">
+  <circle id="c😢35" cx="180" cy="225" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😢35" x="180" y="225" fill="rgb(0,0,0)">😢</text>
+</g>
+<g id="😣36" opacity="0">
+  <circle id="c😣36" cx="225" cy="225" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😣36" x="225" y="225" fill="rgb(0,0,0)">😣</text>
+</g>
+<animate href="#😀😁56" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😀😁56" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😀😁56" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😁😇48" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😁😇48" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😁😇48" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😂😃67" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😂😃67" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😂😃67" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😃😄70" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😃😄70" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😃😄70" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😃😉40" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😃😉40" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😃😉40" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😅😋63" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😅😋63" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😅😋63" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😆😇64" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😆😇64" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😆😇64" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😆😌44" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😆😌44" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😆😌44" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😇😍39" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😇😍39" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😇😍39" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😈😉66" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😈😉66" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😈😉66" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😈😎52" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😈😎52" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😈😎52" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😊😋65" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😊😋65" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😊😋65" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😋😑43" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😋😑43" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😋😑43" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😍😎46" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😍😎46" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😍😎46" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😎😔57" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😎😔57" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😎😔57" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😏😐60" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😏😐60" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😏😐60" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😏😕71" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😏😕71" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😏😕71" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😐😑51" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😐😑51" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😐😑51" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😒😘62" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😒😘62" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😒😘62" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😓😔69" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😓😔69" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😓😔69" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😓😙68" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😓😙68" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😓😙68" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😕😖42" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😕😖42" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😕😖42" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😕😛59" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😕😛59" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😕😛59" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😖😗55" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😖😗55" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😖😗55" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😖😜41" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😖😜41" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😖😜41" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😘😙54" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😘😙54" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😘😙54" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😘😞53" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😘😞53" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😘😞53" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😙😚38" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😙😚38" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😙😚38" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😚😛37" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😚😛37" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😚😛37" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😚😠50" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😚😠50" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😚😠50" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😜😝61" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😜😝61" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😜😝61" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😝😣47" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😝😣47" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😝😣47" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😞😟49" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😞😟49" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😞😟49" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😡😢58" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😡😢58" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😡😢58" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😢😣45" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😢😣45" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😢😣45" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😀1" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😁2" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😂3" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😃4" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😄5" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😅6" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😆7" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😇8" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😈9" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😉10" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😊11" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😋12" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😌13" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😍14" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😎15" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😏16" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😐17" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😑18" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😒19" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😓20" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😔21" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😕22" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😖23" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😗24" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😘25" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😙26" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😚27" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😛28" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😜29" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😝30" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😞31" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😟32" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😠33" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😡34" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😢35" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😣36" attributeName="opacity" from="0" to="1" dur="1ms" begin="0ms" fill="freeze"/>
+<animate href="#😀😁56" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#😁😇48" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#😂😃67" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#😃😄70" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#😃😉40" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#😅😋63" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#😆😇64" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#😆😌44" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#😇😍39" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#😈😉66" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#😈😎52" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#😊😋65" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#😋😑43" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#😍😎46" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#😎😔57" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#😏😐60" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#😏😕71" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#😐😑51" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#😒😘62" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#😓😔69" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#😓😙68" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#😕😖42" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#😕😛59" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#😖😗55" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#😖😜41" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#😘😙54" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#😘😞53" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#😙😚38" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#😚😛37" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#😚😠50" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#😜😝61" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#😝😣47" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#😞😟49" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#😡😢58" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#😢😣45" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#c😀1" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#c😁2" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#c😂3" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#c😃4" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#c😄5" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#c😅6" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#c😆7" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#c😇8" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#c😈9" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#c😉10" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#c😊11" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#c😋12" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#c😌13" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#c😍14" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#c😎15" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#c😏16" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#c😐17" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#c😑18" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#c😒19" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#c😓20" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#c😔21" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#c😕22" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#c😖23" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#c😗24" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#c😘25" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#c😙26" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#c😚27" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#c😛28" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#c😜29" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#c😝30" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#c😞31" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#c😟32" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#c😠33" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#c😡34" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#c😢35" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#c😣36" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="4000ms" begin="1ms" fill="freeze"/>
+<animate href="#c😀1" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="4002ms" fill="freeze"/>
+<animate href="#c😀1" attributeName="stroke" from="rgb(128,139,150)" to="rgb(0,0,255)" dur="300ms" begin="4002ms" fill="freeze"/>
+<animate href="#c😣36" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="4303ms" fill="freeze"/>
+<animate href="#c😣36" attributeName="stroke" from="rgb(128,139,150)" to="rgb(0,0,255)" dur="300ms" begin="4303ms" fill="freeze"/>
+<animate href="#c😀1" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="4604ms" fill="freeze"/>
+<animate href="#😀😁56" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="5105ms" fill="freeze"/>
+<animate href="#😀😁56" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="5105ms" fill="freeze"/>
+<animate href="#c😁2" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="5406ms" fill="freeze"/>
+<animate href="#😁😇48" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="5907ms" fill="freeze"/>
+<animate href="#😁😇48" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="5907ms" fill="freeze"/>
+<animate href="#c😇8" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="6208ms" fill="freeze"/>
+<animate href="#😆😇64" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="6709ms" fill="freeze"/>
+<animate href="#😆😇64" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="6709ms" fill="freeze"/>
+<animate href="#c😆7" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="7010ms" fill="freeze"/>
+<animate href="#😆😌44" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="7511ms" fill="freeze"/>
+<animate href="#😆😌44" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="7511ms" fill="freeze"/>
+<animate href="#c😌13" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="7812ms" fill="freeze"/>
+<animate href="#c😌13" attributeName="fill" from="rgb(0,255,0)" to="rgb(255,0,0)" dur="500ms" begin="8313ms" fill="freeze"/>
+<animate href="#c😆7" attributeName="fill" from="rgb(0,255,0)" to="rgb(255,0,0)" dur="500ms" begin="8814ms" fill="freeze"/>
+<animate href="#😇😍39" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="9315ms" fill="freeze"/>
+<animate href="#😇😍39" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="9315ms" fill="freeze"/>
+<animate href="#c😍14" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="9616ms" fill="freeze"/>
+<animate href="#😍😎46" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="10117ms" fill="freeze"/>
+<animate href="#😍😎46" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="10117ms" fill="freeze"/>
+<animate href="#c😎15" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="10418ms" fill="freeze"/>
+<animate href="#😈😎52" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="10919ms" fill="freeze"/>
+<animate href="#😈😎52" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="10919ms" fill="freeze"/>
+<animate href="#c😈9" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="11220ms" fill="freeze"/>
+<animate href="#😈😉66" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="11721ms" fill="freeze"/>
+<animate href="#😈😉66" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="11721ms" fill="freeze"/>
+<animate href="#c😉10" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="12022ms" fill="freeze"/>
+<animate href="#😃😉40" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="12523ms" fill="freeze"/>
+<animate href="#😃😉40" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="12523ms" fill="freeze"/>
+<animate href="#c😃4" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="12824ms" fill="freeze"/>
+<animate href="#😂😃67" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="13325ms" fill="freeze"/>
+<animate href="#😂😃67" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="13325ms" fill="freeze"/>
+<animate href="#c😂3" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="13626ms" fill="freeze"/>
+<animate href="#c😂3" attributeName="fill" from="rgb(0,255,0)" to="rgb(255,0,0)" dur="500ms" begin="14127ms" fill="freeze"/>
+<animate href="#😃😄70" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="14628ms" fill="freeze"/>
+<animate href="#😃😄70" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="14628ms" fill="freeze"/>
+<animate href="#c😄5" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="14929ms" fill="freeze"/>
+<animate href="#c😄5" attributeName="fill" from="rgb(0,255,0)" to="rgb(255,0,0)" dur="500ms" begin="15430ms" fill="freeze"/>
+<animate href="#c😃4" attributeName="fill" from="rgb(0,255,0)" to="rgb(255,0,0)" dur="500ms" begin="15931ms" fill="freeze"/>
+<animate href="#c😉10" attributeName="fill" from="rgb(0,255,0)" to="rgb(255,0,0)" dur="500ms" begin="16432ms" fill="freeze"/>
+<animate href="#c😈9" attributeName="fill" from="rgb(0,255,0)" to="rgb(255,0,0)" dur="500ms" begin="16933ms" fill="freeze"/>
+<animate href="#😎😔57" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="17434ms" fill="freeze"/>
+<animate href="#😎😔57" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="17434ms" fill="freeze"/>
+<animate href="#c😔21" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="17735ms" fill="freeze"/>
+<animate href="#😓😔69" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="18236ms" fill="freeze"/>
+<animate href="#😓😔69" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="18236ms" fill="freeze"/>
+<animate href="#c😓20" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="18537ms" fill="freeze"/>
+<animate href="#😓😙68" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="19038ms" fill="freeze"/>
+<animate href="#😓😙68" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="19038ms" fill="freeze"/>
+<animate href="#c😙26" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="19339ms" fill="freeze"/>
+<animate href="#😘😙54" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="19840ms" fill="freeze"/>
+<animate href="#😘😙54" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="19840ms" fill="freeze"/>
+<animate href="#c😘25" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="20141ms" fill="freeze"/>
+<animate href="#😒😘62" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="20642ms" fill="freeze"/>
+<animate href="#😒😘62" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="20642ms" fill="freeze"/>
+<animate href="#c😒19" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="20943ms" fill="freeze"/>
+<animate href="#c😒19" attributeName="fill" from="rgb(0,255,0)" to="rgb(255,0,0)" dur="500ms" begin="21444ms" fill="freeze"/>
+<animate href="#😘😞53" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="21945ms" fill="freeze"/>
+<animate href="#😘😞53" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="21945ms" fill="freeze"/>
+<animate href="#c😞31" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="22246ms" fill="freeze"/>
+<animate href="#😞😟49" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="22747ms" fill="freeze"/>
+<animate href="#😞😟49" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="22747ms" fill="freeze"/>
+<animate href="#c😟32" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="23048ms" fill="freeze"/>
+<animate href="#c😟32" attributeName="fill" from="rgb(0,255,0)" to="rgb(255,0,0)" dur="500ms" begin="23549ms" fill="freeze"/>
+<animate href="#c😞31" attributeName="fill" from="rgb(0,255,0)" to="rgb(255,0,0)" dur="500ms" begin="24050ms" fill="freeze"/>
+<animate href="#c😘25" attributeName="fill" from="rgb(0,255,0)" to="rgb(255,0,0)" dur="500ms" begin="24551ms" fill="freeze"/>
+<animate href="#😙😚38" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="25052ms" fill="freeze"/>
+<animate href="#😙😚38" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="25052ms" fill="freeze"/>
+<animate href="#c😚27" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="25353ms" fill="freeze"/>
+<animate href="#😚😛37" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="25854ms" fill="freeze"/>
+<animate href="#😚😛37" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="25854ms" fill="freeze"/>
+<animate href="#c😛28" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="26155ms" fill="freeze"/>
+<animate href="#😕😛59" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="26656ms" fill="freeze"/>
+<animate href="#😕😛59" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="26656ms" fill="freeze"/>
+<animate href="#c😕22" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="26957ms" fill="freeze"/>
+<animate href="#😏😕71" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="27458ms" fill="freeze"/>
+<animate href="#😏😕71" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="27458ms" fill="freeze"/>
+<animate href="#c😏16" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="27759ms" fill="freeze"/>
+<animate href="#😏😐60" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="28260ms" fill="freeze"/>
+<animate href="#😏😐60" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="28260ms" fill="freeze"/>
+<animate href="#c😐17" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="28561ms" fill="freeze"/>
+<animate href="#😐😑51" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="29062ms" fill="freeze"/>
+<animate href="#😐😑51" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="29062ms" fill="freeze"/>
+<animate href="#c😑18" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="29363ms" fill="freeze"/>
+<animate href="#😋😑43" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="29864ms" fill="freeze"/>
+<animate href="#😋😑43" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="29864ms" fill="freeze"/>
+<animate href="#c😋12" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="30165ms" fill="freeze"/>
+<animate href="#😅😋63" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="30666ms" fill="freeze"/>
+<animate href="#😅😋63" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="30666ms" fill="freeze"/>
+<animate href="#c😅6" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="30967ms" fill="freeze"/>
+<animate href="#c😅6" attributeName="fill" from="rgb(0,255,0)" to="rgb(255,0,0)" dur="500ms" begin="31468ms" fill="freeze"/>
+<animate href="#😊😋65" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="31969ms" fill="freeze"/>
+<animate href="#😊😋65" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="31969ms" fill="freeze"/>
+<animate href="#c😊11" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="32270ms" fill="freeze"/>
+<animate href="#c😊11" attributeName="fill" from="rgb(0,255,0)" to="rgb(255,0,0)" dur="500ms" begin="32771ms" fill="freeze"/>
+<animate href="#c😋12" attributeName="fill" from="rgb(0,255,0)" to="rgb(255,0,0)" dur="500ms" begin="33272ms" fill="freeze"/>
+<animate href="#c😑18" attributeName="fill" from="rgb(0,255,0)" to="rgb(255,0,0)" dur="500ms" begin="33773ms" fill="freeze"/>
+<animate href="#c😐17" attributeName="fill" from="rgb(0,255,0)" to="rgb(255,0,0)" dur="500ms" begin="34274ms" fill="freeze"/>
+<animate href="#c😏16" attributeName="fill" from="rgb(0,255,0)" to="rgb(255,0,0)" dur="500ms" begin="34775ms" fill="freeze"/>
+<animate href="#😕😖42" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="35276ms" fill="freeze"/>
+<animate href="#😕😖42" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="35276ms" fill="freeze"/>
+<animate href="#c😖23" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="35577ms" fill="freeze"/>
+<animate href="#😖😗55" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="36078ms" fill="freeze"/>
+<animate href="#😖😗55" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="36078ms" fill="freeze"/>
+<animate href="#c😗24" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="36379ms" fill="freeze"/>
+<animate href="#c😗24" attributeName="fill" from="rgb(0,255,0)" to="rgb(255,0,0)" dur="500ms" begin="36880ms" fill="freeze"/>
+<animate href="#😖😜41" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="37381ms" fill="freeze"/>
+<animate href="#😖😜41" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="37381ms" fill="freeze"/>
+<animate href="#c😜29" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="37682ms" fill="freeze"/>
+<animate href="#😜😝61" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="38183ms" fill="freeze"/>
+<animate href="#😜😝61" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="38183ms" fill="freeze"/>
+<animate href="#c😝30" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="38484ms" fill="freeze"/>
+<animate href="#😝😣47" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="38985ms" fill="freeze"/>
+<animate href="#😝😣47" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="38985ms" fill="freeze"/>
+<animate href="#c😣36" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="39286ms" fill="freeze"/>
+</svg>
+		</article>
+		<article>
+<svg class="svg_dynalgo" onclick="pause(this)" viewBox="-30 -30 285 285" preserveAspectRatio="xMidYMid meet">
+<path id="😢😣142" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M180 225 L225 225 Z" />
+<path id="😡😢141" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M135 225 L180 225 Z" />
+<path id="😞😟140" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M0 225 L45 225 Z" />
+<path id="😝😣139" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M225 180 L225 225 Z" />
+<path id="😜😝138" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M180 180 L225 180 Z" />
+<path id="😚😠137" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M90 180 L90 225 Z" />
+<path id="😚😛136" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M90 180 L135 180 Z" />
+<path id="😙😚135" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M45 180 L90 180 Z" />
+<path id="😘😞134" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M0 180 L0 225 Z" />
+<path id="😘😙133" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M0 180 L45 180 Z" />
+<path id="😖😜132" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M180 135 L180 180 Z" />
+<path id="😖😗131" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M180 135 L225 135 Z" />
+<path id="😕😛130" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M135 135 L135 180 Z" />
+<path id="😕😖129" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M135 135 L180 135 Z" />
+<path id="😓😙128" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M45 135 L45 180 Z" />
+<path id="😓😔127" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M45 135 L90 135 Z" />
+<path id="😒😘126" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M0 135 L0 180 Z" />
+<path id="😐😑125" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M180 90 L225 90 Z" />
+<path id="😏😕124" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M135 90 L135 135 Z" />
+<path id="😏😐123" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M135 90 L180 90 Z" />
+<path id="😎😔122" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M90 90 L90 135 Z" />
+<path id="😍😎121" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M45 90 L90 90 Z" />
+<path id="😋😑120" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M225 45 L225 90 Z" />
+<path id="😊😋119" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M180 45 L225 45 Z" />
+<path id="😈😎118" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M90 45 L90 90 Z" />
+<path id="😈😉117" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M90 45 L135 45 Z" />
+<path id="😇😍116" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M45 45 L45 90 Z" />
+<path id="😆😌115" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M0 45 L0 90 Z" />
+<path id="😆😇114" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M0 45 L45 45 Z" />
+<path id="😅😋113" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M225 0 L225 45 Z" />
+<path id="😃😉112" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M135 0 L135 45 Z" />
+<path id="😃😄111" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M135 0 L180 0 Z" />
+<path id="😂😃110" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M90 0 L135 0 Z" />
+<path id="😁😇109" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M45 0 L45 45 Z" />
+<path id="😀😁108" stroke-width="2" opacity="0" stroke="rgb(128,139,150)" d="M0 0 L45 0 Z" />
+<g id="😀72" opacity="0">
+  <circle id="c😀72" cx="0" cy="0" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😀72" x="0" y="0" fill="rgb(0,0,0)">😀</text>
+</g>
+<g id="😁73" opacity="0">
+  <circle id="c😁73" cx="45" cy="0" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😁73" x="45" y="0" fill="rgb(0,0,0)">😁</text>
+</g>
+<g id="😂74" opacity="0">
+  <circle id="c😂74" cx="90" cy="0" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😂74" x="90" y="0" fill="rgb(0,0,0)">😂</text>
+</g>
+<g id="😃75" opacity="0">
+  <circle id="c😃75" cx="135" cy="0" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😃75" x="135" y="0" fill="rgb(0,0,0)">😃</text>
+</g>
+<g id="😄76" opacity="0">
+  <circle id="c😄76" cx="180" cy="0" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😄76" x="180" y="0" fill="rgb(0,0,0)">😄</text>
+</g>
+<g id="😅77" opacity="0">
+  <circle id="c😅77" cx="225" cy="0" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😅77" x="225" y="0" fill="rgb(0,0,0)">😅</text>
+</g>
+<g id="😆78" opacity="0">
+  <circle id="c😆78" cx="0" cy="45" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😆78" x="0" y="45" fill="rgb(0,0,0)">😆</text>
+</g>
+<g id="😇79" opacity="0">
+  <circle id="c😇79" cx="45" cy="45" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😇79" x="45" y="45" fill="rgb(0,0,0)">😇</text>
+</g>
+<g id="😈80" opacity="0">
+  <circle id="c😈80" cx="90" cy="45" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😈80" x="90" y="45" fill="rgb(0,0,0)">😈</text>
+</g>
+<g id="😉81" opacity="0">
+  <circle id="c😉81" cx="135" cy="45" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😉81" x="135" y="45" fill="rgb(0,0,0)">😉</text>
+</g>
+<g id="😊82" opacity="0">
+  <circle id="c😊82" cx="180" cy="45" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😊82" x="180" y="45" fill="rgb(0,0,0)">😊</text>
+</g>
+<g id="😋83" opacity="0">
+  <circle id="c😋83" cx="225" cy="45" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😋83" x="225" y="45" fill="rgb(0,0,0)">😋</text>
+</g>
+<g id="😌84" opacity="0">
+  <circle id="c😌84" cx="0" cy="90" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😌84" x="0" y="90" fill="rgb(0,0,0)">😌</text>
+</g>
+<g id="😍85" opacity="0">
+  <circle id="c😍85" cx="45" cy="90" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😍85" x="45" y="90" fill="rgb(0,0,0)">😍</text>
+</g>
+<g id="😎86" opacity="0">
+  <circle id="c😎86" cx="90" cy="90" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😎86" x="90" y="90" fill="rgb(0,0,0)">😎</text>
+</g>
+<g id="😏87" opacity="0">
+  <circle id="c😏87" cx="135" cy="90" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😏87" x="135" y="90" fill="rgb(0,0,0)">😏</text>
+</g>
+<g id="😐88" opacity="0">
+  <circle id="c😐88" cx="180" cy="90" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😐88" x="180" y="90" fill="rgb(0,0,0)">😐</text>
+</g>
+<g id="😑89" opacity="0">
+  <circle id="c😑89" cx="225" cy="90" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😑89" x="225" y="90" fill="rgb(0,0,0)">😑</text>
+</g>
+<g id="😒90" opacity="0">
+  <circle id="c😒90" cx="0" cy="135" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😒90" x="0" y="135" fill="rgb(0,0,0)">😒</text>
+</g>
+<g id="😓91" opacity="0">
+  <circle id="c😓91" cx="45" cy="135" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😓91" x="45" y="135" fill="rgb(0,0,0)">😓</text>
+</g>
+<g id="😔92" opacity="0">
+  <circle id="c😔92" cx="90" cy="135" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😔92" x="90" y="135" fill="rgb(0,0,0)">😔</text>
+</g>
+<g id="😕93" opacity="0">
+  <circle id="c😕93" cx="135" cy="135" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😕93" x="135" y="135" fill="rgb(0,0,0)">😕</text>
+</g>
+<g id="😖94" opacity="0">
+  <circle id="c😖94" cx="180" cy="135" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😖94" x="180" y="135" fill="rgb(0,0,0)">😖</text>
+</g>
+<g id="😗95" opacity="0">
+  <circle id="c😗95" cx="225" cy="135" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😗95" x="225" y="135" fill="rgb(0,0,0)">😗</text>
+</g>
+<g id="😘96" opacity="0">
+  <circle id="c😘96" cx="0" cy="180" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😘96" x="0" y="180" fill="rgb(0,0,0)">😘</text>
+</g>
+<g id="😙97" opacity="0">
+  <circle id="c😙97" cx="45" cy="180" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😙97" x="45" y="180" fill="rgb(0,0,0)">😙</text>
+</g>
+<g id="😚98" opacity="0">
+  <circle id="c😚98" cx="90" cy="180" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😚98" x="90" y="180" fill="rgb(0,0,0)">😚</text>
+</g>
+<g id="😛99" opacity="0">
+  <circle id="c😛99" cx="135" cy="180" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😛99" x="135" y="180" fill="rgb(0,0,0)">😛</text>
+</g>
+<g id="😜100" opacity="0">
+  <circle id="c😜100" cx="180" cy="180" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😜100" x="180" y="180" fill="rgb(0,0,0)">😜</text>
+</g>
+<g id="😝101" opacity="0">
+  <circle id="c😝101" cx="225" cy="180" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😝101" x="225" y="180" fill="rgb(0,0,0)">😝</text>
+</g>
+<g id="😞102" opacity="0">
+  <circle id="c😞102" cx="0" cy="225" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😞102" x="0" y="225" fill="rgb(0,0,0)">😞</text>
+</g>
+<g id="😟103" opacity="0">
+  <circle id="c😟103" cx="45" cy="225" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😟103" x="45" y="225" fill="rgb(0,0,0)">😟</text>
+</g>
+<g id="😠104" opacity="0">
+  <circle id="c😠104" cx="90" cy="225" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😠104" x="90" y="225" fill="rgb(0,0,0)">😠</text>
+</g>
+<g id="😡105" opacity="0">
+  <circle id="c😡105" cx="135" cy="225" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😡105" x="135" y="225" fill="rgb(0,0,0)">😡</text>
+</g>
+<g id="😢106" opacity="0">
+  <circle id="c😢106" cx="180" cy="225" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😢106" x="180" y="225" fill="rgb(0,0,0)">😢</text>
+</g>
+<g id="😣107" opacity="0">
+  <circle id="c😣107" cx="225" cy="225" r="15" fill="rgb(255,255,255)" stroke="rgb(128,139,150)" stroke-width="2"></circle>
+  <text id="co😣107" x="225" y="225" fill="rgb(0,0,0)">😣</text>
+</g>
+<animate href="#😀😁108" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😀😁108" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😀😁108" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😁😇109" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😁😇109" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😁😇109" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😂😃110" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😂😃110" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😂😃110" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😃😄111" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😃😄111" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😃😄111" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😃😉112" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😃😉112" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😃😉112" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😅😋113" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😅😋113" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😅😋113" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😆😇114" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😆😇114" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😆😇114" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😆😌115" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😆😌115" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😆😌115" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😇😍116" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😇😍116" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😇😍116" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😈😉117" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😈😉117" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😈😉117" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😈😎118" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😈😎118" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😈😎118" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😊😋119" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😊😋119" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😊😋119" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😋😑120" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😋😑120" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😋😑120" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😍😎121" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😍😎121" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😍😎121" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😎😔122" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😎😔122" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😎😔122" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😏😐123" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😏😐123" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😏😐123" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😏😕124" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😏😕124" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😏😕124" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😐😑125" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😐😑125" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😐😑125" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😒😘126" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😒😘126" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😒😘126" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😓😔127" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😓😔127" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😓😔127" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😓😙128" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😓😙128" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😓😙128" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😕😖129" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😕😖129" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😕😖129" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😕😛130" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😕😛130" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😕😛130" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😖😗131" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😖😗131" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😖😗131" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😖😜132" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😖😜132" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😖😜132" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😘😙133" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😘😙133" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😘😙133" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😘😞134" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😘😞134" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😘😞134" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😙😚135" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😙😚135" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😙😚135" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😚😛136" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😚😛136" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😚😛136" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😚😠137" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😚😠137" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😚😠137" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😜😝138" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😜😝138" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😜😝138" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😝😣139" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😝😣139" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😝😣139" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😞😟140" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😞😟140" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😞😟140" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😡😢141" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😡😢141" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😡😢141" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😢😣142" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#lib😢😣142" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#bi😢😣142" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😀72" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😁73" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😂74" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😃75" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😄76" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😅77" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😆78" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😇79" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😈80" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😉81" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😊82" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😋83" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😌84" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😍85" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😎86" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😏87" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😐88" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😑89" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😒90" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😓91" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😔92" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😕93" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😖94" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😗95" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😘96" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😙97" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😚98" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😛99" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😜100" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😝101" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😞102" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😟103" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😠104" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😡105" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😢106" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate href="#😣107" attributeName="opacity" from="0" to="1" dur="2000ms" begin="0ms" fill="freeze"/>
+<animate attributeName="viewBox" from="-30 -30 285 285" to="-260 -274 549 579" begin="2000ms" dur="2000ms" fill="freeze" />
+<animate href="#😀😁108" begin="2000ms" fill="freeze" attributeName="d" dur="2000ms" values="M0 0 L45 0 Z;M258 52 L196 52 Z" />
+<animateMotion href="#lib😀😁108" begin="2000ms" dur="2000ms" fill="freeze" path="m 0 0 l 205 52" />
+<animate href="#😀😁108" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animate href="#😁😇109" begin="2000ms" fill="freeze" attributeName="d" dur="2000ms" values="M45 0 L45 45 Z;M196 52 L114 95 Z" />
+<animateMotion href="#lib😁😇109" begin="2000ms" dur="2000ms" fill="freeze" path="m 0 0 l 110 51" />
+<animate href="#😁😇109" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animate href="#😂😃110" begin="2000ms" fill="freeze" attributeName="d" dur="2000ms" values="M90 0 L135 0 Z;M255 138 L198 190 Z" />
+<animateMotion href="#lib😂😃110" begin="2000ms" dur="2000ms" fill="freeze" path="m 0 0 l 114 164" />
+<animate href="#😂😃110" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animate href="#😃😄111" begin="2000ms" fill="freeze" attributeName="d" dur="2000ms" values="M135 0 L180 0 Z;M198 190 L197 234 Z" />
+<animateMotion href="#lib😃😄111" begin="2000ms" dur="2000ms" fill="freeze" path="m 0 0 l 40 212" />
+<animate href="#😃😄111" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animate href="#😃😉112" begin="2000ms" fill="freeze" attributeName="d" dur="2000ms" values="M135 0 L135 45 Z;M198 190 L103 250 Z" />
+<animateMotion href="#lib😃😉112" begin="2000ms" dur="2000ms" fill="freeze" path="m 0 0 l 15 198" />
+<animate href="#😃😉112" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animate href="#😅😋113" begin="2000ms" fill="freeze" attributeName="d" dur="2000ms" values="M225 0 L225 45 Z;M-98 258 L-148 208 Z" />
+<animateMotion href="#lib😅😋113" begin="2000ms" dur="2000ms" fill="freeze" path="m 0 0 l -348 211" />
+<animate href="#😅😋113" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animate href="#😆😇114" begin="2000ms" fill="freeze" attributeName="d" dur="2000ms" values="M0 45 L45 45 Z;M77 194 L114 95 Z" />
+<animateMotion href="#lib😆😇114" begin="2000ms" dur="2000ms" fill="freeze" path="m 0 0 l 73 99" />
+<animate href="#😆😇114" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animate href="#😆😌115" begin="2000ms" fill="freeze" attributeName="d" dur="2000ms" values="M0 45 L0 90 Z;M77 194 L31 275 Z" />
+<animateMotion href="#lib😆😌115" begin="2000ms" dur="2000ms" fill="freeze" path="m 0 0 l 54 167" />
+<animate href="#😆😌115" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animate href="#😇😍116" begin="2000ms" fill="freeze" attributeName="d" dur="2000ms" values="M45 45 L45 90 Z;M114 95 L24 83 Z" />
+<animateMotion href="#lib😇😍116" begin="2000ms" dur="2000ms" fill="freeze" path="m 0 0 l 24 22" />
+<animate href="#😇😍116" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animate href="#😈😉117" begin="2000ms" fill="freeze" attributeName="d" dur="2000ms" values="M90 45 L135 45 Z;M2 224 L103 250 Z" />
+<animateMotion href="#lib😈😉117" begin="2000ms" dur="2000ms" fill="freeze" path="m 0 0 l -60 192" />
+<animate href="#😈😉117" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animate href="#😈😎118" begin="2000ms" fill="freeze" attributeName="d" dur="2000ms" values="M90 45 L90 90 Z;M2 224 L-55 139 Z" />
+<animateMotion href="#lib😈😎118" begin="2000ms" dur="2000ms" fill="freeze" path="m 0 0 l -116 114" />
+<animate href="#😈😎118" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animate href="#😊😋119" begin="2000ms" fill="freeze" attributeName="d" dur="2000ms" values="M180 45 L225 45 Z;M-192 210 L-148 208 Z" />
+<animateMotion href="#lib😊😋119" begin="2000ms" dur="2000ms" fill="freeze" path="m 0 0 l -372 164" />
+<animate href="#😊😋119" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animate href="#😋😑120" begin="2000ms" fill="freeze" attributeName="d" dur="2000ms" values="M225 45 L225 90 Z;M-148 208 L-212 135 Z" />
+<animateMotion href="#lib😋😑120" begin="2000ms" dur="2000ms" fill="freeze" path="m 0 0 l -405 104" />
+<animate href="#😋😑120" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animate href="#😍😎121" begin="2000ms" fill="freeze" attributeName="d" dur="2000ms" values="M45 90 L90 90 Z;M24 83 L-55 139 Z" />
+<animateMotion href="#lib😍😎121" begin="2000ms" dur="2000ms" fill="freeze" path="m 0 0 l -82 21" />
+<animate href="#😍😎121" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animate href="#😎😔122" begin="2000ms" fill="freeze" attributeName="d" dur="2000ms" values="M90 90 L90 135 Z;M-55 139 L-145 70 Z" />
+<animateMotion href="#lib😎😔122" begin="2000ms" dur="2000ms" fill="freeze" path="m 0 0 l -190 -8" />
+<animate href="#😎😔122" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animate href="#😏😐123" begin="2000ms" fill="freeze" attributeName="d" dur="2000ms" values="M135 90 L180 90 Z;M-134 -17 L-219 60 Z" />
+<animateMotion href="#lib😏😐123" begin="2000ms" dur="2000ms" fill="freeze" path="m 0 0 l -333 -69" />
+<animate href="#😏😐123" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animate href="#😏😕124" begin="2000ms" fill="freeze" attributeName="d" dur="2000ms" values="M135 90 L135 135 Z;M-134 -17 L-20 -128 Z" />
+<animateMotion href="#lib😏😕124" begin="2000ms" dur="2000ms" fill="freeze" path="m 0 0 l -212 -184" />
+<animate href="#😏😕124" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animate href="#😐😑125" begin="2000ms" fill="freeze" attributeName="d" dur="2000ms" values="M180 90 L225 90 Z;M-219 60 L-212 135 Z" />
+<animateMotion href="#lib😐😑125" begin="2000ms" dur="2000ms" fill="freeze" path="m 0 0 l -417 7" />
+<animate href="#😐😑125" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animate href="#😒😘126" begin="2000ms" fill="freeze" attributeName="d" dur="2000ms" values="M0 135 L0 180 Z;M-200 -157 L-141 -105 Z" />
+<animateMotion href="#lib😒😘126" begin="2000ms" dur="2000ms" fill="freeze" path="m 0 0 l -170 -288" />
+<animate href="#😒😘126" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animate href="#😓😔127" begin="2000ms" fill="freeze" attributeName="d" dur="2000ms" values="M45 135 L90 135 Z;M-230 -7 L-145 70 Z" />
+<animateMotion href="#lib😓😔127" begin="2000ms" dur="2000ms" fill="freeze" path="m 0 0 l -254 -104" />
+<animate href="#😓😔127" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animate href="#😓😙128" begin="2000ms" fill="freeze" attributeName="d" dur="2000ms" values="M45 135 L45 180 Z;M-230 -7 L-214 -94 Z" />
+<animateMotion href="#lib😓😙128" begin="2000ms" dur="2000ms" fill="freeze" path="m 0 0 l -267 -207" />
+<animate href="#😓😙128" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animate href="#😕😖129" begin="2000ms" fill="freeze" attributeName="d" dur="2000ms" values="M135 135 L180 135 Z;M-20 -128 L72 -187 Z" />
+<animateMotion href="#lib😕😖129" begin="2000ms" dur="2000ms" fill="freeze" path="m 0 0 l -131 -292" />
+<animate href="#😕😖129" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animate href="#😕😛130" begin="2000ms" fill="freeze" attributeName="d" dur="2000ms" values="M135 135 L135 180 Z;M-20 -128 L-32 -199 Z" />
+<animateMotion href="#lib😕😛130" begin="2000ms" dur="2000ms" fill="freeze" path="m 0 0 l -161 -320" />
+<animate href="#😕😛130" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animate href="#😖😗131" begin="2000ms" fill="freeze" attributeName="d" dur="2000ms" values="M180 135 L225 135 Z;M72 -187 L80 -242 Z" />
+<animateMotion href="#lib😖😗131" begin="2000ms" dur="2000ms" fill="freeze" path="m 0 0 l -126 -349" />
+<animate href="#😖😗131" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animate href="#😖😜132" begin="2000ms" fill="freeze" attributeName="d" dur="2000ms" values="M180 135 L180 180 Z;M72 -187 L145 -185 Z" />
+<animateMotion href="#lib😖😜132" begin="2000ms" dur="2000ms" fill="freeze" path="m 0 0 l -72 -343" />
+<animate href="#😖😜132" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animate href="#😘😙133" begin="2000ms" fill="freeze" attributeName="d" dur="2000ms" values="M0 180 L45 180 Z;M-141 -105 L-214 -94 Z" />
+<animateMotion href="#lib😘😙133" begin="2000ms" dur="2000ms" fill="freeze" path="m 0 0 l -199 -279" />
+<animate href="#😘😙133" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animate href="#😘😞134" begin="2000ms" fill="freeze" attributeName="d" dur="2000ms" values="M0 180 L0 225 Z;M-141 -105 L-5 -42 Z" />
+<animateMotion href="#lib😘😞134" begin="2000ms" dur="2000ms" fill="freeze" path="m 0 0 l -73 -275" />
+<animate href="#😘😞134" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animate href="#😙😚135" begin="2000ms" fill="freeze" attributeName="d" dur="2000ms" values="M45 180 L90 180 Z;M-214 -94 L-125 -197 Z" />
+<animateMotion href="#lib😙😚135" begin="2000ms" dur="2000ms" fill="freeze" path="m 0 0 l -236 -325" />
+<animate href="#😙😚135" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animate href="#😚😛136" begin="2000ms" fill="freeze" attributeName="d" dur="2000ms" values="M90 180 L135 180 Z;M-125 -197 L-32 -199 Z" />
+<animateMotion href="#lib😚😛136" begin="2000ms" dur="2000ms" fill="freeze" path="m 0 0 l -190 -378" />
+<animate href="#😚😛136" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animate href="#😚😠137" begin="2000ms" fill="freeze" attributeName="d" dur="2000ms" values="M90 180 L90 225 Z;M-125 -197 L-82 -244 Z" />
+<animateMotion href="#lib😚😠137" begin="2000ms" dur="2000ms" fill="freeze" path="m 0 0 l -193 -422" />
+<animate href="#😚😠137" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animate href="#😜😝138" begin="2000ms" fill="freeze" attributeName="d" dur="2000ms" values="M180 180 L225 180 Z;M145 -185 L200 -178 Z" />
+<animateMotion href="#lib😜😝138" begin="2000ms" dur="2000ms" fill="freeze" path="m 0 0 l -30 -361" />
+<animate href="#😜😝138" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animate href="#😝😣139" begin="2000ms" fill="freeze" attributeName="d" dur="2000ms" values="M225 180 L225 225 Z;M200 -178 L231 -127 Z" />
+<animateMotion href="#lib😝😣139" begin="2000ms" dur="2000ms" fill="freeze" path="m 0 0 l -10 -354" />
+<animate href="#😝😣139" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animate href="#😞😟140" begin="2000ms" fill="freeze" attributeName="d" dur="2000ms" values="M0 225 L45 225 Z;M-5 -42 L77 -42 Z" />
+<animateMotion href="#lib😞😟140" begin="2000ms" dur="2000ms" fill="freeze" path="m 0 0 l 14 -267" />
+<animate href="#😞😟140" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animate href="#😡😢141" begin="2000ms" fill="freeze" attributeName="d" dur="2000ms" values="M135 225 L180 225 Z;M259 -29 L255 -78 Z" />
+<animateMotion href="#lib😡😢141" begin="2000ms" dur="2000ms" fill="freeze" path="m 0 0 l 100 -278" />
+<animate href="#😡😢141" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animate href="#😢😣142" begin="2000ms" fill="freeze" attributeName="d" dur="2000ms" values="M180 225 L225 225 Z;M255 -78 L231 -127 Z" />
+<animateMotion href="#lib😢😣142" begin="2000ms" dur="2000ms" fill="freeze" path="m 0 0 l 41 -327" />
+<animate href="#😢😣142" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animateMotion href="#😀72" begin="2000ms" dur="2000ms"
+                    fill="freeze" path="m 0 0 l 258 52" />
+<animate href="#c😀72" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animateMotion href="#😁73" begin="2000ms" dur="2000ms"
+                    fill="freeze" path="m 0 0 l 151 52" />
+<animate href="#c😁73" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animateMotion href="#😂74" begin="2000ms" dur="2000ms"
+                    fill="freeze" path="m 0 0 l 165 138" />
+<animate href="#c😂74" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animateMotion href="#😃75" begin="2000ms" dur="2000ms"
+                    fill="freeze" path="m 0 0 l 63 190" />
+<animate href="#c😃75" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animateMotion href="#😄76" begin="2000ms" dur="2000ms"
+                    fill="freeze" path="m 0 0 l 17 234" />
+<animate href="#c😄76" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animateMotion href="#😅77" begin="2000ms" dur="2000ms"
+                    fill="freeze" path="m 0 0 l -323 258" />
+<animate href="#c😅77" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animateMotion href="#😆78" begin="2000ms" dur="2000ms"
+                    fill="freeze" path="m 0 0 l 77 149" />
+<animate href="#c😆78" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animateMotion href="#😇79" begin="2000ms" dur="2000ms"
+                    fill="freeze" path="m 0 0 l 69 50" />
+<animate href="#c😇79" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animateMotion href="#😈80" begin="2000ms" dur="2000ms"
+                    fill="freeze" path="m 0 0 l -88 179" />
+<animate href="#c😈80" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animateMotion href="#😉81" begin="2000ms" dur="2000ms"
+                    fill="freeze" path="m 0 0 l -32 205" />
+<animate href="#c😉81" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animateMotion href="#😊82" begin="2000ms" dur="2000ms"
+                    fill="freeze" path="m 0 0 l -372 165" />
+<animate href="#c😊82" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animateMotion href="#😋83" begin="2000ms" dur="2000ms"
+                    fill="freeze" path="m 0 0 l -373 163" />
+<animate href="#c😋83" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animateMotion href="#😌84" begin="2000ms" dur="2000ms"
+                    fill="freeze" path="m 0 0 l 31 185" />
+<animate href="#c😌84" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animateMotion href="#😍85" begin="2000ms" dur="2000ms"
+                    fill="freeze" path="m 0 0 l -21 -7" />
+<animate href="#c😍85" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animateMotion href="#😎86" begin="2000ms" dur="2000ms"
+                    fill="freeze" path="m 0 0 l -145 49" />
+<animate href="#c😎86" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animateMotion href="#😏87" begin="2000ms" dur="2000ms"
+                    fill="freeze" path="m 0 0 l -269 -107" />
+<animate href="#c😏87" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animateMotion href="#😐88" begin="2000ms" dur="2000ms"
+                    fill="freeze" path="m 0 0 l -399 -30" />
+<animate href="#c😐88" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animateMotion href="#😑89" begin="2000ms" dur="2000ms"
+                    fill="freeze" path="m 0 0 l -437 45" />
+<animate href="#c😑89" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animateMotion href="#😒90" begin="2000ms" dur="2000ms"
+                    fill="freeze" path="m 0 0 l -200 -292" />
+<animate href="#c😒90" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animateMotion href="#😓91" begin="2000ms" dur="2000ms"
+                    fill="freeze" path="m 0 0 l -275 -142" />
+<animate href="#c😓91" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animateMotion href="#😔92" begin="2000ms" dur="2000ms"
+                    fill="freeze" path="m 0 0 l -235 -65" />
+<animate href="#c😔92" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animateMotion href="#😕93" begin="2000ms" dur="2000ms"
+                    fill="freeze" path="m 0 0 l -155 -263" />
+<animate href="#c😕93" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animateMotion href="#😖94" begin="2000ms" dur="2000ms"
+                    fill="freeze" path="m 0 0 l -108 -322" />
+<animate href="#c😖94" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animateMotion href="#😗95" begin="2000ms" dur="2000ms"
+                    fill="freeze" path="m 0 0 l -145 -377" />
+<animate href="#c😗95" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animateMotion href="#😘96" begin="2000ms" dur="2000ms"
+                    fill="freeze" path="m 0 0 l -141 -285" />
+<animate href="#c😘96" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animateMotion href="#😙97" begin="2000ms" dur="2000ms"
+                    fill="freeze" path="m 0 0 l -259 -274" />
+<animate href="#c😙97" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animateMotion href="#😚98" begin="2000ms" dur="2000ms"
+                    fill="freeze" path="m 0 0 l -215 -377" />
+<animate href="#c😚98" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animateMotion href="#😛99" begin="2000ms" dur="2000ms"
+                    fill="freeze" path="m 0 0 l -167 -379" />
+<animate href="#c😛99" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animateMotion href="#😜100" begin="2000ms" dur="2000ms"
+                    fill="freeze" path="m 0 0 l -35 -365" />
+<animate href="#c😜100" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animateMotion href="#😝101" begin="2000ms" dur="2000ms"
+                    fill="freeze" path="m 0 0 l -25 -358" />
+<animate href="#c😝101" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animateMotion href="#😞102" begin="2000ms" dur="2000ms"
+                    fill="freeze" path="m 0 0 l -5 -267" />
+<animate href="#c😞102" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animateMotion href="#😟103" begin="2000ms" dur="2000ms"
+                    fill="freeze" path="m 0 0 l 32 -267" />
+<animate href="#c😟103" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animateMotion href="#😠104" begin="2000ms" dur="2000ms"
+                    fill="freeze" path="m 0 0 l -172 -469" />
+<animate href="#c😠104" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animateMotion href="#😡105" begin="2000ms" dur="2000ms"
+                    fill="freeze" path="m 0 0 l 124 -254" />
+<animate href="#c😡105" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animateMotion href="#😢106" begin="2000ms" dur="2000ms"
+                    fill="freeze" path="m 0 0 l 75 -303" />
+<animate href="#c😢106" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animateMotion href="#😣107" begin="2000ms" dur="2000ms"
+                    fill="freeze" path="m 0 0 l 6 -352" />
+<animate href="#c😣107" attributeName="stroke" from="rgb(128,139,150)" to="rgb(128,139,150)" dur="2000ms" begin="2000ms" fill="freeze"/>
+<animate href="#c😀72" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="4001ms" fill="freeze"/>
+<animate href="#c😀72" attributeName="stroke" from="rgb(128,139,150)" to="rgb(0,0,255)" dur="300ms" begin="4001ms" fill="freeze"/>
+<animate href="#c😣107" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="4302ms" fill="freeze"/>
+<animate href="#c😣107" attributeName="stroke" from="rgb(128,139,150)" to="rgb(0,0,255)" dur="300ms" begin="4302ms" fill="freeze"/>
+<animate href="#c😀72" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="4603ms" fill="freeze"/>
+<animate href="#😀😁108" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="5104ms" fill="freeze"/>
+<animate href="#😀😁108" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="5104ms" fill="freeze"/>
+<animate href="#c😁73" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="5405ms" fill="freeze"/>
+<animate href="#😁😇109" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="5906ms" fill="freeze"/>
+<animate href="#😁😇109" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="5906ms" fill="freeze"/>
+<animate href="#c😇79" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="6207ms" fill="freeze"/>
+<animate href="#😆😇114" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="6708ms" fill="freeze"/>
+<animate href="#😆😇114" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="6708ms" fill="freeze"/>
+<animate href="#c😆78" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="7009ms" fill="freeze"/>
+<animate href="#😆😌115" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="7510ms" fill="freeze"/>
+<animate href="#😆😌115" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="7510ms" fill="freeze"/>
+<animate href="#c😌84" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="7811ms" fill="freeze"/>
+<animate href="#c😌84" attributeName="fill" from="rgb(0,255,0)" to="rgb(255,0,0)" dur="500ms" begin="8312ms" fill="freeze"/>
+<animate href="#c😆78" attributeName="fill" from="rgb(0,255,0)" to="rgb(255,0,0)" dur="500ms" begin="8813ms" fill="freeze"/>
+<animate href="#😇😍116" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="9314ms" fill="freeze"/>
+<animate href="#😇😍116" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="9314ms" fill="freeze"/>
+<animate href="#c😍85" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="9615ms" fill="freeze"/>
+<animate href="#😍😎121" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="10116ms" fill="freeze"/>
+<animate href="#😍😎121" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="10116ms" fill="freeze"/>
+<animate href="#c😎86" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="10417ms" fill="freeze"/>
+<animate href="#😈😎118" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="10918ms" fill="freeze"/>
+<animate href="#😈😎118" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="10918ms" fill="freeze"/>
+<animate href="#c😈80" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="11219ms" fill="freeze"/>
+<animate href="#😈😉117" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="11720ms" fill="freeze"/>
+<animate href="#😈😉117" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="11720ms" fill="freeze"/>
+<animate href="#c😉81" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="12021ms" fill="freeze"/>
+<animate href="#😃😉112" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="12522ms" fill="freeze"/>
+<animate href="#😃😉112" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="12522ms" fill="freeze"/>
+<animate href="#c😃75" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="12823ms" fill="freeze"/>
+<animate href="#😂😃110" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="13324ms" fill="freeze"/>
+<animate href="#😂😃110" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="13324ms" fill="freeze"/>
+<animate href="#c😂74" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="13625ms" fill="freeze"/>
+<animate href="#c😂74" attributeName="fill" from="rgb(0,255,0)" to="rgb(255,0,0)" dur="500ms" begin="14126ms" fill="freeze"/>
+<animate href="#😃😄111" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="14627ms" fill="freeze"/>
+<animate href="#😃😄111" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="14627ms" fill="freeze"/>
+<animate href="#c😄76" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="14928ms" fill="freeze"/>
+<animate href="#c😄76" attributeName="fill" from="rgb(0,255,0)" to="rgb(255,0,0)" dur="500ms" begin="15429ms" fill="freeze"/>
+<animate href="#c😃75" attributeName="fill" from="rgb(0,255,0)" to="rgb(255,0,0)" dur="500ms" begin="15930ms" fill="freeze"/>
+<animate href="#c😉81" attributeName="fill" from="rgb(0,255,0)" to="rgb(255,0,0)" dur="500ms" begin="16431ms" fill="freeze"/>
+<animate href="#c😈80" attributeName="fill" from="rgb(0,255,0)" to="rgb(255,0,0)" dur="500ms" begin="16932ms" fill="freeze"/>
+<animate href="#😎😔122" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="17433ms" fill="freeze"/>
+<animate href="#😎😔122" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="17433ms" fill="freeze"/>
+<animate href="#c😔92" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="17734ms" fill="freeze"/>
+<animate href="#😓😔127" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="18235ms" fill="freeze"/>
+<animate href="#😓😔127" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="18235ms" fill="freeze"/>
+<animate href="#c😓91" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="18536ms" fill="freeze"/>
+<animate href="#😓😙128" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="19037ms" fill="freeze"/>
+<animate href="#😓😙128" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="19037ms" fill="freeze"/>
+<animate href="#c😙97" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="19338ms" fill="freeze"/>
+<animate href="#😘😙133" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="19839ms" fill="freeze"/>
+<animate href="#😘😙133" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="19839ms" fill="freeze"/>
+<animate href="#c😘96" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="20140ms" fill="freeze"/>
+<animate href="#😒😘126" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="20641ms" fill="freeze"/>
+<animate href="#😒😘126" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="20641ms" fill="freeze"/>
+<animate href="#c😒90" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="20942ms" fill="freeze"/>
+<animate href="#c😒90" attributeName="fill" from="rgb(0,255,0)" to="rgb(255,0,0)" dur="500ms" begin="21443ms" fill="freeze"/>
+<animate href="#😘😞134" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="21944ms" fill="freeze"/>
+<animate href="#😘😞134" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="21944ms" fill="freeze"/>
+<animate href="#c😞102" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="22245ms" fill="freeze"/>
+<animate href="#😞😟140" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="22746ms" fill="freeze"/>
+<animate href="#😞😟140" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="22746ms" fill="freeze"/>
+<animate href="#c😟103" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="23047ms" fill="freeze"/>
+<animate href="#c😟103" attributeName="fill" from="rgb(0,255,0)" to="rgb(255,0,0)" dur="500ms" begin="23548ms" fill="freeze"/>
+<animate href="#c😞102" attributeName="fill" from="rgb(0,255,0)" to="rgb(255,0,0)" dur="500ms" begin="24049ms" fill="freeze"/>
+<animate href="#c😘96" attributeName="fill" from="rgb(0,255,0)" to="rgb(255,0,0)" dur="500ms" begin="24550ms" fill="freeze"/>
+<animate href="#😙😚135" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="25051ms" fill="freeze"/>
+<animate href="#😙😚135" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="25051ms" fill="freeze"/>
+<animate href="#c😚98" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="25352ms" fill="freeze"/>
+<animate href="#😚😛136" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="25853ms" fill="freeze"/>
+<animate href="#😚😛136" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="25853ms" fill="freeze"/>
+<animate href="#c😛99" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="26154ms" fill="freeze"/>
+<animate href="#😕😛130" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="26655ms" fill="freeze"/>
+<animate href="#😕😛130" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="26655ms" fill="freeze"/>
+<animate href="#c😕93" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="26956ms" fill="freeze"/>
+<animate href="#😏😕124" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="27457ms" fill="freeze"/>
+<animate href="#😏😕124" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="27457ms" fill="freeze"/>
+<animate href="#c😏87" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="27758ms" fill="freeze"/>
+<animate href="#😏😐123" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="28259ms" fill="freeze"/>
+<animate href="#😏😐123" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="28259ms" fill="freeze"/>
+<animate href="#c😐88" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="28560ms" fill="freeze"/>
+<animate href="#😐😑125" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="29061ms" fill="freeze"/>
+<animate href="#😐😑125" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="29061ms" fill="freeze"/>
+<animate href="#c😑89" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="29362ms" fill="freeze"/>
+<animate href="#😋😑120" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="29863ms" fill="freeze"/>
+<animate href="#😋😑120" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="29863ms" fill="freeze"/>
+<animate href="#c😋83" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="30164ms" fill="freeze"/>
+<animate href="#😅😋113" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="30665ms" fill="freeze"/>
+<animate href="#😅😋113" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="30665ms" fill="freeze"/>
+<animate href="#c😅77" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="30966ms" fill="freeze"/>
+<animate href="#c😅77" attributeName="fill" from="rgb(0,255,0)" to="rgb(255,0,0)" dur="500ms" begin="31467ms" fill="freeze"/>
+<animate href="#😊😋119" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="31968ms" fill="freeze"/>
+<animate href="#😊😋119" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="31968ms" fill="freeze"/>
+<animate href="#c😊82" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="32269ms" fill="freeze"/>
+<animate href="#c😊82" attributeName="fill" from="rgb(0,255,0)" to="rgb(255,0,0)" dur="500ms" begin="32770ms" fill="freeze"/>
+<animate href="#c😋83" attributeName="fill" from="rgb(0,255,0)" to="rgb(255,0,0)" dur="500ms" begin="33271ms" fill="freeze"/>
+<animate href="#c😑89" attributeName="fill" from="rgb(0,255,0)" to="rgb(255,0,0)" dur="500ms" begin="33772ms" fill="freeze"/>
+<animate href="#c😐88" attributeName="fill" from="rgb(0,255,0)" to="rgb(255,0,0)" dur="500ms" begin="34273ms" fill="freeze"/>
+<animate href="#c😏87" attributeName="fill" from="rgb(0,255,0)" to="rgb(255,0,0)" dur="500ms" begin="34774ms" fill="freeze"/>
+<animate href="#😕😖129" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="35275ms" fill="freeze"/>
+<animate href="#😕😖129" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="35275ms" fill="freeze"/>
+<animate href="#c😖94" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="35576ms" fill="freeze"/>
+<animate href="#😖😗131" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="36077ms" fill="freeze"/>
+<animate href="#😖😗131" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="36077ms" fill="freeze"/>
+<animate href="#c😗95" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="36378ms" fill="freeze"/>
+<animate href="#c😗95" attributeName="fill" from="rgb(0,255,0)" to="rgb(255,0,0)" dur="500ms" begin="36879ms" fill="freeze"/>
+<animate href="#😖😜132" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="37380ms" fill="freeze"/>
+<animate href="#😖😜132" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="37380ms" fill="freeze"/>
+<animate href="#c😜100" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="37681ms" fill="freeze"/>
+<animate href="#😜😝138" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="38182ms" fill="freeze"/>
+<animate href="#😜😝138" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="38182ms" fill="freeze"/>
+<animate href="#c😝101" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="38483ms" fill="freeze"/>
+<animate href="#😝😣139" attributeName="stroke-width" from="2" to="4" dur="300ms" begin="38984ms" fill="freeze"/>
+<animate href="#😝😣139" attributeName="stroke" from="rgb(128,139,150)" to="rgb(191,255,0)" dur="300ms" begin="38984ms" fill="freeze"/>
+<animate href="#c😣107" attributeName="fill" from="rgb(255,255,255)" to="rgb(0,255,0)" dur="500ms" begin="39285ms" fill="freeze"/>
+</svg>
+		</article>
+    </section>
+  </body>
+</html>

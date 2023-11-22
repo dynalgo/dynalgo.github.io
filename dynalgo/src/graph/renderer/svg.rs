@@ -97,8 +97,8 @@ impl Svg {
                 link.from_center().x() > link.to_center().x(),
                 link.from_center().y() > link.to_center().y(),
             ) {
-                (true, true) | (false, false) => (5, -5),
-                _ => (-5, -5),
+                (true, true) | (false, false) => (8, -8),
+                _ => (-8, -8),
             };
             svg.push_str(&format!(
                 "  <text id=\"m{}\" x=\"{}\" y=\"{}\" dx=\"{}\" dy=\"{}\" ",
