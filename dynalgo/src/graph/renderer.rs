@@ -291,6 +291,10 @@ impl Renderer {
         for i in 0..(10 * adja.len()) {
             if i % adja.len() == 0 && not_moved.len() > 0 {
                 for node in &not_moved {
+                    let (freezed, _, _) = positions.get(node).unwrap();
+                    if *freezed {
+                        continue;
+                    }
                     let neighbors = adja.get(&node).unwrap();
                     if neighbors.len() < 1 {
                         continue;
@@ -380,7 +384,10 @@ impl Renderer {
                 if f <= length_unit as u64 / 10 {
                     continue;
                 };
-                let (_, n_x, n_y) = positions.get(node).unwrap();
+                let (freezed, n_x, n_y) = positions.get(node).unwrap();
+                if *freezed {
+                    continue;
+                }
                 let mut new_x = *n_x;
                 let mut new_y = *n_y;
                 for m in (0..=4).rev() {
@@ -415,13 +422,14 @@ impl Renderer {
             }
 
             if not_moved.len() == adja.len() {
-                println!("i == {} : no node moved ", i);
                 break;
             }
         }
 
-        for (node, (_, n_x, n_y)) in &positions {
-            self.node_move(*node, Point::new((*n_x) as i32, (*n_y) as i32), false);
+        for (node, (freezed, n_x, n_y)) in &positions {
+            if !freezed {
+                self.node_move(*node, Point::new((*n_x) as i32, (*n_y) as i32), false);
+            }
         }
     }
 

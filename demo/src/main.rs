@@ -3,9 +3,9 @@ mod fun;
 mod utils;
 
 use crate::algo::compare::Compare;
+use crate::algo::sets::Sets;
 use crate::fun::maze::Maze;
 use crate::utils::random::Random;
-//use crate::utils::colors::Colors;
 use dynalgo::graph::Graph;
 use dynalgo::graph::GraphError;
 
@@ -13,6 +13,15 @@ fn main() {
     println!("Dynalgo demo");
 
     let mut results = Vec::new();
+
+    println!("demo_union");
+    match demo_union() {
+        Ok((title, graphs)) => results.push((title, graphs)),
+        Err(e) => {
+            eprintln!("Demo union: {}", e);
+            return;
+        }
+    };
 
     println!("demo_maze");
     match demo_maze() {
@@ -51,6 +60,39 @@ fn main() {
     }
 
     Graph::render_to_html_files(pages).unwrap();
+}
+
+fn demo_union() -> Result<(String, Vec<Graph>), GraphError> {
+    let config = "A
+	B
+	C
+	D
+	A - B 1
+	B - C 2
+	C > D 3
+	D - A 4";
+    let mut graph_1 = Graph::new();
+    graph_1.append_from_config(config)?;
+
+    let config = "B
+    C
+	D
+	E
+	F
+	D - F 5
+	C - E 6
+	C - F 7
+	D - E 8
+	E - F 9
+	D > C 10
+	B - C 11
+	B - D 12";
+    let mut graph_2 = Graph::new();
+    graph_2.append_from_config(config)?;
+
+    let g_union = Sets::union(&mut graph_1, &mut graph_2)?;
+
+    Ok((String::from("Union"), vec![graph_1, graph_2, g_union]))
 }
 
 fn demo_maze() -> Result<(String, Vec<Graph>), GraphError> {

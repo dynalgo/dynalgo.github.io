@@ -440,6 +440,13 @@ impl Graph {
         Ok(links)
     }
 
+    /// Returns the value of a link from a node to another.
+    pub fn node_link_to(&self, node_from: char, node_to: char) -> Result<Option<u8>, GraphError> {
+        self.node_check_exists(node_from)?;
+        self.node_check_exists(node_to)?;
+        Ok(self.adja.get(&node_from).unwrap().get(&node_to).copied())
+    }
+
     /// Returns the neighbors accessible from a node.
     ///
     /// # Example

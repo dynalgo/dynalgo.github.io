@@ -82,6 +82,14 @@ impl Link {
     }
 
     pub fn tag(&mut self, tag: Option<Tag>) {
+        let tag = match self.tag {
+            Some(Tag::Created(_)) => match tag {
+                Some(Tag::Selected(_)) => return,
+                _ => tag,
+            },
+            _ => tag,
+        };
+
         self.tag = tag;
     }
 
