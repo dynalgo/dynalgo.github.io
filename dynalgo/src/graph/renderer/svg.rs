@@ -4,18 +4,18 @@ use super::node::Node;
 pub struct Svg {
     pub p_display_node_label: bool,
     pub p_display_link_value: bool,
-    pub p_stroke_width_node: u32,
-    pub p_stroke_width_link: u32,
-    pub p_radius_node: u32,
+    pub p_stroke_width_node: u8,
+    pub p_stroke_width_link: u8,
+    pub p_radius_node: u8,
 }
 
 impl Svg {
     pub fn new(
         p_display_node_label: bool,
         p_display_link_value: bool,
-        p_stroke_width_node: u32,
-        p_stroke_width_link: u32,
-        p_radius_node: u32,
+        p_stroke_width_node: u8,
+        p_stroke_width_link: u8,
+        p_radius_node: u8,
     ) -> Svg {
         Svg {
             p_display_node_label,
@@ -35,20 +35,20 @@ impl Svg {
             node.id(),
             node.center().x(),
             node.center().y(),
-            self.p_radius_node
+            node.radius()
         ));
         svg.push_str(&format!(
             "fill=\"rgb({},{},{})\" ",
-            node.fill_color.r(),
-            node.fill_color.g(),
-            node.fill_color.b()
+            node.fill_color().r(),
+            node.fill_color().g(),
+            node.fill_color().b()
         ));
         svg.push_str(&format!(
             "stroke=\"rgb({},{},{})\" stroke-width=\"{}\"></circle>\n",
-            node.stroke_color_tagged().r(),
-            node.stroke_color_tagged().g(),
-            node.stroke_color_tagged().b(),
-            self.p_stroke_width_node
+            node.stroke_color().r(),
+            node.stroke_color().g(),
+            node.stroke_color().b(),
+            node.stroke_width()
         ));
 
         if self.p_display_node_label {
@@ -60,9 +60,9 @@ impl Svg {
             ));
             svg.push_str(&format!(
                 "fill=\"rgb({},{},{})\">{}</text>\n",
-                node.text_color.r(),
-                node.text_color.g(),
-                node.text_color.b(),
+                node.text_color().r(),
+                node.text_color().g(),
+                node.text_color().b(),
                 node.name()
             ));
         }
@@ -77,14 +77,14 @@ impl Svg {
         svg.push_str(&format!(
             "<path id=\"{}\" stroke-width=\"{}\" opacity=\"{}\"",
             link.id(),
-            self.p_stroke_width_link,
+            link.stroke_width(),
             0
         ));
         svg.push_str(&format!(
             " stroke=\"rgb({},{},{})\" d=\"M{} {} L{} {} Z\" />\n",
-            link.stroke_color_tagged().r(),
-            link.stroke_color_tagged().g(),
-            link.stroke_color_tagged().b(),
+            link.stroke_color().r(),
+            link.stroke_color().g(),
+            link.stroke_color().b(),
             link.from_center().x(),
             link.from_center().y(),
             link.to_center().x(),
@@ -93,13 +93,8 @@ impl Svg {
 
         if self.p_display_link_value && link.value() > 0 {
             svg.push_str(&format!("<g id=\"lib{}\" opacity=\"{}\">\n", link.id(), 0));
-            let (dx, dy) = match (
-                link.from_center().x() > link.to_center().x(),
-                link.from_center().y() > link.to_center().y(),
-            ) {
-                (true, true) | (false, false) => (8, -8),
-                _ => (-8, -8),
-            };
+
+            let (dx, dy) = (0, 0);
             svg.push_str(&format!(
                 "  <text id=\"m{}\" x=\"{}\" y=\"{}\" dx=\"{}\" dy=\"{}\" ",
                 link.id(),
@@ -110,26 +105,35 @@ impl Svg {
             ));
             svg.push_str(&format!(
                 " fill=\"rgb({},{},{})\">{}</text>\n",
-                link.text_color.r(),
-                link.text_color.g(),
-                link.text_color.b(),
+                link.text_color().r(),
+                link.text_color().g(),
+                link.text_color().b(),
                 link.value()
             ));
             svg.push_str("</g>\n");
         }
 
         if !link.bidirect() {
+            let (dx, dy) = match (
+                link.from_center().x() > link.to_center().x(),
+                link.from_center().y() > link.to_center().y(),
+            ) {
+                (true, true) | (false, false) => (5, -5),
+                _ => (-5, -5),
+            };
             svg.push_str(&format!(
-                "<text id=\"bi{}\" fill=\"rgb({},{},{})\" opacity=\"{}\">\n",
+                "<text id=\"bi{}\" fill=\"rgb({},{},{})\" opacity=\"{}\" dx=\"{}\" dy=\"{}\">\n",
                 link.id(),
-                link.text_color.r(),
-                link.text_color.g(),
-                link.text_color.b(),
-                0
+                link.text_color().r(),
+                link.text_color().g(),
+                link.text_color().b(),
+                0,
+                dx,
+                dy
             ));
             svg.push_str(&format!(
                 "<textpath startOffset=\"{}\" href=\"#{}\">⇒</textpath>\n",
-                self.p_radius_node + 15,
+                self.p_radius_node + 5,
                 link.id()
             ));
             svg.push_str("</text>\n");
@@ -252,9 +256,50 @@ impl Svg {
             ));
         }
 
-        if !current.tag_created() && previous.tag_created() {
-            let color_curr = previous.stroke_color_tagged();
-            let color_next = current.stroke_color_tagged();
+        if current.text_color() != previous.text_color() {
+            let color_curr = previous.text_color();
+            let color_next = current.text_color();
+            svg.push_str(&format!(
+                "<animate href=\"#co{}\" attributeName=\"fill\" ",
+                current.id()
+            ));
+            svg.push_str(&format!(
+                "from=\"rgb({},{},{})\" to=\"rgb({},{},{})\" ",
+                color_curr.r(),
+                color_curr.g(),
+                color_curr.b(),
+                color_next.r(),
+                color_next.g(),
+                color_next.b()
+            ));
+            svg.push_str(&format!(
+                "dur=\"{}ms\" begin=\"{}ms\" fill=\"freeze\"/>\n",
+                duration, start_time
+            ));
+        }
+
+        if current.stroke_color() != previous.stroke_color() {
+            if current.stroke_color() == current.stroke_color_init()
+                || previous.stroke_color() == current.stroke_color_init()
+            {
+                let (width_curr, width_next) =
+                    match current.stroke_color() == current.stroke_color_init() {
+                        false => (current.stroke_width(), 2 * current.stroke_width()),
+                        true => (2 * current.stroke_width(), current.stroke_width()),
+                    };
+                svg.push_str(&format!(
+                    "<animate href=\"#c{}\" attributeName=\"stroke-width\" ",
+                    current.id()
+                ));
+                svg.push_str(&format!("from=\"{}\" to=\"{}\" ", width_curr, width_next));
+                svg.push_str(&format!(
+                    "dur=\"{}ms\" begin=\"{}ms\" fill=\"freeze\"/>\n",
+                    duration, start_time
+                ));
+            }
+
+            let color_curr = previous.stroke_color();
+            let color_next = current.stroke_color();
             svg.push_str(&format!(
                 "<animate href=\"#c{}\" attributeName=\"stroke\" ",
                 current.id()
@@ -274,67 +319,9 @@ impl Svg {
             ));
         }
 
-        if current.tag_deleted() && !previous.tag_deleted() {
-            let color_curr = previous.stroke_color_tagged();
-            let color_next = current.stroke_color_tagged();
-            svg.push_str(&format!(
-                "<animate href=\"#c{}\" attributeName=\"stroke\" ",
-                current.id()
-            ));
-            svg.push_str(&format!(
-                "from=\"rgb({},{},{})\" to=\"rgb({},{},{})\" ",
-                color_curr.r(),
-                color_curr.g(),
-                color_curr.b(),
-                color_next.r(),
-                color_next.g(),
-                color_next.b()
-            ));
-            svg.push_str(&format!(
-                "dur=\"{}ms\" begin=\"{}ms\" fill=\"freeze\"/>\n",
-                duration, start_time
-            ));
-        }
-
-        if current.tag_selected() != previous.tag_selected() {
-            let (width_curr, width_next) = match current.tag_selected() {
-                true => (current.stroke_width, 2 * current.stroke_width),
-                false => (2 * current.stroke_width, current.stroke_width),
-            };
-            svg.push_str(&format!(
-                "<animate href=\"#c{}\" attributeName=\"stroke-width\" ",
-                current.id()
-            ));
-            svg.push_str(&format!("from=\"{}\" to=\"{}\" ", width_curr, width_next));
-            svg.push_str(&format!(
-                "dur=\"{}ms\" begin=\"{}ms\" fill=\"freeze\"/>\n",
-                duration, start_time
-            ));
-
-            let color_curr = previous.stroke_color_tagged();
-            let color_next = current.stroke_color_tagged();
-            svg.push_str(&format!(
-                "<animate href=\"#c{}\" attributeName=\"stroke\" ",
-                current.id()
-            ));
-            svg.push_str(&format!(
-                "from=\"rgb({},{},{})\" to=\"rgb({},{},{})\" ",
-                color_curr.r(),
-                color_curr.g(),
-                color_curr.b(),
-                color_next.r(),
-                color_next.g(),
-                color_next.b()
-            ));
-            svg.push_str(&format!(
-                "dur=\"{}ms\" begin=\"{}ms\" fill=\"freeze\"/>\n",
-                duration, start_time
-            ));
-        }
-
-        if current.fill_color != previous.fill_color {
-            let color_curr = previous.fill_color;
-            let color_next = current.fill_color;
+        if current.fill_color() != previous.fill_color() {
+            let color_curr = previous.fill_color();
+            let color_next = current.fill_color();
             svg.push_str(&format!(
                 "<animate href=\"#c{}\" attributeName=\"fill\" ",
                 current.id(),
@@ -453,11 +440,11 @@ impl Svg {
             ));
         }
 
-        if !current.tag_created() && previous.tag_created() {
-            let color_curr = previous.stroke_color_tagged();
-            let color_next = current.stroke_color_tagged();
+        if current.text_color() != previous.text_color() {
+            let color_curr = previous.text_color();
+            let color_next = current.text_color();
             svg.push_str(&format!(
-                "<animate href=\"#{}\" attributeName=\"stroke\" ",
+                "<animate href=\"#lib{}\" attributeName=\"fill\" ",
                 current.id()
             ));
             svg.push_str(&format!(
@@ -475,46 +462,28 @@ impl Svg {
             ));
         }
 
-        if current.tag_deleted() && !previous.tag_deleted() {
-            let color_curr = previous.stroke_color_tagged();
-            let color_next = current.stroke_color_tagged();
-            svg.push_str(&format!(
-                "<animate href=\"#{}\" attributeName=\"stroke\" ",
-                current.id()
-            ));
-            svg.push_str(&format!(
-                "from=\"rgb({},{},{})\" to=\"rgb({},{},{})\" ",
-                color_curr.r(),
-                color_curr.g(),
-                color_curr.b(),
-                color_next.r(),
-                color_next.g(),
-                color_next.b()
-            ));
-            svg.push_str(&format!(
-                "dur=\"{}ms\" begin=\"{}ms\" fill=\"freeze\"/>\n",
-                duration, start_time
-            ));
-        }
+        if current.stroke_color() != previous.stroke_color() {
+            if current.stroke_color() == current.stroke_color_init()
+                || previous.stroke_color() == current.stroke_color_init()
+            {
+                let (width_curr, width_next) =
+                    match current.stroke_color() == current.stroke_color_init() {
+                        false => (current.stroke_width(), 2 * current.stroke_width()),
+                        true => (2 * current.stroke_width(), current.stroke_width()),
+                    };
+                svg.push_str(&format!(
+                    "<animate href=\"#{}\" attributeName=\"stroke-width\" ",
+                    current.id()
+                ));
+                svg.push_str(&format!("from=\"{}\" to=\"{}\" ", width_curr, width_next));
+                svg.push_str(&format!(
+                    "dur=\"{}ms\" begin=\"{}ms\" fill=\"freeze\"/>\n",
+                    duration, start_time
+                ));
+            }
 
-        if current.tag_selected() != previous.tag_selected() {
-            let (width_curr, width_next) = match current.tag_selected() {
-                true => (current.stroke_width, 2 * current.stroke_width),
-                false => (2 * current.stroke_width, current.stroke_width),
-            };
-
-            svg.push_str(&format!(
-                "<animate href=\"#{}\" attributeName=\"stroke-width\" ",
-                current.id()
-            ));
-            svg.push_str(&format!("from=\"{}\" to=\"{}\" ", width_curr, width_next));
-            svg.push_str(&format!(
-                "dur=\"{}ms\" begin=\"{}ms\" fill=\"freeze\"/>\n",
-                duration, start_time
-            ));
-
-            let color_curr = previous.stroke_color_tagged();
-            let color_next = current.stroke_color_tagged();
+            let color_curr = previous.stroke_color();
+            let color_next = current.stroke_color();
             svg.push_str(&format!(
                 "<animate href=\"#{}\" attributeName=\"stroke\" ",
                 current.id()

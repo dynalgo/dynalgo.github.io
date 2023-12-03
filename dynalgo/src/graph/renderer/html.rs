@@ -7,6 +7,10 @@ impl Html {
         file_names: &Vec<String>,
         contents: Vec<String>,
     ) -> String {
+        let back_color = (255, 255, 255);
+        let text_color = (0, 0, 139);
+        let sepe_color = (211, 211, 211);
+
         let mut html = String::from(
             "
 <!DOCTYPE html>
@@ -23,15 +27,32 @@ impl Html {
             "
    <style>
 		body {
-			background-color: white;
-			color: darkblue;
+        ",
+        );
+        html.push_str(&format!(
+            "            background-color: rgb({}, {}, {});",
+            back_color.0, back_color.1, back_color.2
+        ));
+        html.push_str(&format!(
+            "            color: rgb({}, {}, {});",
+            text_color.0, text_color.1, text_color.2
+        ));
+        html.push_str(
+            "            
 			margin: 0px;
 			padding: 0px;
 			display: flex;
 		}
 
 		:link {
-			color:darkblue;
+        ",
+        );
+        html.push_str(&format!(
+            "            color: rgb({}, {}, {});",
+            text_color.0, text_color.1, text_color.2
+        ));
+        html.push_str(
+            "      
 		}",
         );
 
@@ -62,24 +83,59 @@ impl Html {
 		    display: block;
 		    text-align: left;
 		    text-decoration: none;
+        ",
+            );
+            html.push_str(&format!(
+                "            color: rgb({}, {}, {});",
+                text_color.0, text_color.1, text_color.2
+            ));
+            html.push_str(
+                "  
 		}
 
         li {
-	        border-top : 1px solid white;
-	        border-bottom : 1px solid white;
+        ",
+            );
+            html.push_str(&format!(
+                "            border-top: 1px solid rgb({}, {}, {});\n",
+                back_color.0, back_color.1, back_color.2
+            ));
+            html.push_str(&format!(
+                "            border-bottom: 1px solid rgb({}, {}, {});",
+                back_color.0, back_color.1, back_color.2
+            ));
+            html.push_str(
+                "            
         }
 
-		li:hover {
-		    border-top : 1px solid darkblue;
-		    border-bottom : 1px solid darkblue;
-		}
+		li:hover{
+        ",
+            );
+            html.push_str(&format!(
+                "            border-top: 1px solid rgb({}, {}, {});\n",
+                text_color.0, text_color.1, text_color.2
+            ));
+            html.push_str(&format!(
+                "            border-bottom: 1px solid rgb({}, {}, {});",
+                text_color.0, text_color.1, text_color.2
+            ));
+            html.push_str(
+                "            
+        }
 
 		header {
 		    display: flex;
 		    padding: 0px;
 		    margin: 0px;
 		    justify-content: space-around;
-			border-bottom: 1px solid lightgrey;
+        ",
+            );
+            html.push_str(&format!(
+                "            border-bottom: 1px solid rgb({}, {}, {});",
+                sepe_color.0, sepe_color.1, sepe_color.2
+            ));
+            html.push_str(
+                "                        
 		}",
             );
         }
@@ -103,7 +159,14 @@ impl Html {
 			padding: 0px;
 			margin: 0px;
 			overflow: hidden;
-			border-left: 1px solid lightgrey;
+        ",
+        );
+        html.push_str(&format!(
+            "            border-left: 1px solid rgb({}, {}, {});",
+            sepe_color.0, sepe_color.1, sepe_color.2
+        ));
+        html.push_str(
+            "      
 		}
 
 		 svg text{
@@ -124,7 +187,14 @@ impl Html {
 			}
 
 			article {
-				border-top: 1px solid lightgrey;
+        ",
+        );
+        html.push_str(&format!(
+            "            border-top: 1px solid rgb({}, {}, {});",
+            sepe_color.0, sepe_color.1, sepe_color.2
+        ));
+        html.push_str(
+            "    
 				border-left: none;
 				width: 100%;
 			}
@@ -154,8 +224,18 @@ impl Html {
 
 		.selected {
 			font-style: italic;
-		    border-top : 1px solid darkblue;
-		    border-bottom : 1px solid darkblue;
+        ",
+        );
+        html.push_str(&format!(
+            "            border-top: 1px solid rgb({}, {}, {});",
+            text_color.0, text_color.1, text_color.2
+        ));
+        html.push_str(&format!(
+            "            border-bottom: 1px solid rgb({}, {}, {});",
+            text_color.0, text_color.1, text_color.2
+        ));
+        html.push_str(
+            "            
 		}
 
 		.info a {

@@ -31,29 +31,30 @@ pub struct Renderer {
     initial_links: BTreeMap<(char, char), Link>,
     animation: String,
     svg: Svg,
-    pub p_duration_add: u32,
-    pub p_duration_delete: u32,
-    pub p_duration_move: u32,
-    pub p_duration_select: u32,
-    pub p_duration_color: u32,
-    pub p_color_tag_created: Color,
-    pub p_color_tag_selected: Color,
-    pub p_color_tag_deleted: Color,
     pub p_color_node_fill: Color,
     pub p_color_node_stroke: Color,
     pub p_color_link_stroke: Color,
-    pub p_color_text: Color,
+    pub p_color_node_text: Color,
+    pub p_color_link_text: Color,
     total_duration: u32,
     svg_first_lign: String,
 }
 
 impl Renderer {
-    pub fn new() -> Renderer {
-        let p_display_node_label = true;
-        let p_display_link_value = true;
+    pub fn new(
+        show_value: bool,
+        show_name: bool,
+        p_color_node_fill: Color,
+        p_color_node_stroke: Color,
+        p_color_link_stroke: Color,
+        p_color_node_text: Color,
+        p_color_link_text: Color,
+        p_radius_node: u8,
+    ) -> Renderer {
+        let p_display_node_label = show_name;
+        let p_display_link_value = show_value;
         let p_stroke_width_node = 2;
         let p_stroke_width_link = 2;
-        let p_radius_node = 20;
         let svg = Svg::new(
             p_display_node_label,
             p_display_link_value,
@@ -70,18 +71,11 @@ impl Renderer {
             initial_links: BTreeMap::new(),
             animation: String::new(),
             svg,
-            p_duration_add: 1000,
-            p_duration_delete: 1000,
-            p_duration_move: 1000,
-            p_duration_select: 1000,
-            p_duration_color: 1000,
-            p_color_tag_created: Color::new(0, 0, 255),
-            p_color_tag_selected: Color::new(191, 255, 0),
-            p_color_tag_deleted: Color::new(255, 0, 0),
-            p_color_node_fill: Color::new(255, 255, 255),
-            p_color_node_stroke: Color::new(128, 139, 150),
-            p_color_link_stroke: Color::new(128, 139, 150),
-            p_color_text: Color::new(0, 0, 0),
+            p_color_node_fill,
+            p_color_node_stroke,
+            p_color_link_stroke,
+            p_color_node_text,
+            p_color_link_text,
             total_duration: 0,
             svg_first_lign: String::new(),
         }
@@ -93,11 +87,15 @@ impl Renderer {
         *seq
     }
 
+    pub fn sleep(&mut self, duration: u32) {
+        self.total_duration += duration;
+    }
+
     pub fn duration(&self) -> u32 {
         self.total_duration
     }
 
-    pub fn node_add(&mut self, name: char, center: Option<Point>) {
+    pub fn add_node(&mut self, name: char, center: Option<Point>) {
         let mut node = Node::new(
             self.id_seq(),
             name,
@@ -105,10 +103,10 @@ impl Renderer {
             self.svg.p_radius_node,
             self.p_color_node_fill,
             self.p_color_node_stroke,
-            self.p_color_text,
+            self.p_color_node_text,
             self.svg.p_stroke_width_node,
         );
-        node.tag(Some(Tag::Created(self.p_color_tag_created)));
+        node.tag(Some(Tag::Created));
 
         self.nodes.insert(node.name(), node.clone());
         self.previous_nodes.insert(node.name(), node.clone());
@@ -117,22 +115,11 @@ impl Renderer {
         self.animation.push_str(&self.svg.instantiate_node(&node));
     }
 
-    pub fn node_delete(&mut self, name: char) {
-        self.nodes
-            .get_mut(&name)
-            .unwrap()
-            .tag(Some(Tag::Deleted(self.p_color_tag_deleted)));
+    pub fn delete_node(&mut self, name: char) {
+        self.nodes.get_mut(&name).unwrap().tag(Some(Tag::Deleted));
     }
 
-    pub fn node_selected(&mut self, name: char, selected: bool) {
-        let tag = match selected {
-            true => Some(Tag::Selected(self.p_color_tag_selected)),
-            false => None,
-        };
-        self.nodes.get_mut(&name).unwrap().tag(tag);
-    }
-
-    pub fn link_add(&mut self, from: char, to: char, bidirect: bool, value: u8) {
+    pub fn add_link(&mut self, from: char, to: char, bidirect: bool, value: u8) {
         let id_seq = self.id_seq();
         let from = self.nodes.get(&from).unwrap();
         let to = self.nodes.get(&to).unwrap();
@@ -146,10 +133,10 @@ impl Renderer {
             bidirect,
             value,
             self.p_color_link_stroke,
-            self.p_color_text,
+            self.p_color_link_text,
             self.svg.p_stroke_width_link,
         );
-        link.tag(Some(Tag::Created(self.p_color_tag_created)));
+        link.tag(Some(Tag::Created));
 
         self.links.insert((from.name(), to.name()), link.clone());
         self.previous_links
@@ -160,24 +147,12 @@ impl Renderer {
             .insert_str(0, &self.svg.instantiate_link(&link));
     }
 
-    pub fn link_delete(&mut self, from: char, to: char) {
+    pub fn delete_link(&mut self, from: char, to: char) {
         let link = match self.links.get_mut(&(from, to)) {
             None => self.links.get_mut(&(to, from)).unwrap(),
             Some(l) => l,
         };
-        link.tag(Some(Tag::Deleted(self.p_color_tag_deleted)));
-    }
-
-    pub fn link_selected(&mut self, from: char, to: char, selected: bool) {
-        let tag = match selected {
-            true => Some(Tag::Selected(self.p_color_tag_selected)),
-            false => None,
-        };
-        let link = match self.links.get_mut(&(from, to)) {
-            None => self.links.get_mut(&(to, from)).unwrap(),
-            Some(l) => l,
-        };
-        link.tag(tag);
+        link.tag(Some(Tag::Deleted));
     }
 
     pub fn layout(&mut self, adja: BTreeMap<char, BTreeMap<char, u8>>) {
@@ -224,9 +199,10 @@ impl Renderer {
         }
 
         let diameter = 2 * self.svg.p_radius_node;
-        let perimeter = (diameter * (positions.keys().len() - freezed_count) as u32 * 2) as f64;
+        let perimeter =
+            (diameter as u32 * (positions.keys().len() - freezed_count) as u32 * 2) as f64;
         let mut radius = (perimeter / (2. * PI)) as f64;
-        radius = max(radius as u32, radius_min as u32 + 2 * diameter) as f64;
+        radius = max(radius as u32, radius_min as u32 + 2 * diameter as u32) as f64;
         let angle = 2. * PI / (positions.keys().len() - freezed_count) as f64;
 
         let mut i = 0;
@@ -250,7 +226,7 @@ impl Renderer {
         let mut density = links_count / adja.len();
         density = max(1, density);
         let mut springs = HashMap::new();
-        let length_unit = self.svg.p_radius_node * density as u32;
+        let length_unit = self.svg.p_radius_node as u32 * density as u32;
         let k_unit = 0.01;
         for node in positions.keys() {
             for other in positions.keys() {
@@ -459,8 +435,53 @@ impl Renderer {
         self.nodes.get_mut(&name).unwrap().center_freeze(freezed);
     }
 
-    pub fn node_color(&mut self, name: char, (red, green, blue): (u8, u8, u8)) {
-        self.nodes.get_mut(&name).unwrap().fill_color = Color::new(red, green, blue);
+    pub fn node_fill_color(&mut self, name: char, (red, green, blue): (u8, u8, u8)) {
+        self.nodes
+            .get_mut(&name)
+            .unwrap()
+            .set_fill_color(Color::new(red, green, blue));
+    }
+
+    pub fn node_text_color(&mut self, name: char, (red, green, blue): (u8, u8, u8)) {
+        self.nodes
+            .get_mut(&name)
+            .unwrap()
+            .set_text_color(Color::new(red, green, blue));
+    }
+
+    pub fn link_text_color(
+        &mut self,
+        name_1: char,
+        name_2: char,
+        (red, green, blue): (u8, u8, u8),
+    ) {
+        let link = match self.links.get_mut(&(name_1, name_2)) {
+            None => self.links.get_mut(&(name_2, name_1)).unwrap(),
+            Some(l) => l,
+        };
+
+        link.set_text_color(Color::new(red, green, blue));
+    }
+
+    pub fn node_stroke_color(&mut self, name: char, (red, green, blue): (u8, u8, u8)) {
+        self.nodes
+            .get_mut(&name)
+            .unwrap()
+            .set_stroke_color(Color::new(red, green, blue));
+    }
+
+    pub fn link_stroke_color(
+        &mut self,
+        name_1: char,
+        name_2: char,
+        (red, green, blue): (u8, u8, u8),
+    ) {
+        let link = match self.links.get_mut(&(name_1, name_2)) {
+            None => self.links.get_mut(&(name_2, name_1)).unwrap(),
+            Some(l) => l,
+        };
+
+        link.set_stroke_color(Color::new(red, green, blue));
     }
 
     pub fn node_center(&self, name: char) -> &Point {
@@ -623,25 +644,5 @@ impl Renderer {
         svg.push_str("</svg>");
 
         svg
-    }
-
-    pub fn p_display_node_label(&mut self, display: bool) {
-        self.svg.p_display_node_label = display;
-    }
-
-    pub fn p_display_link_value(&mut self, display: bool) {
-        self.svg.p_display_link_value = display;
-    }
-
-    pub fn p_stroke_width_node(&mut self, width: u32) {
-        self.svg.p_stroke_width_node = width;
-    }
-
-    pub fn p_stroke_width_link(&mut self, width: u32) {
-        self.svg.p_stroke_width_link = width;
-    }
-
-    pub fn p_radius_node(&mut self, radius: u32) {
-        self.svg.p_radius_node = radius;
     }
 }

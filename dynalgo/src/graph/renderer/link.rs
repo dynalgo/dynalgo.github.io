@@ -11,9 +11,10 @@ pub struct Link {
     to_center: Point,
     bidirect: bool,
     value: u8,
-    pub stroke_color: Color,
-    pub text_color: Color,
-    pub stroke_width: u32,
+    stroke_color: Color,
+    stroke_color_init: Color,
+    text_color: Color,
+    stroke_width: u8,
     tag: Option<Tag>,
 }
 
@@ -28,7 +29,7 @@ impl Link {
         value: u8,
         stroke_color: Color,
         text_color: Color,
-        stroke_width: u32,
+        stroke_width: u8,
     ) -> Link {
         Link {
             id,
@@ -39,6 +40,7 @@ impl Link {
             bidirect,
             value,
             stroke_color,
+            stroke_color_init: stroke_color,
             text_color,
             stroke_width,
             tag: None,
@@ -81,47 +83,45 @@ impl Link {
         self.value
     }
 
-    pub fn tag(&mut self, tag: Option<Tag>) {
-        let tag = match self.tag {
-            Some(Tag::Created(_)) => match tag {
-                Some(Tag::Selected(_)) => return,
-                _ => tag,
-            },
-            _ => tag,
-        };
+    pub fn stroke_color(&self) -> Color {
+        self.stroke_color
+    }
 
+    pub fn set_stroke_color(&mut self, color: Color) {
+        self.stroke_color = color
+    }
+
+    pub fn stroke_color_init(&self) -> Color {
+        self.stroke_color_init
+    }
+
+    pub fn set_text_color(&mut self, color: Color) {
+        self.text_color = color
+    }
+
+    pub fn text_color(&self) -> Color {
+        self.text_color
+    }
+
+    pub fn stroke_width(&self) -> u8 {
+        self.stroke_width
+    }
+
+    pub fn tag(&mut self, tag: Option<Tag>) {
         self.tag = tag;
     }
 
     pub fn tag_created(&self) -> bool {
         match self.tag {
-            Some(Tag::Created(_)) => true,
-            _ => false,
-        }
-    }
-
-    pub fn tag_selected(&self) -> bool {
-        match self.tag {
-            Some(Tag::Selected(_)) => true,
+            Some(Tag::Created) => true,
             _ => false,
         }
     }
 
     pub fn tag_deleted(&self) -> bool {
         match self.tag {
-            Some(Tag::Deleted(_)) => true,
+            Some(Tag::Deleted) => true,
             _ => false,
-        }
-    }
-
-    pub fn stroke_color_tagged(&self) -> Color {
-        match self.tag {
-            Some(tag) => match tag {
-                Tag::Created(color) => color,
-                Tag::Selected(color) => color,
-                Tag::Deleted(color) => color,
-            },
-            None => self.stroke_color,
         }
     }
 }
