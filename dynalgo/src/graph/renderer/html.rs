@@ -171,7 +171,7 @@ impl Html {
 
 		 svg text{
 		  text-anchor: middle;
-		  dominant-baseline: middle;
+		  dominant-baseline: central;
 		}
 
 		@media screen and (max-width: 800px) {

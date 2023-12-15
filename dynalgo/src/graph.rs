@@ -913,8 +913,21 @@ impl Graph {
         )
     }
 
+    /// Changes the animation speed (from 0.1 to 10.0).
+    /// Default value is 1.0
+    pub fn speed(&mut self, speed_factor: f64) {
+        let speed_factor = if speed_factor < 0.1 {
+            0.1
+        } else if speed_factor > 10. {
+            10.
+        } else {
+            speed_factor
+        };
+        self.p_speed_factor = speed_factor;
+    }
+
     fn animate(&mut self, duration_ms: u32, speed_factor: f64) {
-        let duration_ms = (speed_factor * duration_ms as f64) as u32;
+        let duration_ms = (duration_ms as f64 / speed_factor) as u32;
         let duration_ms = match duration_ms {
             0 => 1,
             d => d,
@@ -1090,7 +1103,7 @@ impl Graph {
     }
 
     /// Creates a config for an undirected and unvalued graph with the defined sequence.
-    pub fn from_sequence(mut sequence: Vec<(char, usize)>) -> Graph {
+    pub fn with_sequence(mut sequence: Vec<(char, usize)>) -> Graph {
         let mut graph = Graph::new();
         graph.pause();
 
