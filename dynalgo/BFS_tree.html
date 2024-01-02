@@ -1,0 +1,468 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <meta http-equiv="cache-control" content="no-cache, must-revalidate">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Dynalgo - BFS tree</title>
+   <style>
+		body {
+                    background-color: rgb(255, 255, 255);            color: rgb(0, 0, 139);            
+			margin: 0px;
+			padding: 0px;
+			display: flex;
+		}
+
+		:link {
+                    color: rgb(0, 0, 139);      
+		}
+		nav {
+		    font-size: 1em;
+		    border: none;
+		    display: flex;
+		    flex-flow: column wrap;
+		    padding: 0px;
+		    margin: 0px;
+		    min-width: 230px;
+		}
+
+		nav ul {
+		    margin: 0px;
+		    padding: 0px;
+		    list-style: none;
+		    display: flex;
+		    flex-flow: column wrap;
+		    justify-content: left;
+		}
+
+		nav a {
+		    padding-top: 0.2em;
+		    display: block;
+		    text-align: left;
+		    text-decoration: none;
+                    color: rgb(0, 0, 139);  
+		}
+
+        li {
+                    border-top: 1px solid rgb(255, 255, 255);
+            border-bottom: 1px solid rgb(255, 255, 255);            
+        }
+
+		li:hover{
+                    border-top: 1px solid rgb(0, 0, 139);
+            border-bottom: 1px solid rgb(0, 0, 139);            
+        }
+
+		header {
+		    display: flex;
+		    padding: 0px;
+		    margin: 0px;
+		    justify-content: space-around;
+                    border-bottom: 1px solid rgb(211, 211, 211);                        
+		}
+		section {
+			display: flex;
+			flex-flow: row nowrap;
+			width: 100%;
+			height: 100vh;
+			padding: 0px;
+			margin: 0px;
+			justify-content: space-between;
+		}
+
+		article {
+			display: flex;
+			border: none;
+			width: 50%;
+			height: 100%;
+			padding: 0px;
+			margin: 0px;
+			overflow: hidden;
+                    border-left: 1px solid rgb(211, 211, 211);      
+		}
+
+		 svg text{
+		  text-anchor: middle;
+		  dominant-baseline: central;
+		}
+
+		@media screen and (max-width: 800px) {
+			body {
+				flex-direction: column;
+				width: 100%;
+			}
+
+			section {
+				border-left: none;
+				flex-direction: column;
+				width: 100%;
+			}
+
+			article {
+                    border-top: 1px solid rgb(211, 211, 211);    
+				border-left: none;
+				width: 100%;
+			}
+
+			nav {
+		    	width: 100%;
+			}
+
+			nav ul {
+				border-right: none;
+			    justify-content: center;
+			}
+
+			nav a {
+			    text-align: center;
+			}
+		}
+
+		.selected {
+			font-style: italic;
+                    border-top: 1px solid rgb(0, 0, 139);            border-bottom: 1px solid rgb(0, 0, 139);            
+		}
+
+		.info a {
+			font-size: 1.5em;
+		    padding: 0px;
+		    margin: 0px;
+		    text-decoration: none;
+			cursor: pointer;
+			font-style: italic;
+		}
+
+
+    </style>
+    <script>
+        function pause(svg) {
+            if (svg.animationsPaused()) {
+                svg.unpauseAnimations();
+            } else {
+                svg.pauseAnimations();
+            }
+        }
+    </script>
+  </head>
+  <body>
+
+    <nav>
+    	<header>
+        	<div class="info"> <a href="https://github.com/dynalgo/dynalgo.github.io">Dynalgo</a>
+        	</div>
+        </header>
+        <ul id="menu">
+		<li><a href="Strongly_connected_components_(Kosaraju).html">Strongly connected components (Kosaraju)</a>
+		</li>
+		<li><a href="Minimal_spanning_tree_(Prim).html">Minimal spanning tree (Prim)</a>
+		</li>
+		<li class="selected"><a href="BFS_tree.html">BFS tree</a>
+		</li>
+		<li><a href="Eulerian_path_(Hierholzer).html">Eulerian path (Hierholzer)</a>
+		</li>
+		<li><a href="Color_-_Quick_partition.html">Color - Quick partition</a>
+		</li>
+        </ul>
+    </nav>
+    <section>
+		<article>
+<svg class="svg_dynalgo" onclick="pause(this)" viewBox="-26 -226 352 402" preserveAspectRatio="xMidYMid meet">
+<path id="HI278" stroke-width="2" opacity="0" stroke="rgb(47,79,79)" d="M100 100 L100 0 Z" />
+<path id="BI277" stroke-width="2" opacity="0" stroke="rgb(47,79,79)" d="M100 -100 L100 0 Z" />
+<path id="GH276" stroke-width="2" opacity="0" stroke="rgb(47,79,79)" d="M200 50 L100 100 Z" />
+<path id="HF275" stroke-width="2" opacity="0" stroke="rgb(47,79,79)" d="M100 100 L200 150 Z" />
+<path id="GF274" stroke-width="2" opacity="0" stroke="rgb(47,79,79)" d="M200 50 L200 150 Z" />
+<path id="EF273" stroke-width="2" opacity="0" stroke="rgb(47,79,79)" d="M300 100 L200 150 Z" />
+<path id="GE272" stroke-width="2" opacity="0" stroke="rgb(47,79,79)" d="M200 50 L300 100 Z" />
+<path id="ED271" stroke-width="2" opacity="0" stroke="rgb(47,79,79)" d="M300 100 L300 -100 Z" />
+<path id="DC270" stroke-width="2" opacity="0" stroke="rgb(47,79,79)" d="M300 -100 L200 -100 Z" />
+<path id="CB269" stroke-width="2" opacity="0" stroke="rgb(47,79,79)" d="M200 -100 L100 -100 Z" />
+<path id="IA268" stroke-width="2" opacity="0" stroke="rgb(47,79,79)" d="M100 0 L0 0 Z" />
+<path id="IH267" stroke-width="2" opacity="0" stroke="rgb(47,79,79)" d="M100 0 L100 100 Z" />
+<text id="biIH267" fill="rgb(0,0,0)" opacity="0" dx="5" dy="-5">
+<textpath startOffset="23" href="#IH267">⇒</textpath>
+</text>
+<path id="IB266" stroke-width="2" opacity="0" stroke="rgb(47,79,79)" d="M100 0 L100 -100 Z" />
+<text id="biIB266" fill="rgb(0,0,0)" opacity="0" dx="-5" dy="-5">
+<textpath startOffset="23" href="#IB266">⇒</textpath>
+</text>
+<path id="HG265" stroke-width="2" opacity="0" stroke="rgb(47,79,79)" d="M100 100 L200 50 Z" />
+<text id="biHG265" fill="rgb(0,0,0)" opacity="0" dx="-5" dy="-5">
+<textpath startOffset="23" href="#HG265">⇒</textpath>
+</text>
+<path id="FH264" stroke-width="2" opacity="0" stroke="rgb(47,79,79)" d="M200 150 L100 100 Z" />
+<text id="biFH264" fill="rgb(0,0,0)" opacity="0" dx="5" dy="-5">
+<textpath startOffset="23" href="#FH264">⇒</textpath>
+</text>
+<path id="FG263" stroke-width="2" opacity="0" stroke="rgb(47,79,79)" d="M200 150 L200 50 Z" />
+<text id="biFG263" fill="rgb(0,0,0)" opacity="0" dx="-5" dy="-5">
+<textpath startOffset="23" href="#FG263">⇒</textpath>
+</text>
+<path id="FE262" stroke-width="2" opacity="0" stroke="rgb(47,79,79)" d="M200 150 L300 100 Z" />
+<text id="biFE262" fill="rgb(0,0,0)" opacity="0" dx="-5" dy="-5">
+<textpath startOffset="23" href="#FE262">⇒</textpath>
+</text>
+<path id="EG261" stroke-width="2" opacity="0" stroke="rgb(47,79,79)" d="M300 100 L200 50 Z" />
+<text id="biEG261" fill="rgb(0,0,0)" opacity="0" dx="5" dy="-5">
+<textpath startOffset="23" href="#EG261">⇒</textpath>
+</text>
+<path id="DE260" stroke-width="2" opacity="0" stroke="rgb(47,79,79)" d="M300 -100 L300 100 Z" />
+<text id="biDE260" fill="rgb(0,0,0)" opacity="0" dx="5" dy="-5">
+<textpath startOffset="23" href="#DE260">⇒</textpath>
+</text>
+<path id="CD259" stroke-width="2" opacity="0" stroke="rgb(47,79,79)" d="M200 -100 L300 -100 Z" />
+<text id="biCD259" fill="rgb(0,0,0)" opacity="0" dx="5" dy="-5">
+<textpath startOffset="23" href="#CD259">⇒</textpath>
+</text>
+<path id="BJ258" stroke-width="2" opacity="0" stroke="rgb(47,79,79)" d="M100 -100 L100 -200 Z" />
+<path id="BC257" stroke-width="2" opacity="0" stroke="rgb(47,79,79)" d="M100 -100 L200 -100 Z" />
+<text id="biBC257" fill="rgb(0,0,0)" opacity="0" dx="5" dy="-5">
+<textpath startOffset="23" href="#BC257">⇒</textpath>
+</text>
+<path id="AI256" stroke-width="2" opacity="0" stroke="rgb(47,79,79)" d="M0 0 L100 0 Z" />
+<text id="biAI256" fill="rgb(0,0,0)" opacity="0" dx="5" dy="-5">
+<textpath startOffset="23" href="#AI256">⇒</textpath>
+</text>
+<g id="A246" opacity="0">
+  <circle id="cA246" cx="0" cy="0" r="13" fill="rgb(255,255,255)" stroke="rgb(47,79,79)" stroke-width="2"></circle>
+  <text id="coA246" x="0" y="0" fill="rgb(0,0,139)">A</text>
+</g>
+<g id="B247" opacity="0">
+  <circle id="cB247" cx="100" cy="-100" r="13" fill="rgb(255,255,255)" stroke="rgb(47,79,79)" stroke-width="2"></circle>
+  <text id="coB247" x="100" y="-100" fill="rgb(0,0,139)">B</text>
+</g>
+<g id="C248" opacity="0">
+  <circle id="cC248" cx="200" cy="-100" r="13" fill="rgb(255,255,255)" stroke="rgb(47,79,79)" stroke-width="2"></circle>
+  <text id="coC248" x="200" y="-100" fill="rgb(0,0,139)">C</text>
+</g>
+<g id="D249" opacity="0">
+  <circle id="cD249" cx="300" cy="-100" r="13" fill="rgb(255,255,255)" stroke="rgb(47,79,79)" stroke-width="2"></circle>
+  <text id="coD249" x="300" y="-100" fill="rgb(0,0,139)">D</text>
+</g>
+<g id="E250" opacity="0">
+  <circle id="cE250" cx="300" cy="100" r="13" fill="rgb(255,255,255)" stroke="rgb(47,79,79)" stroke-width="2"></circle>
+  <text id="coE250" x="300" y="100" fill="rgb(0,0,139)">E</text>
+</g>
+<g id="F251" opacity="0">
+  <circle id="cF251" cx="200" cy="150" r="13" fill="rgb(255,255,255)" stroke="rgb(47,79,79)" stroke-width="2"></circle>
+  <text id="coF251" x="200" y="150" fill="rgb(0,0,139)">F</text>
+</g>
+<g id="G252" opacity="0">
+  <circle id="cG252" cx="200" cy="50" r="13" fill="rgb(255,255,255)" stroke="rgb(47,79,79)" stroke-width="2"></circle>
+  <text id="coG252" x="200" y="50" fill="rgb(0,0,139)">G</text>
+</g>
+<g id="H253" opacity="0">
+  <circle id="cH253" cx="100" cy="100" r="13" fill="rgb(255,255,255)" stroke="rgb(47,79,79)" stroke-width="2"></circle>
+  <text id="coH253" x="100" y="100" fill="rgb(0,0,139)">H</text>
+</g>
+<g id="I254" opacity="0">
+  <circle id="cI254" cx="100" cy="0" r="13" fill="rgb(255,255,255)" stroke="rgb(47,79,79)" stroke-width="2"></circle>
+  <text id="coI254" x="100" y="0" fill="rgb(0,0,139)">I</text>
+</g>
+<g id="J255" opacity="0">
+  <circle id="cJ255" cx="100" cy="-200" r="13" fill="rgb(255,255,255)" stroke="rgb(47,79,79)" stroke-width="2"></circle>
+  <text id="coJ255" x="100" y="-200" fill="rgb(0,0,139)">J</text>
+</g>
+<animate href="#AI256" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#libAI256" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#biAI256" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#BC257" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#libBC257" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#biBC257" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#BJ258" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#libBJ258" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#biBJ258" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#CD259" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#libCD259" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#biCD259" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#DE260" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#libDE260" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#biDE260" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#EG261" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#libEG261" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#biEG261" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#FE262" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#libFE262" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#biFE262" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#FG263" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#libFG263" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#biFG263" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#FH264" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#libFH264" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#biFH264" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#HG265" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#libHG265" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#biHG265" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#IB266" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#libIB266" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#biIB266" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#IH267" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#libIH267" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#biIH267" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#A246" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#B247" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#C248" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#D249" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#E250" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#F251" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#G252" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#H253" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#I254" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#J255" attributeName="opacity" from="0" to="1" dur="300ms" begin="0ms" fill="freeze"/>
+<animate href="#AI256" attributeName="opacity" from="1" to="0" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#libAI256" attributeName="opacity" from="1" to="0" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#biAI256" attributeName="opacity" from="1" to="0" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#BC257" attributeName="opacity" from="1" to="0" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#libBC257" attributeName="opacity" from="1" to="0" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#biBC257" attributeName="opacity" from="1" to="0" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#BI277" attributeName="opacity" from="0" to="1" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#libBI277" attributeName="opacity" from="0" to="1" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#biBI277" attributeName="opacity" from="0" to="1" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#CB269" attributeName="opacity" from="0" to="1" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#libCB269" attributeName="opacity" from="0" to="1" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#biCB269" attributeName="opacity" from="0" to="1" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#CD259" attributeName="opacity" from="1" to="0" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#libCD259" attributeName="opacity" from="1" to="0" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#biCD259" attributeName="opacity" from="1" to="0" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#DC270" attributeName="opacity" from="0" to="1" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#libDC270" attributeName="opacity" from="0" to="1" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#biDC270" attributeName="opacity" from="0" to="1" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#DE260" attributeName="opacity" from="1" to="0" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#libDE260" attributeName="opacity" from="1" to="0" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#biDE260" attributeName="opacity" from="1" to="0" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#ED271" attributeName="opacity" from="0" to="1" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#libED271" attributeName="opacity" from="0" to="1" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#biED271" attributeName="opacity" from="0" to="1" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#EF273" attributeName="opacity" from="0" to="1" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#libEF273" attributeName="opacity" from="0" to="1" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#biEF273" attributeName="opacity" from="0" to="1" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#EG261" attributeName="opacity" from="1" to="0" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#libEG261" attributeName="opacity" from="1" to="0" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#biEG261" attributeName="opacity" from="1" to="0" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#FE262" attributeName="opacity" from="1" to="0" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#libFE262" attributeName="opacity" from="1" to="0" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#biFE262" attributeName="opacity" from="1" to="0" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#FG263" attributeName="opacity" from="1" to="0" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#libFG263" attributeName="opacity" from="1" to="0" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#biFG263" attributeName="opacity" from="1" to="0" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#FH264" attributeName="opacity" from="1" to="0" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#libFH264" attributeName="opacity" from="1" to="0" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#biFH264" attributeName="opacity" from="1" to="0" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#GE272" attributeName="opacity" from="0" to="1" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#libGE272" attributeName="opacity" from="0" to="1" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#biGE272" attributeName="opacity" from="0" to="1" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#GF274" attributeName="opacity" from="0" to="1" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#libGF274" attributeName="opacity" from="0" to="1" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#biGF274" attributeName="opacity" from="0" to="1" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#GH276" attributeName="opacity" from="0" to="1" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#libGH276" attributeName="opacity" from="0" to="1" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#biGH276" attributeName="opacity" from="0" to="1" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#HF275" attributeName="opacity" from="0" to="1" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#libHF275" attributeName="opacity" from="0" to="1" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#biHF275" attributeName="opacity" from="0" to="1" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#HG265" attributeName="opacity" from="1" to="0" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#libHG265" attributeName="opacity" from="1" to="0" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#biHG265" attributeName="opacity" from="1" to="0" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#HI278" attributeName="opacity" from="0" to="1" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#libHI278" attributeName="opacity" from="0" to="1" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#biHI278" attributeName="opacity" from="0" to="1" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#IA268" attributeName="opacity" from="0" to="1" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#libIA268" attributeName="opacity" from="0" to="1" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#biIA268" attributeName="opacity" from="0" to="1" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#IB266" attributeName="opacity" from="1" to="0" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#libIB266" attributeName="opacity" from="1" to="0" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#biIB266" attributeName="opacity" from="1" to="0" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#IH267" attributeName="opacity" from="1" to="0" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#libIH267" attributeName="opacity" from="1" to="0" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#biIH267" attributeName="opacity" from="1" to="0" dur="300ms" begin="300ms" fill="freeze"/>
+<animate href="#coA246" attributeName="fill" from="rgb(0,0,139)" to="rgb(0,255,0)" dur="600ms" begin="600ms" fill="freeze"/>
+<animate href="#cA246" attributeName="stroke-width" from="2" to="4" dur="600ms" begin="1201ms" fill="freeze"/>
+<animate href="#cA246" attributeName="stroke" from="rgb(47,79,79)" to="rgb(0,192,0)" dur="600ms" begin="1201ms" fill="freeze"/>
+<animate href="#coI254" attributeName="fill" from="rgb(0,0,139)" to="rgb(0,255,0)" dur="600ms" begin="1802ms" fill="freeze"/>
+<animate href="#cI254" attributeName="stroke-width" from="2" to="4" dur="600ms" begin="2403ms" fill="freeze"/>
+<animate href="#cI254" attributeName="stroke" from="rgb(47,79,79)" to="rgb(0,192,0)" dur="600ms" begin="2403ms" fill="freeze"/>
+<animate href="#coB247" attributeName="fill" from="rgb(0,0,139)" to="rgb(0,255,0)" dur="600ms" begin="3004ms" fill="freeze"/>
+<animate href="#coH253" attributeName="fill" from="rgb(0,0,139)" to="rgb(0,255,0)" dur="600ms" begin="3605ms" fill="freeze"/>
+<animate href="#cB247" attributeName="stroke-width" from="2" to="4" dur="600ms" begin="4206ms" fill="freeze"/>
+<animate href="#cB247" attributeName="stroke" from="rgb(47,79,79)" to="rgb(0,192,0)" dur="600ms" begin="4206ms" fill="freeze"/>
+<animate href="#coC248" attributeName="fill" from="rgb(0,0,139)" to="rgb(0,255,0)" dur="600ms" begin="4807ms" fill="freeze"/>
+<animate href="#coJ255" attributeName="fill" from="rgb(0,0,139)" to="rgb(0,255,0)" dur="600ms" begin="5408ms" fill="freeze"/>
+<animate href="#cH253" attributeName="stroke-width" from="2" to="4" dur="600ms" begin="6009ms" fill="freeze"/>
+<animate href="#cH253" attributeName="stroke" from="rgb(47,79,79)" to="rgb(0,192,0)" dur="600ms" begin="6009ms" fill="freeze"/>
+<animate href="#coF251" attributeName="fill" from="rgb(0,0,139)" to="rgb(0,255,0)" dur="600ms" begin="6610ms" fill="freeze"/>
+<animate href="#coG252" attributeName="fill" from="rgb(0,0,139)" to="rgb(0,255,0)" dur="600ms" begin="7211ms" fill="freeze"/>
+<animate href="#cC248" attributeName="stroke-width" from="2" to="4" dur="600ms" begin="7812ms" fill="freeze"/>
+<animate href="#cC248" attributeName="stroke" from="rgb(47,79,79)" to="rgb(0,192,0)" dur="600ms" begin="7812ms" fill="freeze"/>
+<animate href="#coD249" attributeName="fill" from="rgb(0,0,139)" to="rgb(0,255,0)" dur="600ms" begin="8413ms" fill="freeze"/>
+<animate href="#cJ255" attributeName="stroke-width" from="2" to="4" dur="600ms" begin="9014ms" fill="freeze"/>
+<animate href="#cJ255" attributeName="stroke" from="rgb(47,79,79)" to="rgb(0,192,0)" dur="600ms" begin="9014ms" fill="freeze"/>
+<animate href="#cF251" attributeName="stroke-width" from="2" to="4" dur="600ms" begin="9615ms" fill="freeze"/>
+<animate href="#cF251" attributeName="stroke" from="rgb(47,79,79)" to="rgb(0,192,0)" dur="600ms" begin="9615ms" fill="freeze"/>
+<animate href="#coE250" attributeName="fill" from="rgb(0,0,139)" to="rgb(0,255,0)" dur="600ms" begin="10216ms" fill="freeze"/>
+<animate href="#GF274" attributeName="stroke-width" from="2" to="4" dur="600ms" begin="10817ms" fill="freeze"/>
+<animate href="#GF274" attributeName="stroke" from="rgb(47,79,79)" to="rgb(192,0,0)" dur="600ms" begin="10817ms" fill="freeze"/>
+<animate href="#GF274" attributeName="opacity" from="1" to="0" dur="300ms" begin="11418ms" fill="freeze"/>
+<animate href="#libGF274" attributeName="opacity" from="1" to="0" dur="300ms" begin="11418ms" fill="freeze"/>
+<animate href="#biGF274" attributeName="opacity" from="1" to="0" dur="300ms" begin="11418ms" fill="freeze"/>
+<animate href="#cG252" attributeName="stroke-width" from="2" to="4" dur="600ms" begin="12619ms" fill="freeze"/>
+<animate href="#cG252" attributeName="stroke" from="rgb(47,79,79)" to="rgb(0,192,0)" dur="600ms" begin="12619ms" fill="freeze"/>
+<animate href="#GE272" attributeName="stroke-width" from="2" to="4" dur="600ms" begin="13220ms" fill="freeze"/>
+<animate href="#GE272" attributeName="stroke" from="rgb(47,79,79)" to="rgb(192,0,0)" dur="600ms" begin="13220ms" fill="freeze"/>
+<animate href="#GE272" attributeName="opacity" from="1" to="0" dur="300ms" begin="13821ms" fill="freeze"/>
+<animate href="#libGE272" attributeName="opacity" from="1" to="0" dur="300ms" begin="13821ms" fill="freeze"/>
+<animate href="#biGE272" attributeName="opacity" from="1" to="0" dur="300ms" begin="13821ms" fill="freeze"/>
+<animate href="#cD249" attributeName="stroke-width" from="2" to="4" dur="600ms" begin="15022ms" fill="freeze"/>
+<animate href="#cD249" attributeName="stroke" from="rgb(47,79,79)" to="rgb(0,192,0)" dur="600ms" begin="15022ms" fill="freeze"/>
+<animate href="#ED271" attributeName="stroke-width" from="2" to="4" dur="600ms" begin="15623ms" fill="freeze"/>
+<animate href="#ED271" attributeName="stroke" from="rgb(47,79,79)" to="rgb(192,0,0)" dur="600ms" begin="15623ms" fill="freeze"/>
+<animate href="#ED271" attributeName="opacity" from="1" to="0" dur="300ms" begin="16224ms" fill="freeze"/>
+<animate href="#libED271" attributeName="opacity" from="1" to="0" dur="300ms" begin="16224ms" fill="freeze"/>
+<animate href="#biED271" attributeName="opacity" from="1" to="0" dur="300ms" begin="16224ms" fill="freeze"/>
+<animate href="#cE250" attributeName="stroke-width" from="2" to="4" dur="600ms" begin="17425ms" fill="freeze"/>
+<animate href="#cE250" attributeName="stroke" from="rgb(47,79,79)" to="rgb(0,192,0)" dur="600ms" begin="17425ms" fill="freeze"/>
+<animate attributeName="viewBox" from="-26 -226 352 402" to="-26 -26 232 292" begin="18026ms" dur="900ms" fill="freeze" />
+<animate href="#BI277" begin="18026ms" fill="freeze" attributeName="d" dur="900ms" values="M100 -100 L100 0 Z;M30 120 L90 60 Z" />
+<animateMotion href="#libBI277" begin="18026ms" dur="900ms" fill="freeze" path="m 0 0 l -40 140" />
+<animate href="#BJ258" begin="18026ms" fill="freeze" attributeName="d" dur="900ms" values="M100 -100 L100 -200 Z;M30 120 L60 180 Z" />
+<animateMotion href="#libBJ258" begin="18026ms" dur="900ms" fill="freeze" path="m 0 0 l -55 300" />
+<animate href="#CB269" begin="18026ms" fill="freeze" attributeName="d" dur="900ms" values="M200 -100 L100 -100 Z;M0 180 L30 120 Z" />
+<animateMotion href="#libCB269" begin="18026ms" dur="900ms" fill="freeze" path="m 0 0 l -135 250" />
+<animate href="#DC270" begin="18026ms" fill="freeze" attributeName="d" dur="900ms" values="M300 -100 L200 -100 Z;M0 240 L0 180 Z" />
+<animateMotion href="#libDC270" begin="18026ms" dur="900ms" fill="freeze" path="m 0 0 l -250 310" />
+<animate href="#EF273" begin="18026ms" fill="freeze" attributeName="d" dur="900ms" values="M300 100 L200 150 Z;M120 240 L120 180 Z" />
+<animateMotion href="#libEF273" begin="18026ms" dur="900ms" fill="freeze" path="m 0 0 l -130 85" />
+<animate href="#GH276" begin="18026ms" fill="freeze" attributeName="d" dur="900ms" values="M200 50 L100 100 Z;M180 180 L150 120 Z" />
+<animateMotion href="#libGH276" begin="18026ms" dur="900ms" fill="freeze" path="m 0 0 l 15 75" />
+<animate href="#HF275" begin="18026ms" fill="freeze" attributeName="d" dur="900ms" values="M100 100 L200 150 Z;M150 120 L120 180 Z" />
+<animateMotion href="#libHF275" begin="18026ms" dur="900ms" fill="freeze" path="m 0 0 l -15 25" />
+<animate href="#HI278" begin="18026ms" fill="freeze" attributeName="d" dur="900ms" values="M100 100 L100 0 Z;M150 120 L90 60 Z" />
+<animateMotion href="#libHI278" begin="18026ms" dur="900ms" fill="freeze" path="m 0 0 l 20 40" />
+<animate href="#IA268" begin="18026ms" fill="freeze" attributeName="d" dur="900ms" values="M100 0 L0 0 Z;M90 60 L90 0 Z" />
+<animateMotion href="#libIA268" begin="18026ms" dur="900ms" fill="freeze" path="m 0 0 l 40 30" />
+<animateMotion href="#A246" begin="18026ms" dur="900ms"
+                    fill="freeze" path="m 0 0 l 90 0" />
+<animateMotion href="#B247" begin="18026ms" dur="900ms"
+                    fill="freeze" path="m 0 0 l -70 220" />
+<animateMotion href="#C248" begin="18026ms" dur="900ms"
+                    fill="freeze" path="m 0 0 l -200 280" />
+<animateMotion href="#D249" begin="18026ms" dur="900ms"
+                    fill="freeze" path="m 0 0 l -300 340" />
+<animateMotion href="#E250" begin="18026ms" dur="900ms"
+                    fill="freeze" path="m 0 0 l -180 140" />
+<animateMotion href="#F251" begin="18026ms" dur="900ms"
+                    fill="freeze" path="m 0 0 l -80 30" />
+<animateMotion href="#G252" begin="18026ms" dur="900ms"
+                    fill="freeze" path="m 0 0 l -20 130" />
+<animateMotion href="#H253" begin="18026ms" dur="900ms"
+                    fill="freeze" path="m 0 0 l 50 20" />
+<animateMotion href="#I254" begin="18026ms" dur="900ms"
+                    fill="freeze" path="m 0 0 l -10 60" />
+<animateMotion href="#J255" begin="18026ms" dur="900ms"
+                    fill="freeze" path="m 0 0 l -40 380" />
+</svg>
+		</article>
+    </section>
+  </body>
+</html>

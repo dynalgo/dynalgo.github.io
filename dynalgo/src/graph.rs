@@ -35,7 +35,7 @@ enum AnimState {
 
 pub struct Graph {
     renderer: Renderer,
-    adjacency: BTreeMap<char, BTreeMap<char, u8>>,
+    adjacency: BTreeMap<char, BTreeMap<char, i8>>,
     anim_state: AnimState,
     layout_on_resume: bool,
     duration_on_resume: u32,
@@ -140,6 +140,12 @@ impl Graph {
                     [node_from, ">", node_to] => {
                         self.link_add_from(node_from, node_to, false, "_");
                     }
+                    [node_to, "<", node_from, value] => {
+                        self.link_add_from(node_from, node_to, false, value);
+                    }
+                    [node_to, "<", node_from] => {
+                        self.link_add_from(node_from, node_to, false, "_");
+                    }
                     [node, cx, cy] => {
                         self.node_add_from(node, cx, cy);
                     }
@@ -234,7 +240,7 @@ impl Graph {
         let value = if value == "_" {
             0
         } else {
-            match value.parse::<u8>() {
+            match value.parse::<i8>() {
                 Ok(v) => v,
                 Err(_) => panic!(
                     "{}",
@@ -302,7 +308,7 @@ impl Graph {
     }
 
     /// Adds a link between two nodes. The link can be defined as bidirectional or not.
-    pub fn add_link(&mut self, node_from: char, node_to: char, bidirectional: bool, value: u8) {
+    pub fn add_link(&mut self, node_from: char, node_to: char, bidirectional: bool, value: i8) {
         self.link_check_not_exist(node_from, node_to);
 
         self.bulk_changes(
@@ -346,10 +352,11 @@ impl Graph {
     /// Returns the links names list.
     pub fn links(&self) -> Vec<(char, char)> {
         let mut links = Vec::new();
+        let directed = self.directed();
         for (node_from, neihgbors) in &self.adjacency {
             for (node_to, _) in neihgbors {
                 let link = (*node_from, *node_to);
-                if !links.contains(&(*node_to, *node_from)) {
+                if directed || !links.contains(&(*node_to, *node_from)) {
                     links.push(link);
                 }
             }
@@ -381,8 +388,26 @@ impl Graph {
     ///     }
     /// }
     /// ```
-    pub fn adjacency_list(&self) -> BTreeMap<char, BTreeMap<char, u8>> {
+    pub fn adjacency_list(&self) -> BTreeMap<char, BTreeMap<char, i8>> {
         self.adjacency.clone()
+    }
+
+    /// Returns True if the graph is directed
+    pub fn directed(&self) -> bool {
+        for (node_from, neighbors) in &self.adjacency {
+            for (node_to, _) in neighbors {
+                if self
+                    .adjacency
+                    .get(node_to)
+                    .unwrap()
+                    .get(node_from)
+                    .is_none()
+                {
+                    return true;
+                }
+            }
+        }
+        false
     }
 
     /// Returns the adjacency matrix.
@@ -407,7 +432,7 @@ impl Graph {
     ///     }
     /// }
     /// ```
-    pub fn adjacency_matrix(&self) -> BTreeMap<char, BTreeMap<char, Option<u8>>> {
+    pub fn adjacency_matrix(&self) -> BTreeMap<char, BTreeMap<char, Option<i8>>> {
         let mut matrix = BTreeMap::new();
 
         for node in self.nodes().into_iter() {
@@ -543,34 +568,6 @@ impl Graph {
         self.need_layout();
     }
 
-    /// Returns the graph sequence (degrees in increasing order).
-    pub fn sequence(&self) -> Vec<(char, usize)> {
-        let mut degrees = BTreeMap::new();
-
-        for (node_from, neighbors) in &self.adjacency {
-            degrees.insert(*node_from, neighbors.len());
-        }
-
-        for (node_from, neighbors) in &self.adjacency {
-            for (node_to, _) in neighbors {
-                if self
-                    .adjacency
-                    .get(&node_to)
-                    .unwrap()
-                    .get(&node_from)
-                    .is_none()
-                {
-                    let degree = degrees.get_mut(&node_to).unwrap();
-                    *degree += 1;
-                }
-            }
-        }
-
-        let mut sequence: Vec<(char, usize)> = degrees.into_iter().collect();
-        sequence.sort_by(|(_, a), (_, b)| b.cmp(a));
-        sequence
-    }
-
     /// Returns a formatted string describing the graph structure.
     fn graph_config(&self) -> String {
         let mut config = String::new();
@@ -601,7 +598,7 @@ impl Graph {
         config
     }
 
-    fn node_links(&self, node: char) -> Vec<(char, char, bool, u8)> {
+    fn node_links(&self, node: char) -> Vec<(char, char, bool, i8)> {
         let mut links = Vec::new();
 
         for (neighbor, value) in self.adjacency.get(&node).unwrap().iter() {
@@ -793,6 +790,11 @@ impl Graph {
         self.anim_state == AnimState::Paused
     }
 
+    /// Renders the graph animation in SVG SMIL format into a HTML file.
+    pub fn render(&self, html_file_name: &str) -> Result<(), std::io::Error> {
+        Self::to_html(vec![(html_file_name, vec![self])])
+    }
+
     /// Renders graphs animations in SVG SMIL format into multiple HTML files.
     /// Each HTML page contains a menu to access other pages (if there is more than one page).
     pub fn to_html(pages: Vec<(&str, Vec<&Graph>)>) -> Result<(), std::io::Error> {
@@ -831,7 +833,7 @@ impl Graph {
     }
 
     /// Changes and freezes the x,y coords of the SVG node representation. The node position will not change when automatic layout algo runs.
-    pub fn node_move(&mut self, node: char, xy: (i32, i32)) {
+    pub fn move_node(&mut self, node: char, xy: (i32, i32)) {
         self.node_check_exists(node);
 
         self.bulk_changes(
@@ -887,8 +889,27 @@ impl Graph {
         )
     }
 
+    /// Changes the node label color.
+    pub fn color_label(&mut self, node: char, color: (u8, u8, u8)) {
+        self.node_check_exists(node);
+
+        self.bulk_changes(
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            Some((vec![node], color)),
+            None,
+            self.p_duration_color,
+        )
+    }
+
     /// Unfreezes the node position (coords in SVG graphic context), so the current position will change  when automatic layout algo runs.
-    pub fn layout_node(&mut self, node: char) {
+    pub fn unfreeze_node(&mut self, node: char) {
         self.node_check_exists(node);
         self.renderer.node_freezed(node, false);
         self.need_layout();
@@ -909,6 +930,25 @@ impl Graph {
             None,
             None,
             None,
+            self.p_duration_color,
+        )
+    }
+
+    /// Changes the link value color.
+    pub fn color_value(&mut self, node_from: char, node_to: char, color: (u8, u8, u8)) {
+        self.link_check_exists(node_from, node_to);
+
+        self.bulk_changes(
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            Some((vec![(node_from, node_to)], color)),
             self.p_duration_color,
         )
     }
@@ -982,7 +1022,7 @@ impl Graph {
         links_deleted: Option<Vec<(char, char)>>,
         nodes_deleted: Option<Vec<char>>,
         nodes_added: Option<Vec<(char, Option<(i16, i16)>)>>,
-        links_added: Option<Vec<(char, char, bool, u8)>>,
+        links_added: Option<Vec<(char, char, bool, i8)>>,
         nodes_text_colered: Option<(Vec<char>, (u8, u8, u8))>,
         links_text_colered: Option<(Vec<(char, char)>, (u8, u8, u8))>,
         duration_ms: u32,
@@ -1102,47 +1142,28 @@ impl Graph {
         }
     }
 
-    /// Creates a config for an undirected and unvalued graph with the defined sequence.
-    pub fn with_sequence(mut sequence: Vec<(char, usize)>) -> Graph {
-        let mut graph = Graph::new();
-        graph.pause();
-
-        while !sequence.is_empty() {
-            sequence.sort_by(|(_, d1), (_, d2)| d2.cmp(d1));
-            let (node, degree) = sequence.remove(0);
-            if !graph.nodes().contains(&node) {
-                graph.add_node(node, None);
-            }
-            if degree == 0 {
-                continue;
-            }
-            if sequence.len() < degree {
-                panic!(
-                    "{}",
-                    GraphError {
-                        action: String::from("create a config for a graph with a defined sequence"),
-                        message: String::from(
-                            "the sequence is not valid (graph with such a sequence can't exist)",
-                        ),
-                    }
-                );
-            }
-            for (n, d) in sequence.iter_mut().take(degree) {
-                *d -= 1;
-                if !graph.nodes().contains(n) {
-                    graph.add_node(*n, None);
-                }
-                graph.add_link(node, *n, true, 0);
-            }
-        }
-
-        graph.resume();
-
-        graph
-    }
-
     /// Returns the radius of nodes
     pub fn node_radius(&self) -> u8 {
         self.p_radius
+    }
+
+    /// Returns the graph sequence (outdegree increasing order).
+    pub fn sequence(&self) -> Vec<(char, (usize, usize))> {
+        let mut degrees = BTreeMap::new();
+
+        for (node_from, neighbors) in &self.adjacency {
+            degrees.insert(*node_from, (neighbors.len(), 0));
+        }
+
+        for (_, neighbors) in &self.adjacency {
+            for node_to in neighbors.keys() {
+                let (_, indegree) = degrees.get_mut(node_to).unwrap();
+                *indegree += 1;
+            }
+        }
+
+        let mut sequence: Vec<(char, (usize, usize))> = degrees.into_iter().collect();
+        sequence.sort_by(|(_, (a, _)), (_, (b, _))| b.cmp(a));
+        sequence
     }
 }

@@ -91,7 +91,7 @@ impl Svg {
             link.to_center().y()
         ));
 
-        if self.p_display_link_value && link.value() > 0 {
+        if self.p_display_link_value && link.value() != 0 {
             svg.push_str(&format!("<g id=\"lib{}\" opacity=\"{}\">\n", link.id(), 0));
 
             let (dx, dy) = (0, 0);
@@ -133,7 +133,7 @@ impl Svg {
             ));
             svg.push_str(&format!(
                 "<textpath startOffset=\"{}\" href=\"#{}\">⇒</textpath>\n",
-                self.p_radius_node + 5,
+                self.p_radius_node + 10,
                 link.id()
             ));
             svg.push_str("</text>\n");

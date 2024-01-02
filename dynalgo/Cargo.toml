@@ -2,7 +2,7 @@
 name = "dynalgo"
 description = "A tiny library designed to produce animated SVG images that can illustrate graph algorithms in action."
 authors = ["Laurent Girard <dev-dynalgo@protonmail.com>"]
-version = "3.0.1"
+version = "3.1.0"
 edition = "2021"
 license = "GPL-3.0"
 repository = "https://github.com/dynalgo/dynalgo.github.io"

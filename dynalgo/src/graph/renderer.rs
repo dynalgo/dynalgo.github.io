@@ -119,7 +119,7 @@ impl Renderer {
         self.nodes.get_mut(&name).unwrap().tag(Some(Tag::Deleted));
     }
 
-    pub fn add_link(&mut self, from: char, to: char, bidirect: bool, value: u8) {
+    pub fn add_link(&mut self, from: char, to: char, bidirect: bool, value: i8) {
         let id_seq = self.id_seq();
         let from = self.nodes.get(&from).unwrap();
         let to = self.nodes.get(&to).unwrap();
@@ -155,7 +155,7 @@ impl Renderer {
         link.tag(Some(Tag::Deleted));
     }
 
-    pub fn layout(&mut self, adja: BTreeMap<char, BTreeMap<char, u8>>) {
+    pub fn layout(&mut self, adja: BTreeMap<char, BTreeMap<char, i8>>) {
         assert!(adja.len() == self.nodes.len());
 
         if adja.is_empty() {

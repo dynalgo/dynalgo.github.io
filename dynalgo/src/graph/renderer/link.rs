@@ -10,7 +10,7 @@ pub struct Link {
     from_center: Point,
     to_center: Point,
     bidirect: bool,
-    value: u8,
+    value: i8,
     stroke_color: Color,
     stroke_color_init: Color,
     text_color: Color,
@@ -26,7 +26,7 @@ impl Link {
         from_center: Point,
         to_center: Point,
         bidirect: bool,
-        value: u8,
+        value: i8,
         stroke_color: Color,
         text_color: Color,
         stroke_width: u8,
@@ -79,7 +79,7 @@ impl Link {
         self.bidirect
     }
 
-    pub fn value(&self) -> u8 {
+    pub fn value(&self) -> i8 {
         self.value
     }
 

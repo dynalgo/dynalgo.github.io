@@ -9,6 +9,8 @@
 //! Dynalgo automatically layout nodes according to imaginary springs forces applying to them.
 //! Custom animations can be made by playing with the nodes and links  graphical representations.
 //!
+//! The `Algo` module provides animated algorithms applying to graph.
+//!
 //! ### Example: traversing a maze
 //! ```
 //! use dynalgo::graph::Graph;
@@ -162,7 +164,7 @@
 //!
 //! unfreezed_maze.pause();
 //! for node in unfreezed_maze.nodes() {
-//!     unfreezed_maze.layout_node(node);
+//!     unfreezed_maze.unfreeze_node(node);
 //! }
 //! unfreezed_maze.resume();
 //!
@@ -173,7 +175,7 @@
 //!     &mut Vec::new(),
 //! );
 //!
-//! Graph::to_html( vec![("Dynalgo maze example", vec![&freezed_maze, &unfreezed_maze])] );
+//! Graph::to_html( vec![("Dynalgo maze example", vec![&freezed_maze, &unfreezed_maze])] ).unwrap();
 //!
 //!
 //! fn deep_first_search(
@@ -195,7 +197,6 @@
 //!         if visited.contains(node_to) {
 //!             continue;
 //!         }
-//!         println!("{} {}", node_from, *node_to);
 //!         graph.color_link(node_from, *node_to, (0, 255, 0));
 //!
 //!         found = deep_first_search(graph, *node_to, node_searched, visited);
@@ -210,7 +211,87 @@
 //!     found
 //! }
 //! ```
+//!
+//! ### Example: viewing algorithms in action
+//! ```
+//! use dynalgo::graph::Graph;
+//! use dynalgo::algo::coloration::Coloration;
+//! use dynalgo::algo::connectivity::Connectivity;
+//! use dynalgo::algo::eulerian::Eulerian;
+//! use dynalgo::algo::tree::Tree;
+//!
+//! let mut g = Graph::new();
+//! g.from_str(
+//!     "A 0 0, B 100 -100, C 200 -100, D 300 -100, E 300 100, F 200 150,
+//!     G 200 50, H 100 100, I 100 0, A > I, I > B, B > C, C > D, D > E, E < F, E > G, F > G, F > H,
+//!     G < H, H < I",
+//! );
+//! let (_c_g, _components) = Connectivity::components(&g);
+//! assert!(_components.len() == 1);
+//!
+//! let mut g = Graph::new();
+//! g.from_str(
+//!     "F 0 0, E 100 0, A 250 50, H 300 80, C 0 100, J 100 100, K 0 150, B 200 150,
+//!     D 100 250, I 200 250, G 300 250, F > J, C > F, J > C, C > E, E > J, C - K, K > D, J > B,
+//!     E > A, A - H,
+//!     H > G, G > I, I > D, I > B, B > D, B > G",
+//! );
+//! let (scc_g, sc_components) = Connectivity::strongly_connected_components(&g);
+//! assert!(sc_components.len() == 4);
+//!
+//! let mut g = Graph::new();
+//! g.from_str(
+//!     "A 0 0, B 200 0, C 0 200, D 160 160, E 250 200, F 100 300,
+//!     G 100 100, A - B 2, A - G 5,
+//!     B - G 15, B - D 10, B - E 3, C - G 5, C - D 7, C - E 10, C - F 12,
+//!     D - G 3, D - E 1, E - F 11",
+//! );
+//! let mst_tree = Tree::minimal_spanning_tree(&g);
+//!
+//! let mut g = Graph::new();
+//! g.from_str(
+//!     "A 0 0, B 100 -100, C 200 -100, D 300 -100, E 300 100, F 200 150,
+//!     G 200 50, H 100 100, I 100 0, J 100 -200, A > I, I > B, B > C, C > D, D > E, E < F,
+//!     E > G, F > G, F > H,
+//!     G < H, H < I, J - B",
+//! );
+//! let bfs_tree = Tree::bfs_tree(&g, 'A');
+//!
+//! let mut g = Graph::new();
+//! g.from_str(
+//!     "A 0 0, B 200 0, C 0 200, D 160 160, E 250 200, F 100 300,
+//!     G 100 100, A - B, A - G, B - G, B - D, B - E, C - G, C - E, C - F,
+//!     D - G, D - E, E - F",
+//! );
+//! let (e_g, _cycle) = Eulerian::hierholzer(&g);
+//!
+//! let mut g = Graph::new();
+//! g.from_str(
+//!     "A 0 0, B -80 200, C 100 100, D -100 100, E 80 200
+//!     F 0 60, G -40 160, H 40 100, I 40 160, J -40 100,
+//!     L 0 -60, M 160 100, N 120 240, O -120 240, P -160 100,
+//!     Q -160 40, R -190 20, S -130 20,
+//!     T 160 180, U 160 20, V 160 -60, W 240 180, X 240 20, Y 240 -60, Z 240 100
+//!     A - F, A - D, A - C, C - H, C - E, E - I, E - B, B - G, B - D, D - J,
+//!     J - H, J - I, F - I, F - G, H - G,
+//!     A  - L, C - M, E - N, B - O, D - P,
+//!     P - Q, Q - R, Q - S,
+//!     V - X, V - Z, V - W, U - Y, U - Z, U - W, M - X, M - Y, M - W, T - X, T - Y, T - Z",
+//! );
+//! let (p_g, partitions) = Coloration::quick_partition(&g);
+//! assert!(partitions.len() == 3);
+//!
+//! Graph::to_html(vec![
+//!     ("Strongly connected components (Kosaraju)", vec![&scc_g]),
+//!     ("Minimal spanning tree (Prim)", vec![&mst_tree]),
+//!     ("BFS tree", vec![&bfs_tree]),
+//!     ("Eulerian path (Hierholzer)", vec![&e_g]),
+//!     ("Color - Quick partition", vec![&p_g]),
+//! ])
+//! .unwrap();
+//! ```
 
+pub mod algo;
 pub mod graph;
 
 #[cfg(test)]
@@ -219,7 +300,7 @@ mod tests {
     use crate::graph::Graph;
 
     #[test]
-    fn it_works_example_1() {
+    fn it_works() {
         let config = "A
              B
              C
@@ -263,12 +344,12 @@ mod tests {
         graph.color_node('E', (128, 0, 0));
 
         let (x, y, _) = graph.node_position('E');
-        graph.node_move('E', (x - 20, y - 20));
-        graph.node_move('E', (x - 20, y + 20));
-        graph.node_move('E', (x + 20, y + 20));
-        graph.node_move('E', (x + 20, y - 20));
-        graph.node_move('E', (x - 20, y - 20));
-        graph.node_move('E', (x, y));
+        graph.move_node('E', (x - 20, y - 20));
+        graph.move_node('E', (x - 20, y + 20));
+        graph.move_node('E', (x + 20, y + 20));
+        graph.move_node('E', (x + 20, y - 20));
+        graph.move_node('E', (x - 20, y - 20));
+        graph.move_node('E', (x, y));
 
         let timing_delete = graph.duration();
         graph.delete_node('E');
@@ -282,7 +363,6 @@ mod tests {
                 graph.neighbors(node)
             );
         }
-        println!("graph_sequence() -> {:?}", graph.sequence());
         println!("adjacency_list() -> {:?}", graph.adjacency_list());
         println!("adjacency_matrix() -> {:?}", graph.adjacency_matrix());
 
