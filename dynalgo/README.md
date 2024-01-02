@@ -9,6 +9,8 @@ The crate offers a basic `graph` structure representation. Interesting point is 
 Dynalgo automatically layout nodes according to imaginary springs forces applying to them.
 Custom animations can be made by playing with the nodes and links  graphical representations.
 
+The `Algo` module provides animated algorithms applying to graph.
+
 ### Example: traversing a maze
 [See example](https://dynalgo.github.io/dynalgo/Dynalgo_maze_example.html)
 ```

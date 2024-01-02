@@ -121,6 +121,10 @@ impl Coloration {
             }
         }
 
+        if !leafs.is_empty() && partitions.len() == 1 {
+            partitions.push(Vec::new());
+            colors.push(color);
+        }
         for (leaf, neighbor) in leafs.iter().rev() {
             for (i, set) in partitions.iter().enumerate() {
                 if set.contains(neighbor) {
