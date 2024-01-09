@@ -80,7 +80,7 @@ impl Coloration {
                     maxi_idx = j;
                 }
             }
-            assert!(maxi > 0);
+
             matrix.swap(i, maxi_idx);
             for k in 0..nodes.len() {
                 matrix[k].swap(i, maxi_idx);
@@ -90,19 +90,13 @@ impl Coloration {
             cg.color_node(nodes[i], color);
 
             while left < right {
-                while !matrix[i][left] {
+                while !matrix[i][left] && left < right {
                     left += 1;
-                    if left == right {
-                        break;
-                    }
                 }
-                while matrix[i][right] {
+                while matrix[i][right] && left < right {
                     right -= 1;
-                    if left == right {
-                        break;
-                    }
                 }
-                if left < right && matrix[i][left] && !matrix[i][right] {
+                if matrix[i][left] && !matrix[i][right] {
                     matrix.swap(left, right);
                     for k in 0..nodes.len() {
                         matrix[k].swap(left, right);
@@ -110,8 +104,15 @@ impl Coloration {
                     nodes.swap(left, right);
                 }
             }
+            assert!(left == right);
 
-            if i == nodes.len() - 1 || matrix[i][i + 1] {
+            if matrix[i][left] {
+                right = left - 1;
+            } else {
+                right = left;
+            }
+
+            if right == i {
                 partitions.push(partition);
                 partition = Vec::new();
                 right = nodes.len() - 1;

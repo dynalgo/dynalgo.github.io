@@ -87,6 +87,10 @@ impl Renderer {
         *seq
     }
 
+    pub fn hide_labels(&mut self, hide: bool) {
+        self.svg.p_display_node_label = !hide;
+    }
+
     pub fn sleep(&mut self, duration: u32) {
         self.total_duration += duration;
     }

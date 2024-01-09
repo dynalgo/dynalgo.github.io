@@ -889,6 +889,11 @@ impl Graph {
         )
     }
 
+    /// Hides nodes labels
+    pub fn hide_labels(&mut self, hide: bool) {
+        self.renderer.hide_labels(hide);
+    }
+
     /// Changes the node label color.
     pub fn color_label(&mut self, node: char, color: (u8, u8, u8)) {
         self.node_check_exists(node);
